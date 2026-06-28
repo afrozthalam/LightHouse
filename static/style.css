@@ -1352,3 +1352,302 @@ body {
     color: var(--color-purple);
     font-weight: 700;
 }
+
+/* ==========================================================================
+   Dashboard Page Styles
+   ========================================================================== */
+.dash-hero-section {
+    padding: 2rem 0;
+}
+
+.dash-hero-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    gap: 20px;
+}
+
+.dash-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.dash-subtext {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    line-height: 1.5;
+}
+
+/* Symmetrical Ping All Button */
+.btn-ping-all {
+    background: var(--color-purple);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 14px 28px;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 15px rgba(191, 90, 242, 0.4);
+}
+
+.btn-ping-all:hover {
+    background: var(--color-purple-dark);
+    transform: scale(1.03) translateY(-1px);
+    box-shadow: 0 6px 20px rgba(191, 90, 242, 0.6);
+}
+
+.btn-ping-all.loading {
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Stats Bar */
+.dash-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.stat-value.active-val {
+    color: var(--color-green);
+}
+
+.stat-value.offline-val {
+    color: var(--color-danger);
+}
+
+/* Sites Grid */
+.sites-dash-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+/* Site Card Styling */
+.site-dash-card {
+    background: var(--bg-surface);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    position: relative;
+    transition: var(--transition-smooth);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.site-dash-card.disabled {
+    opacity: 0.5;
+    border-color: rgba(255, 255, 255, 0.03);
+}
+
+.site-dash-card:hover {
+    border-color: var(--color-purple);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+}
+
+.site-dash-card.disabled:hover {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* Card Header */
+.site-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.site-card-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.site-card-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+
+.site-status-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.site-status-badge.active {
+    background: rgba(48, 209, 88, 0.15);
+    color: var(--color-green);
+}
+
+.site-status-badge.offline {
+    background: rgba(255, 69, 58, 0.15);
+    color: var(--color-danger);
+}
+
+.site-status-badge.checking {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+}
+
+.site-status-badge.disabled {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-muted);
+}
+
+/* Attribute Tags Section */
+.site-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.meta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.meta-group-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meta-tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.meta-tag-badge {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    text-transform: capitalize;
+}
+
+.meta-tag-badge.purpose {
+    color: var(--color-cyan);
+    border-color: rgba(90, 200, 250, 0.15);
+    background: rgba(90, 200, 250, 0.04);
+}
+
+/* Ping history dots container */
+.ping-history-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ping-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.ping-dot.active {
+    background: var(--color-green);
+    box-shadow: 0 0 6px var(--color-green);
+}
+
+.ping-dot.offline {
+    background: var(--color-danger);
+    box-shadow: 0 0 6px var(--color-danger);
+}
+
+/* Actions Section */
+.site-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 16px;
+}
+
+.btn-toggle-site {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 8px 16px;
+    color: var(--text-secondary);
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-smooth);
+}
+
+.btn-toggle-site:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-toggle-site.remove-mode {
+    color: var(--color-danger);
+    border-color: rgba(255, 69, 58, 0.2);
+}
+
+.btn-toggle-site.remove-mode:hover {
+    background: rgba(255, 69, 58, 0.05);
+    border-color: var(--color-danger);
+}

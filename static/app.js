@@ -203,6 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (e) => {
         if (e.state && (e.state.type === 'movie' || e.state.type === 'tv') && e.state.movieId) {
             openMovieDetails({ id: e.state.movieId, media_type: e.state.type }, false);
+        } else if (e.state && e.state.type === 'dash') {
+            openDashboard(false);
         } else {
             closeMovieDetails();
         }
@@ -214,6 +216,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check for movie ID in URL on initial load to open detail page immediately
     const checkInitialRoute = async () => {
+        if (window.location.pathname === '/dash') {
+            openDashboard(false);
+            return;
+        }
         const pathMatch = window.location.pathname.match(/\/(movie|tv)\/(\d+)/);
         if (pathMatch && pathMatch[2]) {
             const mediaType = pathMatch[1];
@@ -526,6 +532,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeMovieDetails() {
         closeSSE();
         movieDetailsPage.style.display = 'none';
+        if (typeof dashboardPageContainer !== 'undefined' && dashboardPageContainer) {
+            dashboardPageContainer.style.display = 'none';
+        }
         homePageContainer.style.display = 'block';
         window.scrollTo(0, 0);
     }
@@ -592,7 +601,8 @@ document.addEventListener('DOMContentLoaded', () => {
             : selectedMovie.title;
 
         // SSE connection
-        const sseUrl = `/api/search-links/stream?title=${encodeURIComponent(movieTitleAndYear)}&purpose=${activeFilters.purpose}&language=${activeFilters.language}`;
+        const disabledListStr = localStorage.getItem('lighthouse_disabled_sites') || '';
+        const sseUrl = `/api/search-links/stream?title=${encodeURIComponent(movieTitleAndYear)}&purpose=${activeFilters.purpose}&language=${activeFilters.language}&exclude_sites=${encodeURIComponent(disabledListStr)}`;
         eventSource = new EventSource(sseUrl);
 
         let totalSites = 15;
@@ -755,5 +765,231 @@ document.addEventListener('DOMContentLoaded', () => {
             eventSource.close();
             eventSource = null;
         }
+    }
+
+    // ==========================================================================
+    // Indexer Dashboard Controller
+    // ==========================================================================
+    const dashboardPageContainer = document.getElementById('dashboard-page-container');
+    const sitesDashGrid = document.getElementById('sites-dash-grid');
+    const btnPingAll = document.getElementById('btn-ping-all');
+    const statTotalSites = document.getElementById('stat-total-sites');
+    const statActiveSites = document.getElementById('stat-active-sites');
+    const statOfflineSites = document.getElementById('stat-offline-sites');
+    
+    const STORAGE_DISABLED_SITES = 'lighthouse_disabled_sites';
+    const STORAGE_PING_HISTORY = 'lighthouse_ping_history';
+    let allSites = [];
+
+    function getDisabledSites() {
+        const list = localStorage.getItem(STORAGE_DISABLED_SITES);
+        return list ? list.split(',').filter(Boolean) : [];
+    }
+    
+    function saveDisabledSites(sites) {
+        localStorage.setItem(STORAGE_DISABLED_SITES, sites.join(','));
+    }
+
+    function getPingHistory() {
+        const history = localStorage.getItem(STORAGE_PING_HISTORY);
+        return history ? JSON.parse(history) : {};
+    }
+    
+    function savePingHistory(history) {
+        localStorage.setItem(STORAGE_PING_HISTORY, JSON.stringify(history));
+    }
+
+    async function openDashboard(shouldPushState = true) {
+        closeSSE();
+        if (shouldPushState) {
+            history.pushState({ type: 'dash' }, '', '/dash');
+        }
+        
+        homePageContainer.style.display = 'none';
+        movieDetailsPage.style.display = 'none';
+        dashboardPageContainer.style.display = 'block';
+        window.scrollTo(0, 0);
+        
+        topProgressBar.start();
+        try {
+            const r = await fetch('/api/dash/sites');
+            allSites = await r.json();
+            renderDashboardGrid();
+        } catch(e) {
+            console.error("Failed to load dashboard sites:", e);
+            sitesDashGrid.innerHTML = `<div class="grid-placeholder"><p class="error">Failed to load indexers: ${e.message}</p></div>`;
+        } finally {
+            topProgressBar.done();
+        }
+    }
+
+    function renderDashboardGrid() {
+        if (!sitesDashGrid) return;
+        sitesDashGrid.innerHTML = '';
+        
+        const disabledList = getDisabledSites();
+        const pingHistory = getPingHistory();
+        
+        statTotalSites.textContent = allSites.length;
+        
+        let activeCount = 0;
+        let offlineCount = 0;
+        
+        allSites.forEach(site => {
+            const isDisabled = disabledList.includes(site.name);
+            const history = pingHistory[site.name] || [];
+            
+            let statusClass = 'checking';
+            let statusLabel = 'No Ping Status';
+            if (isDisabled) {
+                statusClass = 'disabled';
+                statusLabel = 'Disabled';
+            } else if (history.length > 0) {
+                const lastStatus = history[history.length - 1];
+                if (lastStatus === 'ACTIVE') {
+                    statusClass = 'active';
+                    statusLabel = 'Active';
+                    activeCount++;
+                } else {
+                    statusClass = 'offline';
+                    statusLabel = 'Offline';
+                    offlineCount++;
+                }
+            } else {
+                statusClass = 'active';
+                statusLabel = 'Assumed Online';
+                activeCount++;
+            }
+            
+            const card = document.createElement('div');
+            card.className = `site-dash-card ${isDisabled ? 'disabled' : ''}`;
+            card.id = `site-card-${site.name.replace(/\s+/g, '_')}`;
+            
+            // Build history indicators (last 3 pings)
+            let dotsHtml = '';
+            for (let i = 0; i < 3; i++) {
+                const stateIndex = history.length - 3 + i;
+                const dotState = stateIndex >= 0 ? history[stateIndex] : null;
+                
+                let dotClass = '';
+                if (dotState === 'ACTIVE') dotClass = 'active';
+                else if (dotState === 'OFFLINE') dotClass = 'offline';
+                
+                dotsHtml += `<div class="ping-dot ${dotClass}" title="${dotState || 'No ping data yet'}"></div>`;
+            }
+            
+            const purposeBadges = site.purpose.map(p => `<span class="meta-tag-badge purpose">${p}</span>`).join(' ');
+            const languagePills = site.language.map(l => `<span class="meta-tag-badge">${l}</span>`).join(' ');
+
+            card.innerHTML = `
+                <div class="site-card-header">
+                    <div class="site-card-title-wrap">
+                        <span class="site-card-name">${site.name}</span>
+                        <div class="ping-history-wrap">
+                            <span style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">History:</span>
+                            ${dotsHtml}
+                        </div>
+                    </div>
+                    <span class="site-status-badge ${statusClass}" id="badge-${site.name.replace(/\s+/g, '_')}">${statusLabel}</span>
+                </div>
+                
+                <div class="site-card-meta">
+                    <div class="meta-group">
+                        <span class="meta-group-label">Capability</span>
+                        <div class="meta-tags-row">${purposeBadges}</div>
+                    </div>
+                    <div class="meta-group">
+                        <span class="meta-group-label">Languages</span>
+                        <div class="meta-tags-row">${languagePills}</div>
+                    </div>
+                </div>
+                
+                <div class="site-card-actions">
+                    <button class="btn-toggle-site ${isDisabled ? '' : 'remove-mode'}" data-name="${site.name}">
+                        <i class="fa-solid ${isDisabled ? 'fa-circle-check' : 'fa-trash-can'}"></i>
+                        <span>${isDisabled ? 'Enable Indexer' : 'Remove Site'}</span>
+                    </button>
+                </div>
+            `;
+            
+            // Toggle active state listener
+            card.querySelector('.btn-toggle-site').addEventListener('click', () => {
+                toggleSiteActive(site.name);
+            });
+            
+            sitesDashGrid.appendChild(card);
+        });
+        
+        statActiveSites.textContent = activeCount;
+        statOfflineSites.textContent = offlineCount + disabledList.length;
+    }
+
+    function toggleSiteActive(siteName) {
+        const disabledList = getDisabledSites();
+        const index = disabledList.indexOf(siteName);
+        
+        if (index > -1) {
+            disabledList.splice(index, 1);
+        } else {
+            disabledList.push(siteName);
+        }
+        saveDisabledSites(disabledList);
+        renderDashboardGrid();
+    }
+
+    async function pingAllSites() {
+        if (!btnPingAll || btnPingAll.classList.contains('loading')) return;
+        
+        btnPingAll.classList.add('loading');
+        btnPingAll.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Checking Nodes...`;
+        
+        const disabledList = getDisabledSites();
+        const pingHistory = getPingHistory();
+        
+        topProgressBar.start();
+        
+        const promises = allSites.map(async (site) => {
+            if (disabledList.includes(site.name)) {
+                return; // Don't ping disabled/removed sites
+            }
+            
+            const badgeElement = document.getElementById(`badge-${site.name.replace(/\s+/g, '_')}`);
+            if (badgeElement) {
+                badgeElement.className = 'site-status-badge checking';
+                badgeElement.textContent = 'Pinging...';
+            }
+            
+            try {
+                const r = await fetch(`/api/dash/ping-site?name=${encodeURIComponent(site.name)}`);
+                const res = await r.json();
+                
+                let history = pingHistory[site.name] || [];
+                history.push(res.status);
+                if (history.length > 3) {
+                    history = history.slice(-3);
+                }
+                pingHistory[site.name] = history;
+            } catch (err) {
+                let history = pingHistory[site.name] || [];
+                history.push('OFFLINE');
+                if (history.length > 3) {
+                    history = history.slice(-3);
+                }
+                pingHistory[site.name] = history;
+            }
+        });
+        
+        await Promise.all(promises);
+        
+        savePingHistory(pingHistory);
+        renderDashboardGrid();
+        
+        topProgressBar.done();
+        btnPingAll.classList.remove('loading');
+        btnPingAll.innerHTML = `<i class="fa-solid fa-network-wired"></i> Ping All Sites`;
+    }
+
+    if (btnPingAll) {
+        btnPingAll.addEventListener('click', pingAllSites);
     }
 });

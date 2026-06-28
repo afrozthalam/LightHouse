@@ -778,7 +778,7 @@ def search_site(site, search_queries, target_movie):
 # ----------------------------------------------------
 # Main Search Execution Function (Exportable)
 # ----------------------------------------------------
-def run_movie_search(target_movie, filter_purpose=None, filter_language=None):
+def run_movie_search(target_movie, filter_purpose=None, filter_language=None, exclude_sites=None):
     # Build search query list
     search_queries = [target_movie]
     year_match = re.search(r"\((\d{4})\)", target_movie)
@@ -793,9 +793,20 @@ def run_movie_search(target_movie, filter_purpose=None, filter_language=None):
             search_queries.append(title_only)
         search_queries.append(target_movie)
 
+    # Parse excluded sites
+    excluded = set()
+    if exclude_sites:
+        if isinstance(exclude_sites, str):
+            excluded = {name.strip().lower() for name in exclude_sites.split(",") if name.strip()}
+        else:
+            excluded = {name.strip().lower() for name in exclude_sites}
+
     # Filter sites based on purpose & language selection
     filtered_sites = []
     for site in SITES:
+        # Check if site is disabled/removed
+        if site["name"].lower() in excluded:
+            continue
         # Check purpose matching
         site_purposes = site.get("purpose", [])
         if filter_purpose and filter_purpose.lower() not in [p.lower() for p in site_purposes]:

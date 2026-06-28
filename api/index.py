@@ -300,6 +300,7 @@ def stream_search_links():
     title = request.args.get('title')
     purpose = request.args.get('purpose')
     language = request.args.get('language')
+    exclude_sites = request.args.get('exclude_sites', '')
     
     if not title:
         return jsonify({'error': 'Missing title parameter'}), 400
@@ -316,7 +317,7 @@ def stream_search_links():
     
     def run_search_thread():
         try:
-            results = testup4.run_movie_search(title, purpose, language)
+            results = testup4.run_movie_search(title, purpose, language, exclude_sites)
             results_container['results'] = results
             results_container['status'] = 'success'
         except Exception as e:
@@ -344,6 +345,54 @@ def stream_search_links():
                 break
                 
     return Response(event_stream(), mimetype="text/event-stream")
+
+@app.route('/api/dash/sites')
+def dash_sites():
+    sites_list = []
+    for s in testup4.SITES:
+        sites_list.append({
+            'name': s['name'],
+            'purpose': s.get('purpose', []),
+            'language': s.get('language', [])
+        })
+    return jsonify(sites_list)
+
+@app.route('/api/dash/ping-site')
+def ping_site():
+    name = request.args.get('name')
+    if not name:
+        return jsonify({'error': 'Missing name parameter'}), 400
+    
+    site = next((s for s in testup4.SITES if s['name'].lower() == name.lower()), None)
+    if not site:
+        return jsonify({'error': 'Site not found'}), 404
+    
+    methods = site.get('methods', [])
+    if not methods:
+        return jsonify({'status': 'ACTIVE', 'details': 'No methods configured, assumed active'})
+        
+    method = methods[0]
+    search_url = method['search']
+    
+    from urllib.parse import urlparse
+    parsed = urlparse(search_url)
+    base_url = f"{parsed.scheme}://{parsed.netloc}/"
+    
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/137.0.0.0 Safari/537.36"
+        )
+    }
+    
+    try:
+        r = requests.get(base_url, headers=headers, timeout=2.5)
+        # Sane online verification: status codes less than 500 mean server is online/reachable
+        status = 'ACTIVE' if r.status_code < 500 else 'OFFLINE'
+        return jsonify({'status': status, 'code': r.status_code})
+    except Exception as e:
+        return jsonify({'status': 'OFFLINE', 'error': str(e)})
 
 if __name__ == '__main__':
     print(f"Starting server on http://localhost:{PORT}")

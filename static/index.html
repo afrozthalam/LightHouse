@@ -236,6 +236,40 @@
         </div>
     </div>
 
+    <!-- Dashboard Page Container (Type /dash to visit) -->
+    <main class="app-container" id="dashboard-page-container" style="display: none;">
+        <section class="dash-hero-section">
+            <div class="dash-hero-header">
+                <div>
+                    <h1 class="dash-title">Scraper Node Status</h1>
+                    <p class="dash-subtext">Manage active scrape targets, view language/purpose attributes, and track network ping statistics.</p>
+                </div>
+                <button class="btn-ping-all" id="btn-ping-all">
+                    <i class="fa-solid fa-network-wired"></i> Ping All Sites
+                </button>
+            </div>
+            
+            <div class="dash-stats-bar">
+                <div class="stat-card">
+                    <span class="stat-label">Total Indexers</span>
+                    <span class="stat-value" id="stat-total-sites">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Active Nodes</span>
+                    <span class="stat-value active-val" id="stat-active-sites">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Disabled / Offline</span>
+                    <span class="stat-value offline-val" id="stat-offline-sites">0</span>
+                </div>
+            </div>
+            
+            <div class="sites-dash-grid" id="sites-dash-grid">
+                <!-- Dynamically loaded site cards -->
+            </div>
+        </section>
+    </main>
+
     <footer class="app-footer">
         <div class="footer-content">
             <p class="footer-creator">Created by <span class="creator-name">HttpPirate</span></p>
