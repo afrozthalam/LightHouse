@@ -5,11 +5,13 @@ import cloudscraper
 import concurrent.futures
 import threading
 
-# Reconfigure stdout/stderr to handle UTF-8 printing safely on Windows terminal
-if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8")
-if hasattr(sys.stderr, "reconfigure"):
-    sys.stderr.reconfigure(encoding="utf-8")
+try:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8")
+except Exception:
+    pass
 
 from bs4 import BeautifulSoup
 from urllib.parse import quote_plus, quote
