@@ -1,0 +1,10 @@
+__pycache__/
+.env
+static/cache/
+/tmp/cache/
+*.pyc
+*.bak
+*.log
+.gemini/
+brain/
+*scratchpad*

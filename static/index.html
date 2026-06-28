@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LightHouse</title>
+    <!-- Vector SVG favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M4,20 C4,19.45 4.45,19 5,19 L19,19 C19.55,19 20,19.45 20,20 C20,20.55 19.55,21 19,21 L5,21 C4.45,21 4,20.55 4,20 Z'/%3E%3Cpath d='M9.5,8 L14.5,8 C14.9,8 15.2,8.3 15.15,8.7 L16.8,17 C16.85,17.5 16.45,18 15.9,18 L8.1,18 C7.55,18 7.15,17.5 7.2,17 L8.85,8.7 C8.8,8.3 9.1,8 9.5,8 Z'/%3E%3Cpath d='M7,7 C7,6.45 7.45,6 8,6 L16,6 C16.55,6 17,6.45 17,7 C17,7.55 16.55,8 16,8 L8,8 C7.45,8 7,7.55 7,7 Z'/%3E%3Cpath d='M9.5,3 C9.5,1.9 10.4,1 11.5,1 C12.6,1 13.5,1.9 13.5,3 L13.5,5 L9.5,5 L9.5,3 Z'/%3E%3C/svg%3E">
+    <!-- Google Font: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="glow-bg"></div>
+    
+    <!-- Minimal Apple-Style Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <!-- Brand Logo -->
+            <div class="brand" id="brand-logo">
+                <!-- Symmetrical inline SVG lighthouse logo matching Moctale style -->
+                <svg class="brand-logo-svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4,20 C4,19.45 4.45,19 5,19 L19,19 C19.55,19 20,19.45 20,20 C20,20.55 19.55,21 19,21 L5,21 C4.45,21 4,20.55 4,20 Z" />
+                    <path d="M9.5,8 L14.5,8 C14.9,8 15.2,8.3 15.15,8.7 L16.8,17 C16.85,17.5 16.45,18 15.9,18 L8.1,18 C7.55,18 7.15,17.5 7.2,17 L8.85,8.7 C8.8,8.3 9.1,8 9.5,8 Z" />
+                    <path d="M7,7 C7,6.45 7.45,6 8,6 L16,6 C16.55,6 17,6.45 17,7 C17,7.55 16.55,8 16,8 L8,8 C7.45,8 7,7.55 7,7 Z" />
+                    <path d="M9.5,3 C9.5,1.9 10.4,1 11.5,1 C12.6,1 13.5,1.9 13.5,3 L13.5,5 L9.5,5 L9.5,3 Z" />
+                </svg>
+                <span class="brand-text">LightHouse</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Page Container (Swapped via router) -->
+    <main class="app-container" id="home-page-container">
+        <!-- Search First Hero Section -->
+        <section class="hero-search-section">
+            <p class="hero-subtext">Find direct download and streaming links for your favorite movies and series instantly.</p>
+            
+            <div class="hero-search-container">
+                <div class="search-bar-box">
+                    <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="search-input" placeholder="Search movies, series, directors..." autocomplete="off">
+                    <!-- Symmetrical Search Action Button -->
+                    <button class="search-action-btn" id="search-action-btn" title="Search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Live Suggestions Dropdown floating below search input -->
+                <div class="search-suggestions" id="search-suggestions">
+                    <!-- Dynamic live suggestions list -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Symmetrical Full-Width Feed Grid -->
+        <div class="split-layout">
+            <div class="main-feed-column">
+                <div class="section-header">
+                    <svg class="section-icon megaphone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                    </svg>
+                    <h2 id="grid-title" class="feed-title">Trending</h2>
+                </div>
+                <div id="movie-grid" class="movie-grid">
+                    <!-- Skeletons render initially -->
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Movie Details Separate Page Container -->
+    <div class="movie-details-page" id="movie-details-page" style="display: none;">
+        <!-- Back Arrow Button overlaying the banner -->
+        <button class="back-to-home-btn" id="back-to-home-btn" title="Back to Explore">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+        <!-- Symmetrical Search button in top right corner -->
+        <button class="details-search-btn" id="details-search-btn" title="Search Release">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </button>
+
+        <!-- Fullscreen Movie Banner Background -->
+        <div class="modal-hero-banner" id="modal-hero-bg">
+            <div class="modal-hero-overlay"></div>
+            <!-- Large Play Button Emblem -->
+            <button class="hero-play-icon" title="Trailer Preview">
+                <i class="fa-solid fa-play"></i>
+            </button>
+        </div>
+
+        <!-- Modal Details Container -->
+        <div class="modal-details-container">
+            <div class="modal-meta-header">
+                <div class="modal-poster-wrap">
+                    <img id="modal-poster" src="" alt="Poster" class="modal-poster-img">
+                </div>
+                <div class="modal-title-metadata-wrap">
+                    <div class="modal-meta-row" id="modal-top-meta">
+                        <span id="modal-runtime">Movie</span> • 
+                        <span id="modal-year">N/A</span> • 
+                        <span id="modal-rating">N/A</span>
+                    </div>
+                    <h1 id="modal-title">Movie Title</h1>
+                    <p id="modal-tagline" class="modal-tagline"></p>
+                    
+                    <!-- Mockup Style Two-Column Specs Grid -->
+                    <div class="modal-spec-grid">
+                        <div class="spec-col">
+                            <div class="spec-label">Country</div>
+                            <div class="spec-val" id="meta-country">N/A</div>
+                        </div>
+                        <div class="spec-col">
+                            <div class="spec-label">Language</div>
+                            <div class="spec-val" id="meta-language">English</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Awards Badge Container -->
+            <div class="modal-awards-badge-container" id="modal-awards-container">
+            </div>
+
+            <!-- Action Configurations (Beautiful squared design restored) -->
+            <div class="action-buttons-wrap">
+                <div class="purpose-cards-grid" id="purpose-control">
+                    <div class="purpose-card download-btn" data-value="download">
+                        <div class="card-icon"><i class="fa-solid fa-download"></i></div>
+                        <div class="card-label">Download</div>
+                    </div>
+                    <div class="purpose-card watch-btn" data-value="watch">
+                        <div class="card-icon"><i class="fa-solid fa-play"></i></div>
+                        <div class="card-label">Watch</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Language Choices Panel - Centered Premium Pill style -->
+            <div class="language-panel-group" id="language-filter-group">
+                <h3>Select Language</h3>
+                <div class="language-pills-list" id="lang-control">
+                    <button class="lang-pill-btn hindi-btn" data-value="hindi">
+                        <i class="fa-solid fa-language"></i> Hindi
+                    </button>
+                    <button class="lang-pill-btn english-btn" data-value="english">
+                        <i class="fa-solid fa-globe"></i> English
+                    </button>
+                </div>
+            </div>
+
+            <!-- Auto-Trigger Crawler Results Panel (Directly below language buttons) -->
+            <div id="crawl-results-panel" class="results-panel">
+                <!-- Thicker progress bar layout -->
+                <div class="progress-box" id="progress-box">
+                    <div class="progress-meta">
+                        <span id="progress-status-text">Locating direct streams, please wait...</span>
+                        <span id="progress-pct">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-bar-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Resolved Direct Links List (Hidden during progress load) -->
+                <div class="discovered-links-block" id="discovered-links-block" style="display: none;">
+                    <div class="links-block-header">
+                        <span>Discovered Direct Streams</span>
+                        <span id="links-count" class="links-count-badge">0 found</span>
+                    </div>
+                    <div id="discovered-links" class="discovered-links-list">
+                        <!-- Stream cards filled dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full-Width Overview Synopsis (Placed below stream results) -->
+            <div class="modal-section-block">
+                <h2>Overview</h2>
+                <p id="modal-overview" class="modal-overview-text">Overview synopsis text...</p>
+            </div>
+
+            <!-- TV Shows Seasons Section (Dynamically rendered below Overview) -->
+            <div class="seasons-section-block" id="seasons-section" style="display: none;">
+                <div class="seasons-header-row">
+                    <h2>Seasons</h2>
+                    <div class="carousel-nav-arrows">
+                        <button class="nav-arrow-btn" id="season-prev-btn" title="Previous Season">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-arrow-btn" id="season-next-btn" title="Next Season">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="seasons-carousel-track" id="seasons-carousel">
+                    <!-- Dynamic Season Cards -->
+                </div>
+            </div>
+
+            <!-- Similar Releases section -->
+            <div class="similar-releases-block" id="similar-releases-section" style="display: none;">
+                <div class="similar-header-row">
+                    <h2>More Like This</h2>
+                    <div class="carousel-nav-arrows">
+                        <button class="nav-arrow-btn" id="similar-prev-btn" title="Previous Similar">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-arrow-btn" id="similar-next-btn" title="Next Similar">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="similar-carousel-track" id="similar-carousel">
+                    <!-- Dynamic Similar Cards -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 LightHouse Cinema. Built using TMDB API & Threaded Scraper Networks.</p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
