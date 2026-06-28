@@ -11,6 +11,43 @@ document.addEventListener('DOMContentLoaded', () => {
         language: null
     };
 
+    // Top Progress Bar controller matching Moctale style
+    const topProgressBar = {
+        element: document.getElementById('top-progress-bar'),
+        timer: null,
+        start() {
+            if (!this.element) this.element = document.getElementById('top-progress-bar');
+            if (this.timer) clearInterval(this.timer);
+            
+            this.element.style.transition = 'width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.15s ease';
+            this.element.style.opacity = '1';
+            this.element.style.width = '0%';
+            
+            let width = 0;
+            this.timer = setInterval(() => {
+                if (width < 85) {
+                    width += Math.random() * 12;
+                    if (width > 85) width = 85;
+                    this.element.style.width = `${width}%`;
+                }
+            }, 250);
+        },
+        done() {
+            if (this.timer) clearInterval(this.timer);
+            if (!this.element) this.element = document.getElementById('top-progress-bar');
+            
+            this.element.style.transition = 'width 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease';
+            this.element.style.width = '100%';
+            
+            setTimeout(() => {
+                this.element.style.opacity = '0';
+                setTimeout(() => {
+                    this.element.style.width = '0%';
+                }, 200);
+            }, 150);
+        }
+    };
+
     // DOM Elements
     const searchInput = document.getElementById('search-input');
     const searchActionBtn = document.getElementById('search-action-btn');
@@ -138,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             movieGrid.appendChild(card);
         }
         
+        topProgressBar.start();
         try {
             const r = await fetch(`/api/search-movies?query=${encodeURIComponent(query)}`);
             const data = await r.json();
@@ -149,6 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {
             movieGrid.innerHTML = `<div class="grid-placeholder"><p class="error">Search failed: ${e.message}</p></div>`;
+        } finally {
+            topProgressBar.done();
         }
     }
 
@@ -179,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const mediaType = pathMatch[1];
             const movieId = pathMatch[2];
             renderSkeletons();
+            topProgressBar.start();
             try {
                 const r = await fetch(`/api/movie-details/${movieId}?type=${mediaType}`);
                 const movie = await r.json();
@@ -187,6 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch(e) {
                 console.error("Route load error:", e);
+            } finally {
+                topProgressBar.done();
             }
         }
         loadPopularReleases();
@@ -277,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gridTitle.textContent = "Trending";
         renderSkeletons();
         
+        topProgressBar.start();
         try {
             const r = await fetch('/api/trending-movies');
             const data = await r.json();
@@ -286,6 +330,8 @@ document.addEventListener('DOMContentLoaded', () => {
             renderMovieGrid(results.slice(0, 8));
         } catch (e) {
             movieGrid.innerHTML = `<div class="grid-placeholder"><p class="error">Failed to load releases: ${e.message}</p></div>`;
+        } finally {
+            topProgressBar.done();
         }
     }
 
@@ -376,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo(0, 0);
         
         // Fetch extended details
+        topProgressBar.start();
         try {
             const r = await fetch(`/api/movie-details/${movie.id}?type=${mediaType}`);
             const details = await r.json();
@@ -431,6 +478,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {
             console.error("Movie details loading error:", e);
+        } finally {
+            topProgressBar.done();
         }
     }
 
@@ -519,6 +568,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function startCrawl() {
         if (!selectedMovie || !activeFilters.purpose || !activeFilters.language) return;
 
+        topProgressBar.start();
+
         // Reset progress loaders to initial state
         progressBarFill.style.width = '0%';
         progressPct.textContent = '0%';
@@ -568,6 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
         eventSource.addEventListener('complete', (e) => {
             const data = JSON.parse(e.data);
             closeSSE();
+            topProgressBar.done();
             
             progressBarFill.style.width = '100%';
             progressPct.textContent = '100%';
@@ -595,6 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
             progressBarFill.style.width = '100%';
             progressBarFill.style.background = 'var(--color-danger)';
             closeSSE();
+            topProgressBar.done();
             setTimeout(() => {
                 progressBox.style.display = 'none';
                 discoveredLinks.innerHTML = `

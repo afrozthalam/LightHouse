@@ -60,6 +60,21 @@ body {
     filter: blur(80px);
 }
 
+/* Top Progress Bar - Navigation Loading Indicator */
+#top-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--color-purple);
+    box-shadow: 0 0 10px var(--color-purple), 0 0 5px var(--color-purple);
+    z-index: 10000;
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
@@ -128,6 +143,7 @@ body {
     margin: 72px auto 20px;
     padding: 0 24px;
     min-height: calc(100vh - 200px);
+    animation: fadeIn 0.4s ease-out;
 }
 
 /* Centered Homepage Search-First Section */
@@ -380,6 +396,11 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.movie-card:hover .card-poster {
+    transform: scale(1.06);
 }
 
 .card-rating {
@@ -1019,6 +1040,7 @@ body {
     gap: 20px;
     overflow-x: auto;
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
     padding-bottom: 15px;
     scrollbar-width: none; /* Firefox */
 }
@@ -1218,6 +1240,7 @@ body {
     gap: 16px;
     overflow-x: auto;
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
     padding: 10px 0;
     scrollbar-width: none;
 }
