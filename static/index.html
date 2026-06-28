@@ -13,6 +13,26 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css">
+    <script>
+    window.onerror = function(msg, url, line, col, error) {
+        var div = document.createElement('div');
+        div.style.position = 'fixed';
+        div.style.top = '0';
+        div.style.left = '0';
+        div.style.width = '100%';
+        div.style.background = '#ff453a';
+        div.style.color = '#fff';
+        div.style.padding = '20px';
+        div.style.zIndex = '99999';
+        div.style.fontFamily = 'monospace';
+        div.style.whiteSpace = 'pre-wrap';
+        div.style.fontSize = '14px';
+        div.style.lineHeight = '1.4';
+        div.innerHTML = '<strong>JS ERROR:</strong> ' + msg + '<br><em>at ' + url + ':' + line + ':' + col + '</em>';
+        document.body.appendChild(div);
+        return false;
+    };
+    </script>
 </head>
 <body>
     <div id="top-progress-bar"></div>
