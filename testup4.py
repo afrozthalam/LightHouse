@@ -1,7 +1,6 @@
 import sys
 import re
 import requests
-import cloudscraper
 import concurrent.futures
 import threading
 
@@ -441,19 +440,19 @@ def fetch_url(url, is_json=False):
         if isinstance(e, (requests.exceptions.ConnectionError, requests.exceptions.Timeout)):
             raise e
 
-    try:
-        safe_print("   ↳ trying cloudscraper")
-        scraper = cloudscraper.create_scraper()
-        r = scraper.get(
+        # Fallback to standard requests if it is blocked
+        safe_print("   ↳ trying requests backup")
+        r_backup = requests.get(
             url,
+            headers=HEADERS,
             timeout=3
         )
-        safe_print(f"   ↳ cloudscraper status: {r.status_code}")
-        return r.json() if is_json else r.text
+        r_backup.raise_for_status()
+        return r_backup.json() if is_json else r_backup.text
     except Exception as e:
-        safe_print(f"   ↳ cloudscraper failed: {e}")
+        safe_print(f"   ↳ requests backup failed: {e}")
         raise Exception(
-            f"Both requests and cloudscraper failed: {e}"
+            f"Both requests attempts failed: {e}"
         )
 
 def encode_query(query, encoder="plus"):
