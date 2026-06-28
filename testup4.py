@@ -15,6 +15,64 @@ except Exception:
 from bs4 import BeautifulSoup
 from urllib.parse import quote_plus, quote
 
+# Pure-Python Token Set Ratio replacement to avoid external binary dependencies
+def calculate_token_set_ratio(s1, s2):
+    w1 = set(re.findall(r'\w+', s1.lower()))
+    w2 = set(re.findall(r'\w+', s2.lower()))
+    if not w1 or not w2:
+        return 0
+    
+    intersection = w1.intersection(w2)
+    diff1to2 = w1.difference(w2)
+    diff2to1 = w2.difference(w1)
+    
+    # Sorted tokens list
+    t0 = sorted(list(intersection))
+    t1 = sorted(list(intersection) + list(diff1to2))
+    t2 = sorted(list(intersection) + list(diff2to1))
+    
+    # Joins
+    str0 = " ".join(t0).strip()
+    str1 = " ".join(t1).strip()
+    str2 = " ".join(t2).strip()
+    
+    # Simple Levenshtein ratio function
+    def lev_ratio(a, b):
+        if a == b:
+            return 100.0
+        if not a or not b:
+            return 0.0
+        
+        # Standard DP Levenshtein distance
+        rows = len(a) + 1
+        cols = len(b) + 1
+        dp = [[0]*cols for _ in range(rows)]
+        for i in range(rows):
+            dp[i][0] = i
+        for j in range(cols):
+            dp[0][j] = j
+            
+        for i in range(1, rows):
+            for j in range(1, cols):
+                if a[i-1] == b[j-1]:
+                    dp[i][j] = dp[i-1][j-1]
+                else:
+                    dp[i][j] = min(
+                        dp[i-1][j] + 1,    # deletion
+                        dp[i][j-1] + 1,    # insertion
+                        dp[i-1][j-1] + 1   # substitution
+                    )
+        
+        distance = dp[rows-1][cols-1]
+        max_len = max(len(a), len(b))
+        return (1.0 - (distance / max_len)) * 100.0
+
+    # Calculate Token Set Ratio
+    r0 = lev_ratio(str0, str1)
+    r1 = lev_ratio(str0, str2)
+    r2 = lev_ratio(str1, str2)
+    return max(r0, r1, r2)
+
 TARGET_MOVIE = "harry potter and the chamber of secrets (2002)"
 
 SITES = [
@@ -634,64 +692,6 @@ def search_site(site, search_queries, target_movie):
                 query_best_match = None
 
                 for item in unique:
-                    # Pure-Python Token Set Ratio replacement to avoid external binary dependencies
-                    def calculate_token_set_ratio(s1, s2):
-                        w1 = set(re.findall(r'\w+', s1.lower()))
-                        w2 = set(re.findall(r'\w+', s2.lower()))
-                        if not w1 or not w2:
-                            return 0
-                        
-                        intersection = w1.intersection(w2)
-                        diff1to2 = w1.difference(w2)
-                        diff2to1 = w2.difference(w1)
-                        
-                        # Sorted tokens list
-                        t0 = sorted(list(intersection))
-                        t1 = sorted(list(intersection) + list(diff1to2))
-                        t2 = sorted(list(intersection) + list(diff2to1))
-                        
-                        # Joins
-                        str0 = " ".join(t0).strip()
-                        str1 = " ".join(t1).strip()
-                        str2 = " ".join(t2).strip()
-                        
-                        # Simple Levenshtein ratio function
-                        def lev_ratio(a, b):
-                            if a == b:
-                                return 100.0
-                            if not a or not b:
-                                return 0.0
-                            
-                            # Standard DP Levenshtein distance
-                            rows = len(a) + 1
-                            cols = len(b) + 1
-                            dp = [[0]*cols for _ in range(rows)]
-                            for i in range(rows):
-                                dp[i][0] = i
-                            for j in range(cols):
-                                dp[0][j] = j
-                                
-                            for i in range(1, rows):
-                                for j in range(1, cols):
-                                    if a[i-1] == b[j-1]:
-                                        dp[i][j] = dp[i-1][j-1]
-                                    else:
-                                        dp[i][j] = min(
-                                            dp[i-1][j] + 1,    # deletion
-                                            dp[i][j-1] + 1,    # insertion
-                                            dp[i-1][j-1] + 1   # substitution
-                                        )
-                            
-                            distance = dp[rows-1][cols-1]
-                            max_len = max(len(a), len(b))
-                            return (1.0 - (distance / max_len)) * 100.0
-
-                        # Calculate Token Set Ratio
-                        r0 = lev_ratio(str0, str1)
-                        r1 = lev_ratio(str0, str2)
-                        r2 = lev_ratio(str1, str2)
-                        return max(r0, r1, r2)
-
                     score = calculate_token_set_ratio(
                         target_movie.lower(),
                         item["title"].lower()
