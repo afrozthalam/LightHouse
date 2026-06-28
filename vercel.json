@@ -19,8 +19,12 @@
       "dest": "/static/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "/(movie|tv|api)/(.*)",
       "dest": "api/index.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/static/index.html"
     }
   ]
 }
