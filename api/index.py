@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import queue
 import json
@@ -7,10 +8,13 @@ from flask import Flask, request, jsonify, Response, send_from_directory
 from dotenv import load_dotenv
 import requests
 
+# Inject parent directory into system path so testup4 module imports work on Vercel
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 # Load environment variables
 load_dotenv()
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static'))
 
 TMDB_API_KEY = os.getenv('TMDB_API_KEY', 'd6d415fbca42bcf39105eee27b397895')
 PORT = int(os.getenv('PORT', 8000))
