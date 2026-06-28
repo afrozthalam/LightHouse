@@ -241,8 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPopularReleases();
     };
 
-    checkInitialRoute();
-
     // ==========================================================================
     // Core Functions
     // ==========================================================================
@@ -992,4 +990,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnPingAll) {
         btnPingAll.addEventListener('click', pingAllSites);
     }
+
+    checkInitialRoute();
 });
