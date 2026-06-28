@@ -14,6 +14,7 @@ app = Flask(__name__, static_folder='static')
 
 TMDB_API_KEY = os.getenv('TMDB_API_KEY', 'd6d415fbca42bcf39105eee27b397895')
 PORT = int(os.getenv('PORT', 8000))
+OMDB_API_KEY = os.getenv('OMDB_API_KEY', '22bfde2c')
 
 POPULAR_BAFTAS = {
     'tt0816692': 'Won 1 BAFTA.', # Interstellar
@@ -145,7 +146,7 @@ def movie_details(movie_id):
         details['parsed_awards'] = []
         if imdb_id:
             try:
-                omdb_url = f"https://www.omdbapi.com/?i={imdb_id}&apikey=22bfde2c"
+                omdb_url = f"https://www.omdbapi.com/?i={imdb_id}&apikey={OMDB_API_KEY}"
                 omdb_r = requests.get(omdb_url, timeout=3)
                 if omdb_r.status_code == 200:
                     omdb_data = omdb_r.json()
