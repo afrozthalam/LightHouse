@@ -172,32 +172,32 @@ body {
 
 .hero-search-container {
     position: relative;
-    max-width: 620px;
+    max-width: 720px; /* Expanded for greater focus and size */
     margin: 0 auto;
 }
 
 .search-bar-box {
     display: flex;
     align-items: center;
-    background: rgba(23, 23, 28, 0.8);
-    border: 1.5px solid var(--border-subtle);
+    background: rgba(18, 18, 20, 0.85);
+    border: 2px solid var(--border-subtle); /* Thicker border for outline focus */
     border-radius: 50px;
-    padding: 0 0.75rem 0 1.5rem;
-    height: 60px; /* Bigger search box */
+    padding: 0 0.85rem 0 1.75rem;
+    height: 66px; /* Bigger search box height */
     transition: var(--transition-smooth);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 30px rgba(191, 90, 242, 0.05); /* Deep shadow with subtle purple backdrop glow */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
 }
 
 .search-bar-box:focus-within {
     border-color: var(--color-purple);
-    box-shadow: 0 0 45px rgba(191, 90, 242, 0.2);
+    box-shadow: 0 0 50px rgba(191, 90, 242, 0.25);
 }
 
 .search-icon-svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     color: var(--text-muted);
     margin-right: 12px;
     flex-shrink: 0;
@@ -209,33 +209,35 @@ body {
     outline: none;
     color: var(--text-primary);
     font-family: var(--font-main);
-    font-size: 1.15rem; /* Bigger font search input */
+    font-size: 1.25rem; /* Bigger typography */
     width: 100%;
-    height: 100%;
+    height: 40px; /* Fixed height aligns caret cursor properly */
+    line-height: normal; /* Fix iOS Safari cursor alignment offset issues */
 }
 
-/* Symmetrical Search Action Button */
+/* Symmetrical Search Action Button - Restyled to be a premium violet solid button */
 .search-action-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--color-purple);
+    border: none;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
+    width: 50px; /* Bigger icon frame */
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-primary);
+    color: #fff;
     cursor: pointer;
     margin-left: 8px;
     transition: var(--transition-smooth);
     outline: none;
     flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(191, 90, 242, 0.4);
 }
 
 .search-action-btn:hover {
-    background: var(--color-purple);
-    border-color: var(--color-purple);
-    transform: scale(1.06);
+    background: var(--color-purple-dark);
+    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 6px 20px rgba(191, 90, 242, 0.6);
 }
 
 .search-action-btn svg {
@@ -334,8 +336,8 @@ body {
 /* Left Column: Movie Grid - Expanded Full Width */
 .movie-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.25rem;
 }
 
 /* Skeletons */
@@ -890,28 +892,39 @@ body {
     100% { background-position: 200% 50%; }
 }
 
-/* Links block styling */
+/* Links block styling - Beautiful Card Containing All Links */
 .discovered-links-block {
     display: flex;
     flex-direction: column;
+    background: rgba(18, 18, 20, 0.7);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin: 2rem 0;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
 }
 
 .links-block-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-subtle);
-    margin-bottom: 14px;
-    font-size: 0.95rem;
-    color: var(--text-secondary);
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 18px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 .links-count-badge {
-    background: rgba(255,255,255,0.04);
-    padding: 2px 6px;
-    border-radius: 4px;
+    background: rgba(191, 90, 242, 0.15);
+    color: var(--color-purple);
+    padding: 4px 10px;
+    border-radius: 20px;
     font-size: 0.8rem;
+    font-weight: 700;
 }
 
 .discovered-links-list {
@@ -924,27 +937,25 @@ body {
     text-align: center;
     padding: 40px 10px;
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
-/* Discovered Link Card - Restyled to be super beautiful */
+/* Discovered Link Card - Re-designed to sit cleanly inside the parent card */
 .link-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-subtle);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
     border-radius: var(--radius-md);
     padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: var(--transition-smooth);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .link-card:hover {
     border-color: var(--color-purple);
-    background: rgba(191, 90, 242, 0.02);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(191, 90, 242, 0.05);
+    background: rgba(191, 90, 242, 0.04);
+    transform: translateX(6px); /* Elegant slide matching list hover */
 }
 
 .link-card-left {
@@ -1128,12 +1139,51 @@ body {
 
 /* Footer Section */
 .app-footer {
+    padding: 50px 24px;
     text-align: center;
-    padding: 3rem 1rem;
     border-top: 1px solid var(--border-subtle);
+    background: rgba(7, 7, 8, 0.95);
+    margin-top: 5rem;
+}
+
+.footer-content {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-creator {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: -0.3px;
+}
+
+.creator-name {
+    color: var(--color-purple);
+    font-weight: 800;
+}
+
+.footer-contact {
+    font-size: 0.9rem;
     color: var(--text-muted);
-    font-size: 0.85rem;
-    margin-top: 4rem;
+    line-height: 1.6;
+}
+
+.footer-email-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    border-bottom: 1.5px dashed var(--color-purple);
+    transition: var(--transition-smooth);
+    padding-bottom: 2px;
+    font-weight: 500;
+}
+
+.footer-email-link:hover {
+    color: var(--color-purple);
+    border-bottom-style: solid;
 }
 
 /* Fade in Animation */
