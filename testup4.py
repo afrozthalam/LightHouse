@@ -486,7 +486,7 @@ def fetch_url(url, is_json=False):
         r = requests.get(
             url,
             headers=HEADERS,
-            timeout=2
+            timeout=1.5
         )
         r.raise_for_status()
         safe_print("   ↳ requests success")
@@ -503,7 +503,7 @@ def fetch_url(url, is_json=False):
         r_backup = requests.get(
             url,
             headers=HEADERS,
-            timeout=3
+            timeout=1.5
         )
         r_backup.raise_for_status()
         return r_backup.json() if is_json else r_backup.text

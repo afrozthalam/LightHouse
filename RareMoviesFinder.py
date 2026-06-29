@@ -302,7 +302,7 @@ def find_rare_movie_links(query_name):
                 "input_method": "preset_from_link",
                 "access_token": token,
             },
-            timeout=15,
+            timeout=5,
         )
         r.raise_for_status()
         js = r.json()

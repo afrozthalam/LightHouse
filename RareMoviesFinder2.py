@@ -283,7 +283,7 @@ def find_rare_movie_links2(query_name):
             URL,
             params={"q": query_name},
             headers=HEADERS,
-            timeout=10,
+            timeout=5,
         )
         r.raise_for_status()
         

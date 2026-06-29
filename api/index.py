@@ -338,15 +338,16 @@ def stream_search_links():
     def event_stream():
         while True:
             try:
-                # 30 second timeout safety
-                msg = log_queue.get(timeout=30)
+                msg = log_queue.get(timeout=1)
                 if msg is None:
                     # Final payload
                     yield f"event: complete\ndata: {json.dumps(results_container)}\n\n"
                     break
                 yield f"event: log\ndata: {msg}\n\n"
             except queue.Empty:
-                yield f"event: log\ndata: [System] Connection timeout.\n\n"
+                # Keep-alive comment sent every 1s to prevent Vercel connection drop timeouts
+                yield ": keepalive\n\n"
+            except Exception as e:
                 break
                 
     return Response(event_stream(), mimetype="text/event-stream")
