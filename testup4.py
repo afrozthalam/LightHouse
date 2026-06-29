@@ -437,6 +437,234 @@ SITES = [
                 "encoder": "plus"
             }
         ]
+    },
+    {
+        "name": "Cineb",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://cineb.sh/search?keyword={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "Tvids",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://www.tvids.tv/search?q={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "IonMedia",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://www1.ionmedia.net/search?keyword={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "Zoovie",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://zoovie.cc/search?q={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "123Movies",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://earn.123movies.ltd/search?q={query}",
+                "encoder": "percent"
+            }
+        ]
+    },
+    {
+        "name": "OnlyFlix",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://onlyflix.to/?s={query}&mcs_search_type=all",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "WatchSeries8",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://watchseries8.art/search?keyword={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "GoWatchSeries",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://gowatchseries.lol/search/{query}",
+                "encoder": "percent"
+            }
+        ]
+    },
+    {
+        "name": "DopeBox",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://dopebox.stream/search?keyword={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "Movish",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://movish.net/search/{query}",
+                "encoder": "percent"
+            }
+        ]
+    },
+    {
+        "name": "EuroPixHD",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://europixhd.org/search.php?search={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "WatchTV",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://www.watchtv.click/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "MovieBoxOnline",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://movieboxonline.net/search-result?keyword={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "SeriesOnline",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://seriesonline.stream/search?keyword={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "Cataz",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "http://cataz.stream/search?keyword={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "StreamM4u",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://streamm4u.vip/search/{query}",
+                "encoder": "hyphen"
+            }
+        ]
+    },
+    {
+        "name": "WatchLuna",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://watchluna.com/search?query={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "Movies2Watch",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://movies2watch.fun/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "AttackerTV",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://attackertv.watch/search?keyword={query}",
+                "encoder": "plus"
+            }
+        ]
     }
 ]
 
