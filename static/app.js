@@ -184,10 +184,42 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.results && data.results.length > 0) {
                 renderMovieGrid(data.results);
             } else {
-                movieGrid.innerHTML = '<div class="grid-placeholder"><p>No matches found.</p></div>';
+                movieGrid.innerHTML = `
+                    <div class="grid-placeholder" style="grid-column: 1 / -1; width: 100%;">
+                        <p style="font-size: 1.1rem; margin-bottom: 12px; color: var(--text-secondary);">No matches found in TMDB database.</p>
+                        <div class="force-search-prompt" style="max-width: 500px; margin: 20px auto 0; padding: 24px; border: 1.5px dashed rgba(255,255,255,0.08); border-radius: 12px; background: rgba(255,255,255,0.01); text-align: center;">
+                            <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.92rem; line-height: 1.5;">Can't find your movie/series? Try Force Search to crawl direct indexers directly using your query keyword.</p>
+                            <button class="btn-force-search" id="btn-force-search-empty" style="border: none; background: var(--color-purple); color: #fff; padding: 10px 24px; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s ease;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
+                            </button>
+                        </div>
+                    </div>
+                `;
+                const btn = document.getElementById('btn-force-search-empty');
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        triggerForceSearch(query);
+                    });
+                }
             }
         } catch (e) {
-            movieGrid.innerHTML = `<div class="grid-placeholder"><p class="error">Search failed: ${e.message}</p></div>`;
+            movieGrid.innerHTML = `
+                <div class="grid-placeholder" style="grid-column: 1 / -1; width: 100%;">
+                    <p class="error" style="font-size: 1.1rem; margin-bottom: 12px; color: var(--color-danger);">Search failed: ${e.message}</p>
+                    <div class="force-search-prompt" style="max-width: 500px; margin: 20px auto 0; padding: 24px; border: 1.5px dashed rgba(255,255,255,0.08); border-radius: 12px; background: rgba(255,255,255,0.01); text-align: center;">
+                        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.92rem; line-height: 1.5;">Can't find your movie/series? Try Force Search to crawl direct indexers directly using your query keyword.</p>
+                        <button class="btn-force-search" id="btn-force-search-fail" style="border: none; background: var(--color-purple); color: #fff; padding: 10px 24px; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s ease;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
+                        </button>
+                    </div>
+                </div>
+            `;
+            const btn = document.getElementById('btn-force-search-fail');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    triggerForceSearch(query);
+                });
+            }
         } finally {
             topProgressBar.done();
         }
@@ -210,6 +242,21 @@ document.addEventListener('DOMContentLoaded', () => {
             closeMovieDetails();
         }
     });
+
+    function triggerForceSearch(query) {
+        const mockMovie = {
+            id: -1,
+            title: query,
+            original_title: query,
+            release_date: '',
+            vote_average: 0,
+            poster_path: null,
+            overview: `Force search execution for "${query}". This will search the indexing networks directly using your custom keyword.`,
+            media_type: 'movie',
+            is_force_search: true
+        };
+        openMovieDetails(mockMovie);
+    }
 
     // Initial setup for Purpose cards & Language cards
     setupPurposeCards();
@@ -268,8 +315,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.results && data.results.length > 0) {
                 renderSuggestions(data.results.slice(0, 5), query); // show top 5 suggestions
             } else {
-                searchSuggestions.innerHTML = '<div style="padding:12px 16px; color:var(--text-muted); font-size:0.9rem;">No matches found</div>';
+                searchSuggestions.innerHTML = `
+                    <div style="padding:12px 16px; color:var(--text-muted); font-size:0.9rem;">
+                        <div>No matches found in TMDB.</div>
+                        <button class="btn-force-search-suggest" id="btn-force-search-suggest-btn" style="margin-top:8px; width:100%; border:none; background:var(--color-purple); color:#fff; padding:8px 12px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.85rem; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
+                        </button>
+                    </div>
+                `;
                 searchSuggestions.classList.add('active');
+                const suggestBtn = document.getElementById('btn-force-search-suggest-btn');
+                if (suggestBtn) {
+                    suggestBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        searchSuggestions.classList.remove('active');
+                        searchInput.value = '';
+                        triggerForceSearch(query);
+                    });
+                }
             }
         } catch (e) {
             console.error("Suggestions fetch error:", e);
@@ -433,6 +496,16 @@ document.addEventListener('DOMContentLoaded', () => {
         homePageContainer.style.display = 'none';
         movieDetailsPage.style.display = 'block';
         window.scrollTo(0, 0);
+        
+        if (movie.is_force_search) {
+            modalYear.textContent = 'Custom';
+            modalRating.textContent = '★ N/A';
+            modalRuntime.textContent = 'Force Find';
+            metaCountry.textContent = 'Custom';
+            metaLanguage.textContent = 'Any';
+            topProgressBar.done();
+            return;
+        }
         
         // Fetch extended details
         topProgressBar.start();
@@ -733,6 +806,63 @@ document.addEventListener('DOMContentLoaded', () => {
             
             discoveredLinks.appendChild(card);
         });
+
+        // Add a force Deep Search button if RareMoviesFinder system has not run
+        const containsFallback = results ? results.some(r => r.site === 'VK Video' || r.site === 'Mail.ru') : false;
+        if (!containsFallback) {
+            const promptDiv = document.createElement('div');
+            promptDiv.className = 'fallback-force-prompt';
+            promptDiv.style.marginTop = '24px';
+            promptDiv.style.textAlign = 'center';
+            promptDiv.style.borderTop = '1px solid rgba(255,255,255,0.06)';
+            promptDiv.style.paddingTop = '16px';
+            promptDiv.innerHTML = `
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">Still looking? Run a Deep Search on rare video networks.</p>
+                <button class="btn-deep-search" id="btn-trigger-deep-search" style="border:1px solid var(--color-purple); background:rgba(191,90,242,0.08); color:var(--color-purple); padding:8px 18px; border-radius:30px; font-weight:600; cursor:pointer; font-size:0.85rem; transition:all 0.2s ease; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i> Run Deep Search
+                </button>
+            `;
+            discoveredLinks.appendChild(promptDiv);
+            
+            document.getElementById('btn-trigger-deep-search').addEventListener('click', async (e) => {
+                const btn = e.currentTarget;
+                if (btn.classList.contains('loading')) return;
+                
+                btn.classList.add('loading');
+                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Searching Rare Networks...`;
+                
+                try {
+                    const movieTitleAndYear = selectedMovie.release_date
+                        ? `${selectedMovie.title} (${selectedMovie.release_date.split('-')[0]})`
+                        : selectedMovie.title;
+                    const origTitle = selectedMovie.original_title || '';
+                    
+                    const res = await fetch(`/api/search-links/fallback?title=${encodeURIComponent(movieTitleAndYear)}&original_title=${encodeURIComponent(origTitle)}`);
+                    const data = await res.json();
+                    
+                    if (data.status === 'success' && data.results && data.results.length > 0) {
+                        promptDiv.remove();
+                        // Format the new fallback results to status FOUND
+                        const newFallbacks = data.results.map(item => ({ ...item, status: 'FOUND' }));
+                        const allResults = [...results, ...newFallbacks];
+                        renderDiscoveredLinks(allResults);
+                    } else {
+                        btn.innerHTML = `<i class="fa-solid fa-magnifying-glass-plus"></i> Deep Search: No Links Found`;
+                        setTimeout(() => {
+                            btn.classList.remove('loading');
+                            btn.innerHTML = `<i class="fa-solid fa-magnifying-glass-plus"></i> Run Deep Search`;
+                        }, 2500);
+                    }
+                } catch (err) {
+                    console.error("Deep search failed:", err);
+                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Search Failed`;
+                    setTimeout(() => {
+                        btn.classList.remove('loading');
+                        btn.innerHTML = `<i class="fa-solid fa-magnifying-glass-plus"></i> Run Deep Search`;
+                    }, 2500);
+                }
+            });
+        }
     }
 
     function renderSimilar(items) {

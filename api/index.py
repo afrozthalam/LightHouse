@@ -4,6 +4,7 @@ import re
 import queue
 import json
 import threading
+import concurrent.futures
 from flask import Flask, request, jsonify, Response, send_from_directory
 from dotenv import load_dotenv
 import requests
@@ -409,6 +410,44 @@ def ping_site():
         return jsonify({'status': status, 'code': r.status_code})
     except Exception as e:
         return jsonify({'status': 'OFFLINE', 'error': str(e)})
+
+@app.route('/api/search-links/fallback')
+def search_fallback_links():
+    title = request.args.get('title')
+    original_title = request.args.get('original_title', '')
+    
+    if not title:
+        return jsonify({'error': 'Missing title parameter'}), 400
+        
+    year_match = re.search(r"\((\d{4})\)", title)
+    year_suffix = f" ({year_match.group(1)})" if year_match else ""
+    rare_query = f"{original_title.strip()}{year_suffix}" if (original_title and original_title.strip()) else title
+    
+    rare_results = []
+    
+    def run_vk():
+        try:
+            import RareMoviesFinder
+            return RareMoviesFinder.find_rare_movie_links(rare_query)
+        except Exception as e:
+            return []
+
+    def run_mailru():
+        try:
+            import RareMoviesFinder2
+            return RareMoviesFinder2.find_rare_movie_links2(rare_query)
+        except Exception as e:
+            return []
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        futures = [
+            executor.submit(run_vk),
+            executor.submit(run_mailru)
+        ]
+        for future in concurrent.futures.as_completed(futures):
+            rare_results.extend(future.result())
+            
+    return jsonify({'status': 'success', 'results': rare_results})
 
 if __name__ == '__main__':
     print(f"Starting server on http://localhost:{PORT}")

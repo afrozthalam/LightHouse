@@ -149,30 +149,32 @@ body {
 /* Centered Homepage Search-First Section */
 .hero-search-section {
     text-align: center;
-    padding: 14vh 0 12vh; /* Centered Search box layout override */
+    padding: 16vh 0 14vh; /* Centered search-first homepage layout */
     position: relative;
     z-index: 10;
 }
 
 .brand-hero-title {
-    font-size: 3rem;
-    font-weight: 900;
-    letter-spacing: 8px;
-    margin-bottom: 8px;
+    font-size: 3.8rem;
+    font-weight: 950;
+    letter-spacing: 12px;
+    margin-bottom: 12px;
     background: linear-gradient(135deg, #fff 40%, var(--text-secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
 }
 
 .hero-subtext {
     color: var(--text-secondary);
-    font-size: 1rem;
-    margin-bottom: 2rem;
+    font-size: 1.15rem;
+    margin-bottom: 2.5rem;
+    font-weight: 500;
 }
 
 .hero-search-container {
     position: relative;
-    max-width: 720px; /* Expanded for greater focus and size */
+    max-width: 820px; /* Wider search bar focus */
     margin: 0 auto;
 }
 
@@ -180,26 +182,26 @@ body {
     display: flex;
     align-items: center;
     background: rgba(18, 18, 20, 0.85);
-    border: 2px solid var(--border-subtle); /* Thicker border for outline focus */
+    border: 2px solid var(--border-subtle); 
     border-radius: 50px;
-    padding: 0 0.85rem 0 1.75rem;
-    height: 66px; /* Bigger search box height */
+    padding: 0 1rem 0 2rem;
+    height: 74px; /* Taller search box height */
     transition: var(--transition-smooth);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 30px rgba(191, 90, 242, 0.05); /* Deep shadow with subtle purple backdrop glow */
+    box-shadow: 0 30px 60px rgba(0,0,0,0.85), 0 0 40px rgba(191, 90, 242, 0.08); 
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
 }
 
 .search-bar-box:focus-within {
     border-color: var(--color-purple);
-    box-shadow: 0 0 50px rgba(191, 90, 242, 0.25);
+    box-shadow: 0 0 50px rgba(191, 90, 242, 0.3);
 }
 
 .search-icon-svg {
-    width: 22px;
-    height: 22px;
+    width: 25px;
+    height: 25px;
     color: var(--text-muted);
-    margin-right: 12px;
+    margin-right: 14px;
     flex-shrink: 0;
 }
 
@@ -209,9 +211,9 @@ body {
     outline: none;
     color: var(--text-primary);
     font-family: var(--font-main);
-    font-size: 1.25rem; /* Bigger typography */
+    font-size: 1.35rem; /* Bigger typography */
     width: 100%;
-    height: 40px; /* Fixed height aligns caret cursor properly */
+    height: 44px; /* Fixed height aligns caret cursor properly */
     line-height: normal; /* Fix iOS Safari cursor alignment offset issues */
 }
 
@@ -220,8 +222,8 @@ body {
     background: var(--color-purple);
     border: none;
     border-radius: 50%;
-    width: 50px; /* Bigger icon frame */
-    height: 50px;
+    width: 54px; /* Bigger icon frame */
+    height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -241,14 +243,14 @@ body {
 }
 
 .search-action-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
 }
 
 /* Live Suggestions Dropdown */
 .search-suggestions {
     position: absolute;
-    top: 68px;
+    top: 76px;
     left: 0;
     right: 0;
     background: var(--bg-surface);
@@ -336,8 +338,8 @@ body {
 /* Left Column: Movie Grid - Expanded Full Width */
 .movie-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Smaller compact cards */
+    gap: 1rem;
 }
 
 /* Skeletons */
@@ -1724,4 +1726,16 @@ body {
         padding-top: 16px;
         width: 100%;
     }
+}
+
+/* Force search and Deep search premium buttons styles */
+.btn-force-search:hover {
+    transform: scale(1.03);
+    background: var(--color-purple-dark) !important;
+}
+
+.btn-deep-search:hover {
+    background: rgba(191, 90, 242, 0.15) !important;
+    border-color: var(--color-purple-dark) !important;
+    color: #fff !important;
 }
