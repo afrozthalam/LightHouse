@@ -804,15 +804,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const qualities = [];
         const t = title.toLowerCase();
         
-        if (t.includes('2160p') || t.includes('4k') || t.includes('uhd')) qualities.push('4K Ultra HD');
-        else if (t.includes('1080p') || t.includes('fhd')) qualities.push('1080p Full HD');
+        if (t.includes('2160p') || t.includes('4k') || t.includes('uhd')) qualities.push('4K UHD');
+        else if (t.includes('1080p') || t.includes('fhd')) qualities.push('1080p FHD');
         else if (t.includes('720p') || t.includes('hd')) qualities.push('720p HD');
         else qualities.push('1080p HD'); // Sane default quality if unspecified
         
-        if (t.includes('hevc') || t.includes('x265') || t.includes('10bit')) qualities.push('HEVC 10-bit');
-        if (t.includes('dual') || (t.includes('hindi') && t.includes('english'))) qualities.push('Dual Audio (Hin-Eng)');
+        if (t.includes('hevc') || t.includes('x265') || t.includes('10bit')) qualities.push('HEVC 10-Bit');
+        if (t.includes('dual') || (t.includes('hindi') && t.includes('english'))) qualities.push('Dual Audio');
         
-        return qualities.join(' • ');
+        return qualities;
+    }
+
+    // Render HTML spans for each parsed movie quality tag with distinct neomorphic styles
+    function renderQualitiesHTML(qualities) {
+        if (!qualities || qualities.length === 0) return '';
+        return qualities.map(q => {
+            let cls = 'tag-general';
+            if (q.includes('4K')) cls = 'tag-4k';
+            else if (q.includes('1080p')) cls = 'tag-1080p';
+            else if (q.includes('720p')) cls = 'tag-720p';
+            else if (q.includes('HEVC')) cls = 'tag-hevc';
+            else if (q.includes('Dual')) cls = 'tag-dual';
+            return `<span class="link-tag ${cls}">${q}</span>`;
+        }).join('');
     }
 
     function renderRareLinks(results) {
@@ -827,17 +841,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         found.forEach(item => {
             const card = document.createElement('div');
-            card.className = 'link-card';
-            card.style.borderLeft = '4px solid var(--color-purple)';
+            card.className = 'link-card rare-card';
             
             const resolvedQualities = extractQualities(item.title);
+            const qualitiesHTML = renderQualitiesHTML(resolvedQualities);
             
             card.innerHTML = `
                 <div class="link-card-left">
                     <span class="link-site-name" style="color: var(--color-purple);"><i class="fa-solid fa-wand-magic-sparkles"></i> ${item.site}</span>
-                    <span class="link-qualities">${resolvedQualities}</span>
+                    <div class="link-qualities">${qualitiesHTML}</div>
                 </div>
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit" style="background: var(--color-purple);">
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit rare-visit-btn">
                     Open <i class="fa-solid fa-up-right-from-square"></i>
                 </a>
             `;
@@ -868,11 +882,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.className = 'link-card';
                 
                 const resolvedQualities = extractQualities(item.title);
+                const qualitiesHTML = renderQualitiesHTML(resolvedQualities);
                 
                 card.innerHTML = `
                     <div class="link-card-left">
-                        <span class="link-site-name">${item.site}</span>
-                        <span class="link-qualities">${resolvedQualities}</span>
+                        <span class="link-site-name"><i class="fa-solid fa-circle-play" style="color: var(--color-purple);"></i> ${item.site}</span>
+                        <div class="link-qualities">${qualitiesHTML}</div>
                     </div>
                     <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit">
                         Open <i class="fa-solid fa-up-right-from-square"></i>
