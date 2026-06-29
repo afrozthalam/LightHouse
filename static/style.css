@@ -1816,7 +1816,7 @@ body {
     
     /* Make trending cards span full screen width with 3 columns exactly */
     .movie-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important; /* Force items to shrink to fit the viewport exactly */
         gap: 8px !important;
         justify-content: center !important;
     }
@@ -1910,24 +1910,32 @@ body {
 
 /* Ocean waves progress bar track & fill styles */
 .progress-track {
-    height: 14px !important;
-    background: rgba(255, 255, 255, 0.03) !important;
+    height: 16px !important;
+    background: rgba(191, 90, 242, 0.04) !important;
     border-radius: 50px !important;
     overflow: hidden !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border: 1.5px solid rgba(191, 90, 242, 0.15) !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 10px rgba(191, 90, 242, 0.05);
 }
 
 .progress-fill {
     height: 100% !important;
-    background: linear-gradient(90deg, #5e5ce6 0%, #bf5af2 100%) !important;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 20" preserveAspectRatio="none"><path d="M0,10 C30,18 30,2 60,10 C90,18 90,2 120,10 L120,20 L0,20 Z" fill="rgba(255,255,255,0.18)"/></svg>') !important;
-    background-size: 60px 100% !important;
-    animation: moveOceanWaves 1.5s linear infinite !important;
-    transition: width 0.4s ease !important;
+    background: linear-gradient(90deg, #5e5ce6 0%, #bf5af2 50%, #5e5ce6 100%) !important;
+    background-size: 160px 100% !important;
+    /* Dual wave SVG overlay for high fidelity depth effects */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 28" preserveAspectRatio="none"><path d="M0,14 C30,21 30,7 60,14 C90,21 90,7 120,14 L120,28 L0,28 Z" fill="rgba(255,255,255,0.15)"/><path d="M0,17 C40,24 45,11 80,17 C100,20 105,11 120,17 L120,28 L0,28 Z" fill="rgba(255,255,255,0.22)"/></svg>') !important;
+    animation: moveOceanWaves 1.2s linear infinite, fillGlow 2s infinite ease-in-out alternate !important;
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
     border-radius: 50px !important;
+    box-shadow: 0 0 8px rgba(191, 90, 242, 0.5);
 }
 
 @keyframes moveOceanWaves {
     0% { background-position-x: 0px; }
-    100% { background-position-x: 60px; }
+    100% { background-position-x: 160px; }
+}
+
+@keyframes fillGlow {
+    0% { filter: brightness(0.9) drop-shadow(0 0 2px rgba(191, 90, 242, 0.4)); }
+    100% { filter: brightness(1.1) drop-shadow(0 0 8px rgba(191, 90, 242, 0.7)); }
 }
