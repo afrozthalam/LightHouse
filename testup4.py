@@ -778,7 +778,7 @@ def search_site(site, search_queries, target_movie):
 # ----------------------------------------------------
 # Main Search Execution Function (Exportable)
 # ----------------------------------------------------
-def run_movie_search(target_movie, filter_purpose=None, filter_language=None, exclude_sites=None):
+def run_movie_search(target_movie, filter_purpose=None, filter_language=None, exclude_sites=None, original_title=None):
     # Build search query list
     search_queries = [target_movie]
     year_match = re.search(r"\((\d{4})\)", target_movie)
@@ -846,8 +846,16 @@ def run_movie_search(target_movie, filter_purpose=None, filter_language=None, ex
     if not found_any:
         safe_print("\nNo links found on regular indexing networks. Activating RareMoviesFinder fallback search...")
         try:
+            # Extract year from target_movie (e.g. "Cuore di mamma (1969)" -> " (1969)")
+            year_match = re.search(r"\((\d{4})\)", target_movie)
+            year_suffix = f" ({year_match.group(1)})" if year_match else ""
+            
+            # Use original title if available, otherwise target_movie
+            rare_query = f"{original_title.strip()}{year_suffix}" if (original_title and original_title.strip()) else target_movie
+            safe_print(f"RareMoviesFinder querying: '{rare_query}'")
+            
             import RareMoviesFinder
-            rare_results = RareMoviesFinder.find_rare_movie_links(target_movie)
+            rare_results = RareMoviesFinder.find_rare_movie_links(rare_query)
             if rare_results:
                 safe_print(f"RareMoviesFinder found {len(rare_results)} links!")
                 results.extend(rare_results)

@@ -73,6 +73,7 @@ def search_movies():
             if media_type in ['movie', 'tv']:
                 if media_type == 'tv':
                     item['title'] = item.get('name')
+                    item['original_title'] = item.get('original_name')
                     item['release_date'] = item.get('first_air_date')
                 filtered_results.append(item)
                 
@@ -97,6 +98,7 @@ def trending_movies():
             if media_type in ['movie', 'tv']:
                 if media_type == 'tv':
                     item['title'] = item.get('name')
+                    item['original_title'] = item.get('original_name')
                     item['release_date'] = item.get('first_air_date')
                 filtered_results.append(item)
         data['results'] = filtered_results
@@ -303,6 +305,7 @@ def stream_search_links():
     purpose = request.args.get('purpose')
     language = request.args.get('language')
     exclude_sites = request.args.get('exclude_sites', '')
+    original_title = request.args.get('original_title', '')
     
     if not title:
         return jsonify({'error': 'Missing title parameter'}), 400
@@ -319,7 +322,7 @@ def stream_search_links():
     
     def run_search_thread():
         try:
-            results = testup4.run_movie_search(title, purpose, language, exclude_sites)
+            results = testup4.run_movie_search(title, purpose, language, exclude_sites, original_title)
             results_container['results'] = results
             results_container['status'] = 'success'
         except Exception as e:

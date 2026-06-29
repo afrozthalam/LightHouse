@@ -292,10 +292,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
             const rating = movie.vote_average ? movie.vote_average.toFixed(1) : '0.0';
 
+            const hasOrigTitle = movie.original_title && movie.original_title.toLowerCase().trim() !== movie.title.toLowerCase().trim();
+            const displayTitle = hasOrigTitle ? `${movie.title} (${movie.original_title})` : movie.title;
+
             div.innerHTML = `
                 <img src="${getPosterUrl(movie.poster_path, 'w92')}" alt="" class="suggestion-poster">
                 <div class="suggestion-info">
-                    <span class="suggestion-title">${movie.title}</span>
+                    <span class="suggestion-title">${displayTitle}</span>
                     <span class="suggestion-meta">${year} • Rating: ${rating}</span>
                 </div>
             `;
@@ -354,6 +357,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const releaseYear = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
             const rating = movie.vote_average ? movie.vote_average.toFixed(1) : '0.0';
 
+            const hasOrigTitle = movie.original_title && movie.original_title.toLowerCase().trim() !== movie.title.toLowerCase().trim();
+            const displayTitle = hasOrigTitle ? `${movie.title} (${movie.original_title})` : movie.title;
+
             card.innerHTML = `
                 <div class="card-poster-wrapper">
                     <img src="${getPosterUrl(movie.poster_path)}" alt="${movie.title}" class="card-poster" loading="lazy">
@@ -363,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <div class="card-info">
-                    <h3>${movie.title}</h3>
+                    <h3>${displayTitle}</h3>
                     <span class="card-year">${releaseYear}</span>
                 </div>
             `;
@@ -608,7 +614,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // SSE connection
         const disabledListStr = localStorage.getItem('lighthouse_disabled_sites') || '';
-        const sseUrl = `/api/search-links/stream?title=${encodeURIComponent(movieTitleAndYear)}&purpose=${activeFilters.purpose}&language=${activeFilters.language}&exclude_sites=${encodeURIComponent(disabledListStr)}`;
+        const originalTitleStr = selectedMovie.original_title || '';
+        const sseUrl = `/api/search-links/stream?title=${encodeURIComponent(movieTitleAndYear)}&purpose=${activeFilters.purpose}&language=${activeFilters.language}&exclude_sites=${encodeURIComponent(disabledListStr)}&original_title=${encodeURIComponent(originalTitleStr)}`;
         eventSource = new EventSource(sseUrl);
 
         let totalSites = 15;
