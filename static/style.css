@@ -175,6 +175,7 @@ body {
     width: 100%;
     max-width: 680px; /* Slimmer elegant search container */
     margin: 0 auto;
+    align-self: stretch; /* Stretch inside flex column parent */
 }
 
 .search-bar-box {
@@ -1778,7 +1779,8 @@ body {
     
     .hero-search-container {
         width: 100% !important;
-        padding: 0 4px !important;
+        align-self: stretch !important;
+        padding: 0 !important;
     }
     
     /* Make search bar beautiful, centered, bigger horizontally, but elegant */
