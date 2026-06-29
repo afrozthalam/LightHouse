@@ -148,33 +148,32 @@ body {
 
 /* Centered Homepage Search-First Section */
 .hero-search-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 16vh 0 14vh; /* Centered search-first homepage layout */
+    min-height: 52vh; /* Centered homepage Google-like viewport focus */
+    padding: 8vh 0 6vh;
     position: relative;
     z-index: 10;
 }
 
 .brand-hero-title {
-    font-size: 3.8rem;
-    font-weight: 950;
-    letter-spacing: 12px;
-    margin-bottom: 12px;
-    background: linear-gradient(135deg, #fff 40%, var(--text-secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-transform: uppercase;
+    display: none; /* Removed title text as requested */
 }
 
 .hero-subtext {
     color: var(--text-secondary);
-    font-size: 1.15rem;
-    margin-bottom: 2.5rem;
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
     font-weight: 500;
 }
 
 .hero-search-container {
     position: relative;
-    max-width: 820px; /* Wider search bar focus */
+    width: 100%;
+    max-width: 680px; /* Slimmer elegant search container */
     margin: 0 auto;
 }
 
@@ -182,26 +181,26 @@ body {
     display: flex;
     align-items: center;
     background: rgba(18, 18, 20, 0.85);
-    border: 2px solid var(--border-subtle); 
-    border-radius: 50px;
-    padding: 0 1rem 0 2rem;
-    height: 74px; /* Taller search box height */
+    border: 1.5px solid var(--border-subtle); 
+    border-radius: 30px; /* Elegant roundness */
+    padding: 0 0.5rem 0 1.5rem;
+    height: 58px; /* Slim and modern height like Google Search */
     transition: var(--transition-smooth);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.85), 0 0 40px rgba(191, 90, 242, 0.08); 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(191, 90, 242, 0.05); 
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
 }
 
 .search-bar-box:focus-within {
     border-color: var(--color-purple);
-    box-shadow: 0 0 50px rgba(191, 90, 242, 0.3);
+    box-shadow: 0 0 40px rgba(191, 90, 242, 0.25);
 }
 
 .search-icon-svg {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     color: var(--text-muted);
-    margin-right: 14px;
+    margin-right: 12px;
     flex-shrink: 0;
 }
 
@@ -211,10 +210,10 @@ body {
     outline: none;
     color: var(--text-primary);
     font-family: var(--font-main);
-    font-size: 1.35rem; /* Bigger typography */
+    font-size: 1.15rem; /* Clean readable font size */
     width: 100%;
-    height: 44px; /* Fixed height aligns caret cursor properly */
-    line-height: normal; /* Fix iOS Safari cursor alignment offset issues */
+    height: 38px; /* Correctly aligned text cursor height */
+    line-height: normal;
 }
 
 /* Symmetrical Search Action Button - Restyled to be a premium violet solid button */
@@ -222,8 +221,8 @@ body {
     background: var(--color-purple);
     border: none;
     border-radius: 50%;
-    width: 54px; /* Bigger icon frame */
-    height: 54px;
+    width: 44px; /* Compact elegant circular action button */
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -233,24 +232,24 @@ body {
     transition: var(--transition-smooth);
     outline: none;
     flex-shrink: 0;
-    box-shadow: 0 4px 14px rgba(191, 90, 242, 0.4);
+    box-shadow: 0 4px 14px rgba(191, 90, 242, 0.3);
 }
 
 .search-action-btn:hover {
     background: var(--color-purple-dark);
     transform: scale(1.05) translateY(-1px);
-    box-shadow: 0 6px 20px rgba(191, 90, 242, 0.6);
+    box-shadow: 0 6px 20px rgba(191, 90, 242, 0.5);
 }
 
 .search-action-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 }
 
 /* Live Suggestions Dropdown */
 .search-suggestions {
     position: absolute;
-    top: 76px;
+    top: 62px; /* Aligned below the 58px height search-bar-box */
     left: 0;
     right: 0;
     background: var(--bg-surface);
@@ -338,8 +337,8 @@ body {
 /* Left Column: Movie Grid - Expanded Full Width */
 .movie-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Smaller compact cards */
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* Genuinely smaller cards */
+    gap: 0.75rem;
 }
 
 /* Skeletons */
@@ -1744,28 +1743,101 @@ body {
 .homepage-doodle-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     animation: fadeIn 0.8s ease-out;
 }
 
 .homepage-doodle-img {
-    max-width: 480px;
+    max-width: 280px; /* Small like Google Doodle */
     width: 100%;
     height: auto;
     transition: transform 0.3s ease;
-    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.6)); /* Natural shadow around characters */
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6)); /* Natural shadow around characters */
 }
 
 .homepage-doodle-img:hover {
-    transform: scale(1.03);
+    transform: scale(1.02);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .homepage-doodle-container {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
     }
     
     .homepage-doodle-img {
-        max-width: 320px;
+        max-width: 200px;
+    }
+    
+    /* Center search hero and adjust height */
+    .hero-search-section {
+        min-height: 42vh !important;
+        padding: 5vh 0 4vh !important;
+    }
+    
+    .hero-search-container {
+        width: 100% !important;
+        padding: 0 4px !important;
+    }
+    
+    /* Make search bar beautiful, centered, bigger horizontally, but elegant */
+    .search-bar-box {
+        height: 54px !important;
+        padding: 0 0.5rem 0 1.25rem !important;
+        border-radius: 28px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+    }
+    
+    .search-bar-box input {
+        font-size: 1rem !important;
+        height: 36px !important;
+        padding-right: 4px !important;
+    }
+    
+    /* Sleek violet search button on mobile */
+    .search-action-btn {
+        width: 40px !important;
+        height: 40px !important;
+        box-shadow: 0 3px 10px rgba(191, 90, 242, 0.3) !important;
+    }
+    
+    .search-action-btn svg {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    
+    /* Make trending cards smaller on mobile */
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)) !important;
+        gap: 8px !important;
+    }
+    
+    .movie-card {
+        border-radius: 6px !important;
+    }
+    
+    .card-poster-wrapper {
+        border-radius: 6px !important;
+    }
+    
+    .card-info {
+        padding: 6px 4px !important;
+    }
+    
+    .card-info h3 {
+        font-size: 0.72rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 2px !important;
+    }
+    
+    .card-year {
+        font-size: 0.62rem !important;
+    }
+    
+    .card-rating {
+        padding: 2px 6px !important;
+        font-size: 0.62rem !important;
+        border-radius: 4px !important;
+        top: 6px !important;
+        right: 6px !important;
     }
 }

@@ -102,6 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const discoveredLinksBlock = document.getElementById('discovered-links-block');
     const discoveredLinks = document.getElementById('discovered-links');
     const linksCount = document.getElementById('links-count');
+    
+    // Rare networks results elements
+    const rareLinksBlock = document.getElementById('rare-links-block');
+    const rareDiscoveredLinks = document.getElementById('rare-discovered-links');
+    const rareLinksCount = document.getElementById('rare-links-count');
 
     // ==========================================================================
     // Event Listeners
@@ -440,6 +445,35 @@ document.addEventListener('DOMContentLoaded', () => {
             card.addEventListener('click', () => openMovieDetails(movie));
             movieGrid.appendChild(card);
         });
+
+        // Always show the force search trigger bar at the bottom of search result pages
+        const query = searchInput.value.trim();
+        const isTrending = gridTitle.textContent.includes('Trending');
+        if (query && !isTrending) {
+            const bottomPrompt = document.createElement('div');
+            bottomPrompt.className = 'force-search-bottom-prompt';
+            bottomPrompt.style.gridColumn = '1 / -1';
+            bottomPrompt.style.width = '100%';
+            bottomPrompt.style.marginTop = '24px';
+            bottomPrompt.style.padding = '20px';
+            bottomPrompt.style.border = '1px dashed rgba(255,255,255,0.08)';
+            bottomPrompt.style.borderRadius = '12px';
+            bottomPrompt.style.background = 'rgba(255,255,255,0.01)';
+            bottomPrompt.style.textAlign = 'center';
+            bottomPrompt.innerHTML = `
+                <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 0.9rem;">Can't find the exact movie or series version you want? Try Force Search to bypass listings and search indices directly.</p>
+                <button class="btn-force-search" id="btn-force-search-results-bottom" style="border: none; background: var(--color-purple); color: #fff; padding: 8px 20px; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s ease;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
+                </button>
+            `;
+            movieGrid.appendChild(bottomPrompt);
+            const btn = document.getElementById('btn-force-search-results-bottom');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    triggerForceSearch(query);
+                });
+            }
+        }
     }
 
     async function openMovieDetails(movie, shouldPushState = true) {
@@ -471,6 +505,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Clear awards badge container by default
         modalAwardsContainer.innerHTML = '';
+        
+        // Hide Rare links block by default
+        rareLinksBlock.style.display = 'none';
+        rareDiscoveredLinks.innerHTML = '';
+        rareLinksCount.textContent = '0 found';
         
         // Set basic details
         modalTitle.textContent = movie.title || "Loading Movie Details...";
@@ -772,42 +811,81 @@ document.addEventListener('DOMContentLoaded', () => {
         return qualities.join(' • ');
     }
 
-    function renderDiscoveredLinks(results) {
+    function renderRareLinks(results) {
+        rareDiscoveredLinks.innerHTML = '';
         const found = results ? results.filter(r => r.status === 'FOUND') : [];
-        linksCount.textContent = `${found.length} found`;
+        rareLinksCount.textContent = `${found.length} found`;
         
         if (found.length === 0) {
+            rareLinksBlock.style.display = 'none';
+            return;
+        }
+
+        found.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'link-card';
+            card.style.borderLeft = '4px solid var(--color-purple)';
+            
+            const resolvedQualities = extractQualities(item.title);
+            
+            card.innerHTML = `
+                <div class="link-card-left">
+                    <span class="link-site-name" style="color: var(--color-purple);"><i class="fa-solid fa-wand-magic-sparkles"></i> ${item.site}</span>
+                    <span class="link-qualities">${resolvedQualities}</span>
+                </div>
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit" style="background: var(--color-purple);">
+                    Open <i class="fa-solid fa-up-right-from-square"></i>
+                </a>
+            `;
+            rareDiscoveredLinks.appendChild(card);
+        });
+        
+        rareLinksBlock.style.display = 'block';
+    }
+
+    function renderDiscoveredLinks(results) {
+        // Split rare and general results
+        const generalResults = results ? results.filter(r => r.site !== 'VK Video' && r.site !== 'Mail.ru') : [];
+        const rareResults = results ? results.filter(r => r.site === 'VK Video' || r.site === 'Mail.ru') : [];
+
+        const foundGeneral = generalResults.filter(r => r.status === 'FOUND');
+        linksCount.textContent = `${foundGeneral.length} found`;
+        
+        if (foundGeneral.length === 0) {
             discoveredLinks.innerHTML = `
                 <div class="links-placeholder">
                     <p>No compatible streams found on indexing networks.</p>
                 </div>
             `;
-            return;
+        } else {
+            discoveredLinks.innerHTML = '';
+            foundGeneral.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'link-card';
+                
+                const resolvedQualities = extractQualities(item.title);
+                
+                card.innerHTML = `
+                    <div class="link-card-left">
+                        <span class="link-site-name">${item.site}</span>
+                        <span class="link-qualities">${resolvedQualities}</span>
+                    </div>
+                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit">
+                        Open <i class="fa-solid fa-up-right-from-square"></i>
+                    </a>
+                `;
+                discoveredLinks.appendChild(card);
+            });
         }
 
-        discoveredLinks.innerHTML = '';
-        
-        found.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'link-card';
-            
-            const resolvedQualities = extractQualities(item.title);
-            
-            // Clean premium card layout: Site Name, resolved qualities, and styled Visit Button (no direct link URLs or match scores)
-            card.innerHTML = `
-                <div class="link-card-left">
-                    <span class="link-site-name">${item.site}</span>
-                    <span class="link-qualities">${resolvedQualities}</span>
-                </div>
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit">
-                    Open <i class="fa-solid fa-up-right-from-square"></i>
-                </a>
-            `;
-            
-            discoveredLinks.appendChild(card);
-        });
+        // Render rare links if found
+        if (rareResults.length > 0) {
+            renderRareLinks(rareResults);
+        } else {
+            rareLinksBlock.style.display = 'none';
+        }
 
-        // Add a force Deep Search button if RareMoviesFinder system has not run
+        // Add a Scan Rare Networks button if RareMoviesFinder system has not run yet
         const containsFallback = results ? results.some(r => r.site === 'VK Video' || r.site === 'Mail.ru') : false;
         if (!containsFallback) {
             const promptDiv = document.createElement('div');
@@ -817,9 +895,9 @@ document.addEventListener('DOMContentLoaded', () => {
             promptDiv.style.borderTop = '1px solid rgba(255,255,255,0.06)';
             promptDiv.style.paddingTop = '16px';
             promptDiv.innerHTML = `
-                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">Still looking? Run a Deep Search on rare video networks.</p>
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">Still looking? Try searching our rare video indexers.</p>
                 <button class="btn-deep-search" id="btn-trigger-deep-search" style="border:1px solid var(--color-purple); background:rgba(191,90,242,0.08); color:var(--color-purple); padding:8px 18px; border-radius:30px; font-weight:600; cursor:pointer; font-size:0.85rem; transition:all 0.2s ease; display:inline-flex; align-items:center; gap:6px;">
-                    <i class="fa-solid fa-magnifying-glass-plus"></i> Run Deep Search
+                    <i class="fa-solid fa-magnifying-glass"></i> Scan Rare Networks
                 </button>
             `;
             discoveredLinks.appendChild(promptDiv);
@@ -829,7 +907,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (btn.classList.contains('loading')) return;
                 
                 btn.classList.add('loading');
-                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Searching Rare Networks...`;
+                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Scanning Rare Networks...`;
                 
                 try {
                     const movieTitleAndYear = selectedMovie.release_date
@@ -842,23 +920,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     if (data.status === 'success' && data.results && data.results.length > 0) {
                         promptDiv.remove();
-                        // Format the new fallback results to status FOUND
                         const newFallbacks = data.results.map(item => ({ ...item, status: 'FOUND' }));
-                        const allResults = [...results, ...newFallbacks];
-                        renderDiscoveredLinks(allResults);
+                        renderRareLinks(newFallbacks);
                     } else {
-                        btn.innerHTML = `<i class="fa-solid fa-magnifying-glass-plus"></i> Deep Search: No Links Found`;
+                        btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> No Links Found`;
                         setTimeout(() => {
                             btn.classList.remove('loading');
-                            btn.innerHTML = `<i class="fa-solid fa-magnifying-glass-plus"></i> Run Deep Search`;
+                            btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Scan Rare Networks`;
                         }, 2500);
                     }
                 } catch (err) {
-                    console.error("Deep search failed:", err);
-                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Search Failed`;
+                    console.error("Rare search failed:", err);
+                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Scan Failed`;
                     setTimeout(() => {
                         btn.classList.remove('loading');
-                        btn.innerHTML = `<i class="fa-solid fa-magnifying-glass-plus"></i> Run Deep Search`;
+                        btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Scan Rare Networks`;
                     }, 2500);
                 }
             });
