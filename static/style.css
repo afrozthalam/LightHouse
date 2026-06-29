@@ -1739,3 +1739,35 @@ body {
     border-color: var(--color-purple-dark) !important;
     color: #fff !important;
 }
+
+/* Google doodle-style home page image styling */
+.homepage-doodle-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.homepage-doodle-img {
+    max-width: 480px;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.homepage-doodle-img:hover {
+    transform: scale(1.02);
+}
+
+@media (max-width: 600px) {
+    .homepage-doodle-container {
+        margin-bottom: 1.5rem;
+    }
+    
+    .homepage-doodle-img {
+        max-width: 320px;
+    }
+}
