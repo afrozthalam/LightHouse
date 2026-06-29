@@ -833,6 +833,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
+    const brandColors = {
+        'vegamovies': '#ff2d55',
+        'movies4u-finance': '#5856d6',
+        'movies4u': '#5856d6',
+        'uhdmovies': '#ffcc00',
+        'yomovies': '#af52de',
+        'cineb': '#34c759',
+        'cataz': '#007aff',
+        'dopebox': '#5ac8fa',
+        'seriesonline': '#ff9500',
+        'skymovieshd': '#ff5e00',
+        '4khdhub': '#30d158',
+        'themoviesflix': '#ff375f',
+        'cinego': '#64d2ff',
+        'zoovie': '#0a84ff',
+        'vk-video': '#2f80ed',
+        'mail-ru': '#ff9f0a',
+        'ok-ru': '#ff5e00',
+        '1hd': '#ffcc00',
+        'attackertv': '#30d158',
+        'watchseries8': '#ff2d55'
+    };
+
+    function hexToRgba(hex, alpha) {
+        hex = hex.replace('#', '');
+        let r = parseInt(hex.substring(0, 2), 16);
+        let g = parseInt(hex.substring(2, 4), 16);
+        let b = parseInt(hex.substring(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function getSiteColor(siteName) {
+        const key = siteName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        if (brandColors[key]) return brandColors[key];
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = key.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const colors = [
+            '#ff2d55', '#5856d6', '#ffcc00', '#af52de', '#34c759',
+            '#007aff', '#5ac8fa', '#ff9500', '#ff5e00', '#30d158',
+            '#ff375f', '#64d2ff', '#0a84ff', '#bf5af2', '#ff453a'
+        ];
+        return colors[Math.abs(hash) % colors.length];
+    }
+
     function renderRareLinks(results) {
         rareDiscoveredLinks.innerHTML = '';
         const found = results ? results.filter(r => r.status === 'FOUND') : [];
@@ -852,11 +898,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentCounters = {};
         found.forEach(item => {
             const card = document.createElement('div');
-            const siteClass = `site-${item.site.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-            card.className = `link-card rare-card ${siteClass}`;
+            card.className = 'link-card rare-card';
+            
+            const brandColor = getSiteColor(item.site);
+            
+            card.style.borderColor = hexToRgba(brandColor, 0.15);
+            card.style.background = 'rgba(255, 255, 255, 0.01)';
+            card.style.transition = 'all 0.2s ease';
+            card.style.position = 'relative';
+            card.style.overflow = 'hidden';
             
             const resolvedQualities = extractQualities(item.title);
-            const qualitiesHTML = renderQualitiesHTML(resolvedQualities);
+            const qualitiesHTML = resolvedQualities.map(q => {
+                return `<span class="link-tag" style="background: ${hexToRgba(brandColor, 0.06)} !important; color: ${brandColor} !important; border: 1px solid ${hexToRgba(brandColor, 0.2)} !important; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; white-space: nowrap;">${q}</span>`;
+            }).join(' ');
             
             // Format site name to show index number if there are duplicate links (e.g. VK Video - Link 1)
             let displayName = item.site;
@@ -867,13 +922,37 @@ document.addEventListener('DOMContentLoaded', () => {
             
             card.innerHTML = `
                 <div class="link-card-left">
-                    <span class="link-site-name"><i class="fa-solid fa-wand-magic-sparkles"></i> ${displayName}</span>
-                    <div class="link-qualities">${qualitiesHTML}</div>
+                    <span class="link-site-name" style="color: ${brandColor} !important;"><i class="fa-solid fa-wand-magic-sparkles"></i> ${displayName}</span>
+                    <div class="link-qualities" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">${qualitiesHTML}</div>
                 </div>
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit rare-visit-btn">
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit rare-visit-btn" style="background: ${hexToRgba(brandColor, 0.08)} !important; color: ${brandColor} !important; border: 1px solid ${hexToRgba(brandColor, 0.2)} !important; text-decoration: none; padding: 8px 16px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
                     Open <i class="fa-solid fa-up-right-from-square"></i>
                 </a>
             `;
+            
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = hexToRgba(brandColor, 0.35);
+                card.style.background = hexToRgba(brandColor, 0.03);
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = hexToRgba(brandColor, 0.15);
+                card.style.background = 'rgba(255, 255, 255, 0.01)';
+            });
+
+            const visitBtn = card.querySelector('.btn-visit');
+            visitBtn.addEventListener('mouseenter', () => {
+                visitBtn.style.background = brandColor;
+                visitBtn.style.color = '#070708';
+                visitBtn.style.borderColor = brandColor;
+                visitBtn.style.boxShadow = `0 4px 15px ${hexToRgba(brandColor, 0.25)}`;
+            });
+            visitBtn.addEventListener('mouseleave', () => {
+                visitBtn.style.background = hexToRgba(brandColor, 0.08);
+                visitBtn.style.color = brandColor;
+                visitBtn.style.borderColor = hexToRgba(brandColor, 0.2);
+                visitBtn.style.boxShadow = 'none';
+            });
+            
             rareDiscoveredLinks.appendChild(card);
         });
         
@@ -898,21 +977,54 @@ document.addEventListener('DOMContentLoaded', () => {
             discoveredLinks.innerHTML = '';
             foundGeneral.forEach(item => {
                 const card = document.createElement('div');
-                const siteClass = `site-${item.site.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-                card.className = `link-card general-card ${siteClass}`;
+                card.className = 'link-card general-card';
+                
+                const brandColor = getSiteColor(item.site);
+                
+                card.style.borderColor = hexToRgba(brandColor, 0.15);
+                card.style.background = 'rgba(255, 255, 255, 0.01)';
+                card.style.transition = 'all 0.2s ease';
+                card.style.position = 'relative';
+                card.style.overflow = 'hidden';
                 
                 const resolvedQualities = extractQualities(item.title);
-                const qualitiesHTML = renderQualitiesHTML(resolvedQualities);
+                const qualitiesHTML = resolvedQualities.map(q => {
+                    return `<span class="link-tag" style="background: ${hexToRgba(brandColor, 0.06)} !important; color: ${brandColor} !important; border: 1px solid ${hexToRgba(brandColor, 0.2)} !important; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; white-space: nowrap;">${q}</span>`;
+                }).join(' ');
                 
                 card.innerHTML = `
                     <div class="link-card-left">
-                        <span class="link-site-name"><i class="fa-solid fa-circle-play"></i> ${item.site}</span>
-                        <div class="link-qualities">${qualitiesHTML}</div>
+                        <span class="link-site-name" style="color: ${brandColor} !important;"><i class="fa-solid fa-circle-play"></i> ${item.site}</span>
+                        <div class="link-qualities" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">${qualitiesHTML}</div>
                     </div>
-                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit">
+                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit" style="background: ${hexToRgba(brandColor, 0.08)} !important; color: ${brandColor} !important; border: 1px solid ${hexToRgba(brandColor, 0.2)} !important; text-decoration: none; padding: 8px 16px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
                         Open <i class="fa-solid fa-up-right-from-square"></i>
                     </a>
                 `;
+
+                card.addEventListener('mouseenter', () => {
+                    card.style.borderColor = hexToRgba(brandColor, 0.35);
+                    card.style.background = hexToRgba(brandColor, 0.03);
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.borderColor = hexToRgba(brandColor, 0.15);
+                    card.style.background = 'rgba(255, 255, 255, 0.01)';
+                });
+
+                const visitBtn = card.querySelector('.btn-visit');
+                visitBtn.addEventListener('mouseenter', () => {
+                    visitBtn.style.background = brandColor;
+                    visitBtn.style.color = '#070708';
+                    visitBtn.style.borderColor = brandColor;
+                    visitBtn.style.boxShadow = `0 4px 15px ${hexToRgba(brandColor, 0.25)}`;
+                });
+                visitBtn.addEventListener('mouseleave', () => {
+                    visitBtn.style.background = hexToRgba(brandColor, 0.08);
+                    visitBtn.style.color = brandColor;
+                    visitBtn.style.borderColor = hexToRgba(brandColor, 0.2);
+                    visitBtn.style.boxShadow = 'none';
+                });
+
                 discoveredLinks.appendChild(card);
             });
         }
