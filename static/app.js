@@ -781,21 +781,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         eventSource.onerror = (err) => {
             console.error("SSE Connection Error:", err);
-            progressStatusText.textContent = 'Network node connection interrupted.';
-            progressBarFill.style.width = '100%';
-            progressBarFill.style.background = 'var(--color-danger)';
             closeSSE();
             topProgressBar.done();
-            setTimeout(() => {
-                progressBox.style.display = 'none';
-                lighthouseLoaderWrap.style.display = 'none';
-                discoveredLinks.innerHTML = `
-                    <div class="links-placeholder">
-                        <p style="color:var(--color-danger)">Connection interrupted. Try selecting configuration filters again.</p>
-                    </div>
-                `;
-                discoveredLinksBlock.style.display = 'block';
-            }, 500);
+            
+            // Only show connection error if the search didn't complete and returned no results
+            if (discoveredLinks.innerHTML.trim() === '' && progressPct.textContent !== '100%') {
+                progressStatusText.textContent = 'Network node connection interrupted.';
+                progressBarFill.style.width = '100%';
+                progressBarFill.style.background = 'var(--color-danger)';
+                setTimeout(() => {
+                    progressBox.style.display = 'none';
+                    lighthouseLoaderWrap.style.display = 'none';
+                    discoveredLinks.innerHTML = `
+                        <div class="links-placeholder">
+                            <p style="color:var(--color-danger)">Connection interrupted. Try selecting configuration filters again.</p>
+                        </div>
+                    `;
+                    discoveredLinksBlock.style.display = 'block';
+                }, 500);
+            }
         };
     }
 
