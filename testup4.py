@@ -489,7 +489,7 @@ SITES = [
     {
         "name": "123Movies",
         "purpose": ["watch"],
-        "language": ["english"],
+        "language": ["hindi", "english"],
         "methods": [
             {
                 "type": "html",
@@ -663,6 +663,246 @@ SITES = [
                 "type": "html",
                 "search": "https://attackertv.watch/search?keyword={query}",
                 "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "123mkv",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://123mkv.garden/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "HDMovie2 (Alternate)",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://newhdmovie2.top/?s={query}&post_type=movie",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "Mp4Moviez",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://www.mp4moviez.fast/search/{query}.html",
+                "encoder": "percent"
+            }
+        ]
+    },
+    {
+        "name": "KatMovieHD",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://new.katmoviehd.top/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "CineFreak",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://cinefreak.net/fast-search/?q={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "EntertainmentForU",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://entertaimentforu.blogspot.com/search?q={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "SkyMoviesHD",
+        "purpose": ["download", "watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://skymovieshd.ceo/search.php?search={query}&cat=All",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "KMMovies",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://kmmovies.shop/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "DesireMovies",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://1desiremovies.dad/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "7HitMovies",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://7hitmovies.repair/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "FreeDriveMovie",
+        "purpose": ["download"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://freedrivemovie.cyou/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "SFlix",
+        "purpose": ["watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://sflix.film/search-result?keyword={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "HDMovie2 (Watch)",
+        "purpose": ["watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://newhdmovie2.top/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "HDMovieIzle",
+        "purpose": ["watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://hdmovieizle.com/index.php?do=search&subaction=search&story={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "VegamN",
+        "purpose": ["watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://vegamn.com/index.php?do=search&subaction=search&story={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "HDMovieGo",
+        "purpose": ["watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://hdmoviego.com/index.php?do=search&subaction=search&story={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "Shasha",
+        "purpose": ["watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://www.shasha.co/search/{query}",
+                "encoder": "percent"
+            }
+        ]
+    },
+    {
+        "name": "MovieFuze",
+        "purpose": ["watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://www.moviefuze.com/search?q={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "HindiLinks4U",
+        "purpose": ["watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://www.hindilinks4u.asia/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "HindiCinemaHub",
+        "purpose": ["watch"],
+        "language": ["hindi", "english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://www.hindicinemahub.com/search?q={query}",
+                "encoder": "percent"
             }
         ]
     }
