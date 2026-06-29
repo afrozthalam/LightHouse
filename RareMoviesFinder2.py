@@ -278,15 +278,33 @@ def search(query):
 
 
 def find_rare_movie_links2(query_name):
+    import time
     try:
-        r = requests.get(
-            URL,
-            params={"q": query_name},
-            headers=HEADERS,
-            timeout=5,
-        )
-        r.raise_for_status()
-        
+        r = None
+        for attempt in range(3):
+            try:
+                r = requests.get(
+                    URL,
+                    params={"q": query_name},
+                    headers={
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+                        "Accept-Language": "en-US,en;q=0.9"
+                    },
+                    timeout=15,
+                )
+                r.raise_for_status()
+                if "sp-video" in r.text or "mail.ru" in r.url:
+                    break
+            except Exception as e:
+                print(f"[Mail.ru Scraper] Attempt {attempt+1} failed: {e}")
+                if attempt == 2:
+                    raise e
+                time.sleep(1)
+                
+        if not r:
+            return []
+            
         soup = BeautifulSoup(r.text, "html.parser")
         cards = soup.select(".sp-video__search-result .sp-video__video-list__item")[:15]
         
