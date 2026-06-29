@@ -241,6 +241,8 @@ def movie_details(movie_id):
         # Normalize TV series keys
         if 'name' in details and 'title' not in details:
             details['title'] = details['name']
+        if 'original_name' in details and 'original_title' not in details:
+            details['original_title'] = details['original_name']
         if 'first_air_date' in details and 'release_date' not in details:
             details['release_date'] = details['first_air_date']
         if 'origin_country' in details and 'production_countries' not in details:

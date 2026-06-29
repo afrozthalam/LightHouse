@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const modalPoster = document.getElementById('modal-poster');
     const modalTitle = document.getElementById('modal-title');
+    const modalOriginalTitle = document.getElementById('modal-original-title');
     const modalTagline = document.getElementById('modal-tagline');
     const modalYear = document.getElementById('modal-year');
     const modalRating = document.getElementById('modal-rating');
@@ -404,6 +405,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Set basic details
         modalTitle.textContent = movie.title || "Loading Movie Details...";
+        modalOriginalTitle.style.display = 'none';
+        modalOriginalTitle.textContent = '';
         modalOverview.textContent = movie.overview || "No synopsis details available.";
         
         const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
@@ -430,6 +433,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const r = await fetch(`/api/movie-details/${movie.id}?type=${mediaType}`);
             const details = await r.json();
+            
+            if (details.original_title && details.original_title.toLowerCase().trim() !== details.title.toLowerCase().trim()) {
+                modalOriginalTitle.textContent = `Original Title: ${details.original_title}`;
+                modalOriginalTitle.style.display = 'block';
+            }
             
             if (details.tagline) {
                 modalTagline.textContent = details.tagline;
