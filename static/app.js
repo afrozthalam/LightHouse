@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             card.innerHTML = `
                 <div class="link-card-left" style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start; flex: 1;">
-                    <span class="link-site-name" style="font-size: 1.1rem; font-weight: 600; color: #ffffff !important; line-height: 1.4; text-align: left; display: block; word-break: break-word;"><i class="fa-solid fa-wand-magic-sparkles" style="color: #bf5af2; margin-right: 6px;"></i> ${displayName}</span>
+                    <span class="link-site-name" style="font-size: 1.1rem; font-weight: 600; color: #ffffff !important; line-height: 1.4; text-align: left; display: block; word-break: break-word;"><i class="fa-solid fa-circle-play" style="color: #bf5af2; margin-right: 6px;"></i> ${displayName}</span>
                     <div class="link-qualities" style="display: flex; flex-wrap: wrap; gap: 8px;">${qualitiesHTML}</div>
                 </div>
                 <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit rare-visit-btn" style="background: rgba(255, 255, 255, 0.06) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; text-decoration: none; padding: 8px 18px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; cursor: pointer;">
