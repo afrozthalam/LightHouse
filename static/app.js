@@ -856,62 +856,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'watchseries8': '#ff2d55'
     };
 
-    function parseReleaseTags(title, siteName) {
-        const tags = [];
-        const t = title.toLowerCase();
-        
-        // 1. File Size
-        const sizeMatch = title.match(/(\d+(?:\.\d+)?\s*(?:GB|MB|gb|mb|Gb|Mb))/);
-        if (sizeMatch) {
-            tags.push({ text: sizeMatch[1].toUpperCase(), type: 'orange' });
-        }
-        
-        // 2. Language
-        if (t.includes('hindi') && t.includes('english')) {
-            tags.push({ text: 'Hindi + English', type: 'teal' });
-        } else if (t.includes('hindi')) {
-            tags.push({ text: 'Hindi', type: 'teal' });
-        } else {
-            tags.push({ text: 'English', type: 'teal' });
-        }
-        
-        // 3. Source Format
-        if (t.includes('web-dl') || t.includes('webdl')) {
-            tags.push({ text: 'WEB-DL', type: 'green' });
-        } else if (t.includes('bluray') || t.includes('bdrip')) {
-            tags.push({ text: 'BluRay', type: 'green' });
-        } else if (t.includes('webrip')) {
-            tags.push({ text: 'WEBRip', type: 'green' });
-        } else if (t.includes('hdtv')) {
-            tags.push({ text: 'HDTV', type: 'green' });
-        } else if (t.includes('dvd') || t.includes('scr')) {
-            tags.push({ text: 'SCR/DVD', type: 'green' });
-        } else {
-            tags.push({ text: 'WEB-DL', type: 'green' });
-        }
-        
-        // 4. Quality Resolution
-        if (t.includes('2160p') || t.includes('4k') || t.includes('uhd')) {
-            tags.push({ text: '4K UHD', type: 'orange' });
-        } else if (t.includes('1080p') || t.includes('fhd')) {
-            tags.push({ text: '1080p FHD', type: 'orange' });
-        } else if (t.includes('720p') || t.includes('hd')) {
-            tags.push({ text: '720p HD', type: 'orange' });
-        }
-        
-        // 5. Codec / Details
-        if (t.includes('hevc') || t.includes('x265') || t.includes('10bit')) {
-            tags.push({ text: 'HEVC 10-Bit', type: 'purple' });
-        } else if (t.includes('hdr')) {
-            tags.push({ text: 'HDR', type: 'purple' });
-        }
-
-        // 6. Source Indexer Site tag
-        tags.push({ text: siteName, type: 'blue' });
-
-        return tags;
-    }
-
     function getTagStyle(type) {
         switch (type) {
             case 'orange':
@@ -969,15 +913,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayName = `${item.site} - Link ${currentCounters[item.site]}`;
             }
 
-            const tags = parseReleaseTags(item.title, displayName);
-            const tagsHTML = tags.map(tag => {
-                return `<span class="link-tag" style="${getTagStyle(tag.type)} font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; white-space: nowrap; border: none !important;">${tag.text}</span>`;
+            const resolvedQualities = extractQualities(item.title);
+            const qualitiesHTML = resolvedQualities.map(q => {
+                let tagType = 'blue';
+                if (q.includes('4K') || q.includes('1080p') || q.includes('720p') || q.includes('HD')) {
+                    tagType = 'orange';
+                } else if (q.includes('Dual') || q.includes('Audio')) {
+                    tagType = 'teal';
+                } else if (q.includes('HEVC') || q.includes('10-Bit')) {
+                    tagType = 'green';
+                }
+                return `<span class="link-tag" style="${getTagStyle(tagType)} font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; white-space: nowrap; border: none !important;">${q}</span>`;
             }).join(' ');
             
             card.innerHTML = `
-                <div class="link-card-left" style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start; flex: 1;">
-                    <span class="link-site-name" style="font-size: 1.1rem; font-weight: 600; color: #ffffff !important; line-height: 1.4; text-align: left; display: block; word-break: break-word;">${item.title}</span>
-                    <div class="link-qualities" style="display: flex; flex-wrap: wrap; gap: 8px;">${tagsHTML}</div>
+                <div class="link-card-left" style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start; flex: 1;">
+                    <span class="link-site-name" style="font-size: 1.1rem; font-weight: 600; color: #ffffff !important; line-height: 1.4; text-align: left; display: block; word-break: break-word;"><i class="fa-solid fa-wand-magic-sparkles" style="color: #bf5af2; margin-right: 6px;"></i> ${displayName}</span>
+                    <div class="link-qualities" style="display: flex; flex-wrap: wrap; gap: 8px;">${qualitiesHTML}</div>
                 </div>
                 <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit rare-visit-btn" style="background: rgba(255, 255, 255, 0.06) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; text-decoration: none; padding: 8px 18px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; cursor: pointer;">
                     Open <i class="fa-solid fa-up-right-from-square"></i>
@@ -1043,15 +995,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.style.alignItems = 'center';
                 card.style.gap = '20px';
                 
-                const tags = parseReleaseTags(item.title, item.site);
-                const tagsHTML = tags.map(tag => {
-                    return `<span class="link-tag" style="${getTagStyle(tag.type)} font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; white-space: nowrap; border: none !important;">${tag.text}</span>`;
+                const resolvedQualities = extractQualities(item.title);
+                const qualitiesHTML = resolvedQualities.map(q => {
+                    let tagType = 'blue';
+                    if (q.includes('4K') || q.includes('1080p') || q.includes('720p') || q.includes('HD')) {
+                        tagType = 'orange';
+                    } else if (q.includes('Dual') || q.includes('Audio')) {
+                        tagType = 'teal';
+                    } else if (q.includes('HEVC') || q.includes('10-Bit')) {
+                        tagType = 'green';
+                    }
+                    return `<span class="link-tag" style="${getTagStyle(tagType)} font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; white-space: nowrap; border: none !important;">${q}</span>`;
                 }).join(' ');
                 
                 card.innerHTML = `
-                    <div class="link-card-left" style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start; flex: 1;">
-                        <span class="link-site-name" style="font-size: 1.1rem; font-weight: 600; color: #ffffff !important; line-height: 1.4; text-align: left; display: block; word-break: break-word;">${item.title}</span>
-                        <div class="link-qualities" style="display: flex; flex-wrap: wrap; gap: 8px;">${tagsHTML}</div>
+                    <div class="link-card-left" style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start; flex: 1;">
+                        <span class="link-site-name" style="font-size: 1.1rem; font-weight: 600; color: #ffffff !important; line-height: 1.4; text-align: left; display: block; word-break: break-word;"><i class="fa-solid fa-circle-play" style="color: #64d2ff; margin-right: 6px;"></i> ${item.site}</span>
+                        <div class="link-qualities" style="display: flex; flex-wrap: wrap; gap: 8px;">${qualitiesHTML}</div>
                     </div>
                     <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit" style="background: rgba(255, 255, 255, 0.06) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; text-decoration: none; padding: 8px 18px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; cursor: pointer;">
                         Open <i class="fa-solid fa-up-right-from-square"></i>
