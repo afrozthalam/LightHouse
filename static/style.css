@@ -975,22 +975,22 @@ body {
 }
 
 .link-card:hover {
-    border-color: rgba(191, 90, 242, 0.4);
-    background: rgba(191, 90, 242, 0.04);
+    border-color: rgba(90, 200, 250, 0.4); /* Cyan border on hover */
+    background: rgba(90, 200, 250, 0.02);
     transform: translateX(8px); /* Sleek list hover slide */
-    box-shadow: 0 8px 25px rgba(191, 90, 242, 0.1), 0 0 15px rgba(191, 90, 242, 0.05);
+    box-shadow: 0 8px 25px rgba(90, 200, 250, 0.08), 0 0 15px rgba(90, 200, 250, 0.02);
 }
 
-/* Accent border left for Rare NetworksVK/Mailru indexers */
+/* Accent border left for Rare Networks VK/Mailru indexers */
 .link-card.rare-card {
-    border-left: 4px solid var(--color-purple);
-    background: rgba(191, 90, 242, 0.01);
+    border-left: 4px solid var(--color-cyan); /* Cyan accent */
+    background: rgba(90, 200, 250, 0.01);
 }
 
 .link-card.rare-card:hover {
     border-left-width: 6px;
-    background: rgba(191, 90, 242, 0.05);
-    border-color: var(--color-purple);
+    background: rgba(90, 200, 250, 0.04);
+    border-color: var(--color-cyan);
 }
 
 .link-card-left {
@@ -1027,15 +1027,15 @@ body {
 }
 
 .tag-1080p {
-    background: rgba(191, 90, 242, 0.12);
-    color: #bf5af2;
-    border: 1px solid rgba(191, 90, 242, 0.2);
+    background: rgba(90, 200, 250, 0.12); /* Clean Cyan tag badge */
+    color: #5ac8fa;
+    border: 1px solid rgba(90, 200, 250, 0.2);
 }
 
 .tag-720p {
-    background: rgba(90, 200, 250, 0.12);
-    color: #5ac8fa;
-    border: 1px solid rgba(90, 200, 250, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .tag-4k {
@@ -1064,8 +1064,8 @@ body {
 
 /* Visit / Open button styling */
 .btn-visit {
-    background: linear-gradient(135deg, #bf5af2 0%, #5e5ce6 100%);
-    color: #fff;
+    background: linear-gradient(135deg, #5ac8fa 0%, #34aadc 100%); /* Clean Cyan-blue gradient */
+    color: #070708;
     border: none;
     padding: 10px 22px;
     border-radius: var(--radius-lg);
@@ -1077,17 +1077,23 @@ body {
     gap: 8px;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     text-decoration: none;
-    box-shadow: 0 4px 12px rgba(191, 90, 242, 0.3);
+    box-shadow: 0 4px 12px rgba(90, 200, 250, 0.2);
 }
 
 .btn-visit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(191, 90, 242, 0.5), 0 0 10px rgba(94, 92, 230, 0.3);
+    box-shadow: 0 6px 20px rgba(90, 200, 250, 0.4), 0 0 10px rgba(52, 170, 220, 0.2);
     filter: brightness(1.1);
 }
 
 .rare-visit-btn {
-    background: linear-gradient(135deg, #bf5af2 0%, #a23cf0 100%) !important;
+    background: linear-gradient(135deg, #34c759 0%, #30d158 100%) !important; /* Premium Mint green button for rare networks */
+    color: #070708 !important;
+    box-shadow: 0 4px 12px rgba(48, 209, 88, 0.2) !important;
+}
+
+.rare-visit-btn:hover {
+    box-shadow: 0 6px 20px rgba(48, 209, 88, 0.4), 0 0 10px rgba(48, 209, 88, 0.2) !important;
 }
 
 /* TV Shows Seasons Section styling */
