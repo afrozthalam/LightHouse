@@ -856,27 +856,77 @@ document.addEventListener('DOMContentLoaded', () => {
         'watchseries8': '#ff2d55'
     };
 
-    function hexToRgba(hex, alpha) {
-        hex = hex.replace('#', '');
-        let r = parseInt(hex.substring(0, 2), 16);
-        let g = parseInt(hex.substring(2, 4), 16);
-        let b = parseInt(hex.substring(4, 6), 16);
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    function parseReleaseTags(title, siteName) {
+        const tags = [];
+        const t = title.toLowerCase();
+        
+        // 1. File Size
+        const sizeMatch = title.match(/(\d+(?:\.\d+)?\s*(?:GB|MB|gb|mb|Gb|Mb))/);
+        if (sizeMatch) {
+            tags.push({ text: sizeMatch[1].toUpperCase(), type: 'orange' });
+        }
+        
+        // 2. Language
+        if (t.includes('hindi') && t.includes('english')) {
+            tags.push({ text: 'Hindi + English', type: 'teal' });
+        } else if (t.includes('hindi')) {
+            tags.push({ text: 'Hindi', type: 'teal' });
+        } else {
+            tags.push({ text: 'English', type: 'teal' });
+        }
+        
+        // 3. Source Format
+        if (t.includes('web-dl') || t.includes('webdl')) {
+            tags.push({ text: 'WEB-DL', type: 'green' });
+        } else if (t.includes('bluray') || t.includes('bdrip')) {
+            tags.push({ text: 'BluRay', type: 'green' });
+        } else if (t.includes('webrip')) {
+            tags.push({ text: 'WEBRip', type: 'green' });
+        } else if (t.includes('hdtv')) {
+            tags.push({ text: 'HDTV', type: 'green' });
+        } else if (t.includes('dvd') || t.includes('scr')) {
+            tags.push({ text: 'SCR/DVD', type: 'green' });
+        } else {
+            tags.push({ text: 'WEB-DL', type: 'green' });
+        }
+        
+        // 4. Quality Resolution
+        if (t.includes('2160p') || t.includes('4k') || t.includes('uhd')) {
+            tags.push({ text: '4K UHD', type: 'orange' });
+        } else if (t.includes('1080p') || t.includes('fhd')) {
+            tags.push({ text: '1080p FHD', type: 'orange' });
+        } else if (t.includes('720p') || t.includes('hd')) {
+            tags.push({ text: '720p HD', type: 'orange' });
+        }
+        
+        // 5. Codec / Details
+        if (t.includes('hevc') || t.includes('x265') || t.includes('10bit')) {
+            tags.push({ text: 'HEVC 10-Bit', type: 'purple' });
+        } else if (t.includes('hdr')) {
+            tags.push({ text: 'HDR', type: 'purple' });
+        }
+
+        // 6. Source Indexer Site tag
+        tags.push({ text: siteName, type: 'blue' });
+
+        return tags;
     }
 
-    function getSiteColor(siteName) {
-        const key = siteName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-        if (brandColors[key]) return brandColors[key];
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            hash = key.charCodeAt(i) + ((hash << 5) - hash);
+    function getTagStyle(type) {
+        switch (type) {
+            case 'orange':
+                return 'background: #d84b06 !important; color: #ffffff !important;';
+            case 'teal':
+                return 'background: #0b8489 !important; color: #ffffff !important;';
+            case 'green':
+                return 'background: #0d732d !important; color: #ffffff !important;';
+            case 'purple':
+                return 'background: #5e5ce6 !important; color: #ffffff !important;';
+            case 'blue':
+                return 'background: #007aff !important; color: #ffffff !important;';
+            default:
+                return 'background: #8e8e93 !important; color: #ffffff !important;';
         }
-        const colors = [
-            '#ff2d55', '#5856d6', '#ffcc00', '#af52de', '#34c759',
-            '#007aff', '#5ac8fa', '#ff9500', '#ff5e00', '#30d158',
-            '#ff375f', '#64d2ff', '#0a84ff', '#bf5af2', '#ff453a'
-        ];
-        return colors[Math.abs(hash) % colors.length];
     }
 
     function renderRareLinks(results) {
@@ -900,18 +950,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'link-card rare-card';
             
-            const brandColor = getSiteColor(item.site);
-            
-            card.style.borderColor = hexToRgba(brandColor, 0.15);
-            card.style.background = 'rgba(255, 255, 255, 0.01)';
+            card.style.background = '#151518';
+            card.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+            card.style.borderRadius = '12px';
+            card.style.padding = '18px 24px';
             card.style.transition = 'all 0.2s ease';
             card.style.position = 'relative';
             card.style.overflow = 'hidden';
-            
-            const resolvedQualities = extractQualities(item.title);
-            const qualitiesHTML = resolvedQualities.map(q => {
-                return `<span class="link-tag" style="background: ${hexToRgba(brandColor, 0.06)} !important; color: ${brandColor} !important; border: 1px solid ${hexToRgba(brandColor, 0.2)} !important; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; white-space: nowrap;">${q}</span>`;
-            }).join(' ');
+            card.style.display = 'flex';
+            card.style.justifyContent = 'space-between';
+            card.style.alignItems = 'center';
+            card.style.gap = '20px';
             
             // Format site name to show index number if there are duplicate links (e.g. VK Video - Link 1)
             let displayName = item.site;
@@ -919,38 +968,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentCounters[item.site] = (currentCounters[item.site] || 0) + 1;
                 displayName = `${item.site} - Link ${currentCounters[item.site]}`;
             }
+
+            const tags = parseReleaseTags(item.title, displayName);
+            const tagsHTML = tags.map(tag => {
+                return `<span class="link-tag" style="${getTagStyle(tag.type)} font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; white-space: nowrap; border: none !important;">${tag.text}</span>`;
+            }).join(' ');
             
             card.innerHTML = `
-                <div class="link-card-left">
-                    <span class="link-site-name" style="color: ${brandColor} !important;"><i class="fa-solid fa-wand-magic-sparkles"></i> ${displayName}</span>
-                    <div class="link-qualities" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">${qualitiesHTML}</div>
+                <div class="link-card-left" style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start; flex: 1;">
+                    <span class="link-site-name" style="font-size: 1.1rem; font-weight: 600; color: #ffffff !important; line-height: 1.4; text-align: left; display: block; word-break: break-word;">${item.title}</span>
+                    <div class="link-qualities" style="display: flex; flex-wrap: wrap; gap: 8px;">${tagsHTML}</div>
                 </div>
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit rare-visit-btn" style="background: ${hexToRgba(brandColor, 0.08)} !important; color: ${brandColor} !important; border: 1px solid ${hexToRgba(brandColor, 0.2)} !important; text-decoration: none; padding: 8px 16px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit rare-visit-btn" style="background: rgba(255, 255, 255, 0.06) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; text-decoration: none; padding: 8px 18px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; cursor: pointer;">
                     Open <i class="fa-solid fa-up-right-from-square"></i>
                 </a>
             `;
             
             card.addEventListener('mouseenter', () => {
-                card.style.borderColor = hexToRgba(brandColor, 0.35);
-                card.style.background = hexToRgba(brandColor, 0.03);
+                card.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                card.style.background = 'rgba(255, 255, 255, 0.02)';
             });
             card.addEventListener('mouseleave', () => {
-                card.style.borderColor = hexToRgba(brandColor, 0.15);
-                card.style.background = 'rgba(255, 255, 255, 0.01)';
+                card.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                card.style.background = '#151518';
             });
 
             const visitBtn = card.querySelector('.btn-visit');
             visitBtn.addEventListener('mouseenter', () => {
-                visitBtn.style.background = brandColor;
+                visitBtn.style.background = '#ffffff';
                 visitBtn.style.color = '#070708';
-                visitBtn.style.borderColor = brandColor;
-                visitBtn.style.boxShadow = `0 4px 15px ${hexToRgba(brandColor, 0.25)}`;
+                visitBtn.style.borderColor = '#ffffff';
             });
             visitBtn.addEventListener('mouseleave', () => {
-                visitBtn.style.background = hexToRgba(brandColor, 0.08);
-                visitBtn.style.color = brandColor;
-                visitBtn.style.borderColor = hexToRgba(brandColor, 0.2);
-                visitBtn.style.boxShadow = 'none';
+                visitBtn.style.background = 'rgba(255, 255, 255, 0.06)';
+                visitBtn.style.color = '#ffffff';
+                visitBtn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
             });
             
             rareDiscoveredLinks.appendChild(card);
@@ -979,50 +1031,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('div');
                 card.className = 'link-card general-card';
                 
-                const brandColor = getSiteColor(item.site);
-                
-                card.style.borderColor = hexToRgba(brandColor, 0.15);
-                card.style.background = 'rgba(255, 255, 255, 0.01)';
+                card.style.background = '#151518';
+                card.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+                card.style.borderRadius = '12px';
+                card.style.padding = '18px 24px';
                 card.style.transition = 'all 0.2s ease';
                 card.style.position = 'relative';
                 card.style.overflow = 'hidden';
+                card.style.display = 'flex';
+                card.style.justifyContent = 'space-between';
+                card.style.alignItems = 'center';
+                card.style.gap = '20px';
                 
-                const resolvedQualities = extractQualities(item.title);
-                const qualitiesHTML = resolvedQualities.map(q => {
-                    return `<span class="link-tag" style="background: ${hexToRgba(brandColor, 0.06)} !important; color: ${brandColor} !important; border: 1px solid ${hexToRgba(brandColor, 0.2)} !important; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; white-space: nowrap;">${q}</span>`;
+                const tags = parseReleaseTags(item.title, item.site);
+                const tagsHTML = tags.map(tag => {
+                    return `<span class="link-tag" style="${getTagStyle(tag.type)} font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; white-space: nowrap; border: none !important;">${tag.text}</span>`;
                 }).join(' ');
                 
                 card.innerHTML = `
-                    <div class="link-card-left">
-                        <span class="link-site-name" style="color: ${brandColor} !important;"><i class="fa-solid fa-circle-play"></i> ${item.site}</span>
-                        <div class="link-qualities" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">${qualitiesHTML}</div>
+                    <div class="link-card-left" style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start; flex: 1;">
+                        <span class="link-site-name" style="font-size: 1.1rem; font-weight: 600; color: #ffffff !important; line-height: 1.4; text-align: left; display: block; word-break: break-word;">${item.title}</span>
+                        <div class="link-qualities" style="display: flex; flex-wrap: wrap; gap: 8px;">${tagsHTML}</div>
                     </div>
-                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit" style="background: ${hexToRgba(brandColor, 0.08)} !important; color: ${brandColor} !important; border: 1px solid ${hexToRgba(brandColor, 0.2)} !important; text-decoration: none; padding: 8px 16px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit" style="background: rgba(255, 255, 255, 0.06) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; text-decoration: none; padding: 8px 18px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0; cursor: pointer;">
                         Open <i class="fa-solid fa-up-right-from-square"></i>
                     </a>
                 `;
 
                 card.addEventListener('mouseenter', () => {
-                    card.style.borderColor = hexToRgba(brandColor, 0.35);
-                    card.style.background = hexToRgba(brandColor, 0.03);
+                    card.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    card.style.background = 'rgba(255, 255, 255, 0.02)';
                 });
                 card.addEventListener('mouseleave', () => {
-                    card.style.borderColor = hexToRgba(brandColor, 0.15);
-                    card.style.background = 'rgba(255, 255, 255, 0.01)';
+                    card.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                    card.style.background = '#151518';
                 });
 
                 const visitBtn = card.querySelector('.btn-visit');
                 visitBtn.addEventListener('mouseenter', () => {
-                    visitBtn.style.background = brandColor;
+                    visitBtn.style.background = '#ffffff';
                     visitBtn.style.color = '#070708';
-                    visitBtn.style.borderColor = brandColor;
-                    visitBtn.style.boxShadow = `0 4px 15px ${hexToRgba(brandColor, 0.25)}`;
+                    visitBtn.style.borderColor = '#ffffff';
                 });
                 visitBtn.addEventListener('mouseleave', () => {
-                    visitBtn.style.background = hexToRgba(brandColor, 0.08);
-                    visitBtn.style.color = brandColor;
-                    visitBtn.style.borderColor = hexToRgba(brandColor, 0.2);
-                    visitBtn.style.boxShadow = 'none';
+                    visitBtn.style.background = 'rgba(255, 255, 255, 0.06)';
+                    visitBtn.style.color = '#ffffff';
+                    visitBtn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                 });
 
                 discoveredLinks.appendChild(card);
