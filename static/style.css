@@ -316,9 +316,10 @@ body {
     margin-top: 10px;
 }
 
-.section-header {
+.split-layout .section-header {
     display: flex;
     align-items: center;
+    justify-content: center; /* Center the title header */
     gap: 10px;
     margin-bottom: 1.5rem;
 }
@@ -337,8 +338,9 @@ body {
 /* Left Column: Movie Grid - Expanded Full Width */
 .movie-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* Genuinely smaller cards */
+    grid-template-columns: repeat(auto-fit, minmax(110px, 120px)); /* Smaller compact cards centered */
     gap: 0.75rem;
+    justify-content: center; /* Centered horizontally */
 }
 
 /* Skeletons */
@@ -1807,8 +1809,9 @@ body {
     
     /* Make trending cards smaller on mobile */
     .movie-grid {
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)) !important;
+        grid-template-columns: repeat(auto-fit, minmax(90px, 100px)) !important;
         gap: 8px !important;
+        justify-content: center !important;
     }
     
     .movie-card {
