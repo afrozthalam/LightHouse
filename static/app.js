@@ -948,7 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         : selectedMovie.title;
                     const origTitle = selectedMovie.original_title || '';
                     
-                    const res = await fetch(`/api/search-links/fallback?title=${encodeURIComponent(movieTitleAndYear)}&original_title=${encodeURIComponent(origTitle)}`);
+                    const res = await fetch(`/api/search-links/fallback?title=${encodeURIComponent(movieTitleAndYear)}&original_title=${encodeURIComponent(origTitle)}&t=${Date.now()}`);
                     const data = await res.json();
                     
                     if (data.status === 'success' && data.results && data.results.length > 0) {

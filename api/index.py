@@ -466,7 +466,9 @@ def search_fallback_links():
         for future in concurrent.futures.as_completed(futures):
             rare_results.extend(future.result())
             
-    return jsonify({'status': 'success', 'results': rare_results})
+    response = jsonify({'status': 'success', 'results': rare_results})
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    return response
 
 if __name__ == '__main__':
     print(f"Starting server on http://localhost:{PORT}")
