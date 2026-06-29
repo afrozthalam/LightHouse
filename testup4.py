@@ -841,6 +841,21 @@ def run_movie_search(target_movie, filter_purpose=None, filter_language=None, ex
                     "error": str(e)
                 })
                 
+    # RareMoviesFinder Fallback Search
+    found_any = any(res.get("status") == "FOUND" for res in results)
+    if not found_any:
+        safe_print("\nNo links found on regular indexing networks. Activating RareMoviesFinder fallback search...")
+        try:
+            import RareMoviesFinder
+            rare_results = RareMoviesFinder.find_rare_movie_links(target_movie)
+            if rare_results:
+                safe_print(f"RareMoviesFinder found {len(rare_results)} links!")
+                results.extend(rare_results)
+            else:
+                safe_print("RareMoviesFinder found no links.")
+        except Exception as e:
+            safe_print(f"Failed to run RareMoviesFinder: {e}")
+                
     return results
 
 if __name__ == "__main__":
