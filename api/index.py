@@ -474,3 +474,5 @@ def search_fallback_links():
 if __name__ == '__main__':
     print(f"Starting server on http://localhost:{PORT}")
     app.run(host='0.0.0.0', port=PORT, debug=True, use_reloader=False)
+
+# Vercel redeploy trigger webhook comment
