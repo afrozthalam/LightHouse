@@ -2284,31 +2284,67 @@ body {
 .link-card.site-zoovie .btn-visit { background: rgba(10, 132, 255, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(10, 132, 255, 0.15) !important; }
 .link-card.site-zoovie .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.2) !important; }
 
-/* General Fallback / Other site-less cards styling */
+/* 14. AttackerTV - Teal */
+.link-card.site-attackertv {
+    --brand-color: #30d158;
+    border-color: rgba(48, 209, 88, 0.08);
+    background: rgba(48, 209, 88, 0.01);
+}
+.link-card.site-attackertv:hover { border-color: rgba(48, 209, 88, 0.25); background: rgba(48, 209, 88, 0.03); }
+.link-card.site-attackertv .link-site-name { color: var(--brand-color); }
+.link-card.site-attackertv .link-tag { background: rgba(48, 209, 88, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(48, 209, 88, 0.15) !important; }
+.link-card.site-attackertv .btn-visit { background: rgba(48, 209, 88, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(48, 209, 88, 0.15) !important; }
+.link-card.site-attackertv .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(48, 209, 88, 0.2) !important; }
+
+/* 15. WatchSeries8 - Crimson Red */
+.link-card.site-watchseries8 {
+    --brand-color: #ff2d55;
+    border-color: rgba(255, 45, 85, 0.08);
+    background: rgba(255, 45, 85, 0.01);
+}
+.link-card.site-watchseries8:hover { border-color: rgba(255, 45, 85, 0.25); background: rgba(255, 45, 85, 0.03); }
+.link-card.site-watchseries8 .link-site-name { color: var(--brand-color); }
+.link-card.site-watchseries8 .link-tag { background: rgba(255, 45, 85, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 45, 85, 0.15) !important; }
+.link-card.site-watchseries8 .btn-visit { background: rgba(255, 45, 85, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 45, 85, 0.15) !important; }
+.link-card.site-watchseries8 .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 45, 85, 0.2) !important; }
+
+/* 16. 1HD - Gold Amber */
+.link-card.site-1hd {
+    --brand-color: #ffcc00;
+    border-color: rgba(255, 204, 0, 0.08);
+    background: rgba(255, 204, 0, 0.01);
+}
+.link-card.site-1hd:hover { border-color: rgba(255, 204, 0, 0.25); background: rgba(255, 204, 0, 0.03); }
+.link-card.site-1hd .link-site-name { color: var(--brand-color); }
+.link-card.site-1hd .link-tag { background: rgba(255, 204, 0, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 204, 0, 0.15) !important; }
+.link-card.site-1hd .btn-visit { background: rgba(255, 204, 0, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 204, 0, 0.15) !important; }
+.link-card.site-1hd .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2) !important; }
+
+/* General Fallback / Other site-less cards styling - Sleek Neutral Grey instead of Sky Blue */
 .link-card.general-card {
-    border-color: rgba(100, 210, 255, 0.08);
-    background: rgba(100, 210, 255, 0.01);
+    border-color: rgba(142, 142, 147, 0.1);
+    background: rgba(142, 142, 147, 0.01);
 }
 .link-card.general-card:hover {
-    border-color: rgba(100, 210, 255, 0.25);
-    background: rgba(100, 210, 255, 0.03);
+    border-color: rgba(142, 142, 147, 0.3);
+    background: rgba(142, 142, 147, 0.03);
 }
 .link-card.general-card .link-site-name {
-    color: var(--brand-general);
+    color: #8e8e93;
 }
 .link-card.general-card .link-tag {
-    background: rgba(100, 210, 255, 0.06) !important;
-    color: var(--brand-general) !important;
-    border: 1px solid rgba(100, 210, 255, 0.15) !important;
+    background: rgba(142, 142, 147, 0.08) !important;
+    color: #8e8e93 !important;
+    border: 1px solid rgba(142, 142, 147, 0.2) !important;
 }
 .link-card.general-card .btn-visit {
-    background: rgba(100, 210, 255, 0.08) !important;
-    color: var(--brand-general) !important;
-    border: 1px solid rgba(100, 210, 255, 0.15) !important;
+    background: rgba(142, 142, 147, 0.1) !important;
+    color: #8e8e93 !important;
+    border: 1px solid rgba(142, 142, 147, 0.2) !important;
 }
 .link-card.general-card .btn-visit:hover {
-    background: var(--brand-general) !important;
+    background: #8e8e93 !important;
     color: #070708 !important;
-    border-color: var(--brand-general) !important;
-    box-shadow: 0 4px 15px rgba(100, 210, 255, 0.2) !important;
+    border-color: #8e8e93 !important;
+    box-shadow: 0 4px 15px rgba(142, 142, 147, 0.25) !important;
 }
