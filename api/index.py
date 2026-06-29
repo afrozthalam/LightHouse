@@ -356,10 +356,21 @@ def stream_search_links():
 def dash_sites():
     sites_list = []
     for s in testup4.SITES:
+        methods = s.get('methods', [])
+        search_endpoint = methods[0]['search'] if methods else ''
+        from urllib.parse import urlparse
+        try:
+            parsed = urlparse(search_endpoint) if search_endpoint else None
+            base_url = f"{parsed.scheme}://{parsed.netloc}/" if parsed else ''
+        except:
+            base_url = ''
+            
         sites_list.append({
             'name': s['name'],
             'purpose': s.get('purpose', []),
-            'language': s.get('language', [])
+            'language': s.get('language', []),
+            'url': base_url,
+            'search_endpoint': search_endpoint
         })
     return jsonify(sites_list)
 
@@ -378,11 +389,10 @@ def ping_site():
         return jsonify({'status': 'ACTIVE', 'details': 'No methods configured, assumed active'})
         
     method = methods[0]
-    search_url = method['search']
-    
-    from urllib.parse import urlparse
-    parsed = urlparse(search_url)
-    base_url = f"{parsed.scheme}://{parsed.netloc}/"
+    # Perform a complete website search test using query "harry potter"
+    encoder = method.get("encoder", "plus")
+    encoded_query = testup4.encode_query("harry potter", encoder)
+    search_url = method['search'].format(query=encoded_query)
     
     headers = {
         "User-Agent": (
@@ -393,7 +403,7 @@ def ping_site():
     }
     
     try:
-        r = requests.get(base_url, headers=headers, timeout=2.5)
+        r = requests.get(search_url, headers=headers, timeout=3.5)
         # Sane online verification: status codes less than 500 mean server is online/reachable
         status = 'ACTIVE' if r.status_code < 500 else 'OFFLINE'
         return jsonify({'status': status, 'code': r.status_code})

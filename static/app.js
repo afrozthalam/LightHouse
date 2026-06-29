@@ -895,18 +895,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const languagePills = site.language.map(l => `<span class="meta-tag-badge">${l}</span>`).join(' ');
 
             card.innerHTML = `
-                <div class="site-card-header">
-                    <div class="site-card-title-wrap">
+                <div class="site-tile-left">
+                    <div class="site-tile-brand">
                         <span class="site-card-name">${site.name}</span>
-                        <div class="ping-history-wrap">
-                            <span style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">History:</span>
-                            ${dotsHtml}
-                        </div>
+                        ${site.url ? `<a href="${site.url}" target="_blank" rel="noopener noreferrer" class="site-tile-url-link">${site.url}</a>` : ''}
                     </div>
-                    <span class="site-status-badge ${statusClass}" id="badge-${site.name.replace(/\s+/g, '_')}">${statusLabel}</span>
+                    ${site.search_endpoint ? `
+                        <div class="site-tile-endpoint-wrap">
+                            <span class="endpoint-label">Search Query Endpoint</span>
+                            <code class="site-tile-endpoint-code" title="${site.search_endpoint}">${site.search_endpoint}</code>
+                        </div>
+                    ` : ''}
                 </div>
                 
-                <div class="site-card-meta">
+                <div class="site-tile-meta">
                     <div class="meta-group">
                         <span class="meta-group-label">Capability</span>
                         <div class="meta-tags-row">${purposeBadges}</div>
@@ -917,10 +919,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 
-                <div class="site-card-actions">
+                <div class="site-tile-right">
+                    <div class="ping-history-wrap">
+                        <span style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">History:</span>
+                        ${dotsHtml}
+                    </div>
+                    <span class="site-status-badge ${statusClass}" id="badge-${site.name.replace(/\s+/g, '_')}">${statusLabel}</span>
                     <button class="btn-toggle-site ${isDisabled ? '' : 'remove-mode'}" data-name="${site.name}">
                         <i class="fa-solid ${isDisabled ? 'fa-circle-check' : 'fa-trash-can'}"></i>
-                        <span>${isDisabled ? 'Enable Indexer' : 'Remove Site'}</span>
+                        <span>${isDisabled ? 'Enable' : 'Remove'}</span>
                     </button>
                 </div>
             `;

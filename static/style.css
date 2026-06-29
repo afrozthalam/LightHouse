@@ -1465,26 +1465,27 @@ body {
     color: var(--color-danger);
 }
 
-/* Sites Grid */
+/* Sites Grid - Horizontal Tile Row Layout */
 .sites-dash-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-/* Site Card Styling */
+/* Site Card Styling - Redesigned as Horizontal Tile */
 .site-dash-card {
     background: var(--bg-surface);
     border: 1.5px solid var(--border-subtle);
     border-radius: var(--radius-lg);
-    padding: 24px;
+    padding: 20px 24px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 32px;
     position: relative;
     transition: var(--transition-smooth);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
 .site-dash-card.disabled {
@@ -1494,27 +1495,30 @@ body {
 
 .site-dash-card:hover {
     border-color: var(--color-purple);
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+    transform: translateX(4px); /* Symmetrical horizontal translation */
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
 }
 
 .site-dash-card.disabled:hover {
     transform: none;
     border-color: rgba(255, 255, 255, 0.03);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
-/* Card Header */
-.site-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.site-card-title-wrap {
+/* Site Tile Elements styling */
+.site-tile-left {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
+    flex: 2;
+    min-width: 0;
+}
+
+.site-tile-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .site-card-name {
@@ -1524,8 +1528,56 @@ body {
     letter-spacing: -0.3px;
 }
 
+.site-tile-url-link {
+    font-size: 0.8rem;
+    color: var(--color-cyan);
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    font-weight: 500;
+}
+
+.site-tile-url-link:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.site-tile-endpoint-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.endpoint-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.site-tile-endpoint-code {
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.site-tile-meta {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    flex: 1.5;
+}
+
 .site-status-badge {
-    padding: 3px 8px;
+    padding: 4px 10px;
     border-radius: 12px;
     font-size: 0.7rem;
     font-weight: 700;
@@ -1551,13 +1603,6 @@ body {
 .site-status-badge.disabled {
     background: rgba(255, 255, 255, 0.03);
     color: var(--text-muted);
-}
-
-/* Attribute Tags Section */
-.site-card-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
 }
 
 .meta-group {
@@ -1596,7 +1641,7 @@ body {
     background: rgba(90, 200, 250, 0.04);
 }
 
-/* Ping history dots container */
+/* History Indicators */
 .ping-history-wrap {
     display: flex;
     align-items: center;
@@ -1620,12 +1665,11 @@ body {
     box-shadow: 0 0 6px var(--color-danger);
 }
 
-/* Actions Section */
-.site-card-actions {
+.site-tile-right {
     display: flex;
-    justify-content: flex-end;
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
-    padding-top: 16px;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
 }
 
 .btn-toggle-site {
@@ -1658,4 +1702,26 @@ body {
 .btn-toggle-site.remove-mode:hover {
     background: rgba(255, 69, 58, 0.05);
     border-color: var(--color-danger);
+}
+
+/* Responsive Overrides for horizontal rows */
+@media (max-width: 900px) {
+    .site-dash-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .site-tile-meta {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .site-tile-right {
+        justify-content: space-between;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 16px;
+        width: 100%;
+    }
 }
