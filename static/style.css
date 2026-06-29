@@ -2026,3 +2026,129 @@ body {
     0% { filter: brightness(0.95) drop-shadow(0 0 4px rgba(191, 90, 242, 0.5)); }
     100% { filter: brightness(1.15) drop-shadow(0 0 12px rgba(191, 90, 242, 0.8)); }
 }
+
+/* ==========================================================================
+   Minimalist Site Brand Themes (Apple Design Colorways)
+   ========================================================================== */
+:root {
+    --brand-vk: #2f80ed;
+    --brand-mailru: #ff9f0a;
+    --brand-okru: #ff5e00;
+    --brand-general: #64d2ff;
+}
+
+/* VK Video Card styling */
+.link-card.site-vk-video {
+    border-color: rgba(47, 128, 237, 0.08);
+    background: rgba(47, 128, 237, 0.01);
+}
+.link-card.site-vk-video:hover {
+    border-color: rgba(47, 128, 237, 0.25);
+    background: rgba(47, 128, 237, 0.03);
+}
+.link-card.site-vk-video .link-site-name {
+    color: var(--brand-vk);
+}
+.link-card.site-vk-video .link-tag {
+    background: rgba(47, 128, 237, 0.06) !important;
+    color: var(--brand-vk) !important;
+    border: 1px solid rgba(47, 128, 237, 0.15) !important;
+}
+.link-card.site-vk-video .btn-visit {
+    background: rgba(47, 128, 237, 0.08) !important;
+    color: var(--brand-vk) !important;
+    border: 1px solid rgba(47, 128, 237, 0.15) !important;
+}
+.link-card.site-vk-video .btn-visit:hover {
+    background: var(--brand-vk) !important;
+    color: #070708 !important;
+    border-color: var(--brand-vk) !important;
+    box-shadow: 0 4px 15px rgba(47, 128, 237, 0.2) !important;
+}
+
+/* Mail.ru Card styling */
+.link-card.site-mail-ru {
+    border-color: rgba(255, 159, 10, 0.08);
+    background: rgba(255, 159, 10, 0.01);
+}
+.link-card.site-mail-ru:hover {
+    border-color: rgba(255, 159, 10, 0.25);
+    background: rgba(255, 159, 10, 0.03);
+}
+.link-card.site-mail-ru .link-site-name {
+    color: var(--brand-mailru);
+}
+.link-card.site-mail-ru .link-tag {
+    background: rgba(255, 159, 10, 0.06) !important;
+    color: var(--brand-mailru) !important;
+    border: 1px solid rgba(255, 159, 10, 0.15) !important;
+}
+.link-card.site-mail-ru .btn-visit {
+    background: rgba(255, 159, 10, 0.08) !important;
+    color: var(--brand-mailru) !important;
+    border: 1px solid rgba(255, 159, 10, 0.15) !important;
+}
+.link-card.site-mail-ru .btn-visit:hover {
+    background: var(--brand-mailru) !important;
+    color: #070708 !important;
+    border-color: var(--brand-mailru) !important;
+    box-shadow: 0 4px 15px rgba(255, 159, 10, 0.2) !important;
+}
+
+/* OK.ru Card styling */
+.link-card.site-ok-ru {
+    border-color: rgba(255, 94, 0, 0.08);
+    background: rgba(255, 94, 0, 0.01);
+}
+.link-card.site-ok-ru:hover {
+    border-color: rgba(255, 94, 0, 0.25);
+    background: rgba(255, 94, 0, 0.03);
+}
+.link-card.site-ok-ru .link-site-name {
+    color: var(--brand-okru);
+}
+.link-card.site-ok-ru .link-tag {
+    background: rgba(255, 94, 0, 0.06) !important;
+    color: var(--brand-okru) !important;
+    border: 1px solid rgba(255, 94, 0, 0.15) !important;
+}
+.link-card.site-ok-ru .btn-visit {
+    background: rgba(255, 94, 0, 0.08) !important;
+    color: var(--brand-okru) !important;
+    border: 1px solid rgba(255, 94, 0, 0.15) !important;
+}
+.link-card.site-ok-ru .btn-visit:hover {
+    background: var(--brand-okru) !important;
+    color: #070708 !important;
+    border-color: var(--brand-okru) !important;
+    box-shadow: 0 4px 15px rgba(255, 94, 0, 0.2) !important;
+}
+
+/* General / Other Link Cards styling */
+.link-card.general-card {
+    border-color: rgba(100, 210, 255, 0.08);
+    background: rgba(100, 210, 255, 0.01);
+}
+.link-card.general-card:hover {
+    border-color: rgba(100, 210, 255, 0.25);
+    background: rgba(100, 210, 255, 0.03);
+}
+.link-card.general-card .link-site-name {
+    color: var(--brand-general);
+}
+.link-card.general-card .link-tag {
+    background: rgba(100, 210, 255, 0.06) !important;
+    color: var(--brand-general) !important;
+    border: 1px solid rgba(100, 210, 255, 0.15) !important;
+}
+.link-card.general-card .btn-visit {
+    background: rgba(100, 210, 255, 0.08) !important;
+    color: var(--brand-general) !important;
+    border: 1px solid rgba(100, 210, 255, 0.15) !important;
+}
+.link-card.general-card .btn-visit:hover {
+    background: var(--brand-general) !important;
+    color: #070708 !important;
+    border-color: var(--brand-general) !important;
+    box-shadow: 0 4px 15px rgba(100, 210, 255, 0.2) !important;
+}

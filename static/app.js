@@ -848,7 +848,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentCounters = {};
         found.forEach(item => {
             const card = document.createElement('div');
-            card.className = 'link-card rare-card';
+            const siteClass = `site-${item.site.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+            card.className = `link-card rare-card ${siteClass}`;
             
             const resolvedQualities = extractQualities(item.title);
             const qualitiesHTML = renderQualitiesHTML(resolvedQualities);
@@ -862,7 +863,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             card.innerHTML = `
                 <div class="link-card-left">
-                    <span class="link-site-name" style="color: var(--color-cyan);"><i class="fa-solid fa-wand-magic-sparkles"></i> ${displayName}</span>
+                    <span class="link-site-name"><i class="fa-solid fa-wand-magic-sparkles"></i> ${displayName}</span>
                     <div class="link-qualities">${qualitiesHTML}</div>
                 </div>
                 <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit rare-visit-btn">
@@ -893,14 +894,15 @@ document.addEventListener('DOMContentLoaded', () => {
             discoveredLinks.innerHTML = '';
             foundGeneral.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'link-card';
+                const siteClass = `site-${item.site.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+                card.className = `link-card general-card ${siteClass}`;
                 
                 const resolvedQualities = extractQualities(item.title);
                 const qualitiesHTML = renderQualitiesHTML(resolvedQualities);
                 
                 card.innerHTML = `
                     <div class="link-card-left">
-                        <span class="link-site-name"><i class="fa-solid fa-circle-play" style="color: var(--color-cyan);"></i> ${item.site}</span>
+                        <span class="link-site-name"><i class="fa-solid fa-circle-play"></i> ${item.site}</span>
                         <div class="link-qualities">${qualitiesHTML}</div>
                     </div>
                     <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn-visit">
