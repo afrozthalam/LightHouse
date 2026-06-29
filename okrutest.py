@@ -29,16 +29,20 @@ def duration_to_seconds(d_str):
 
 def score_result(title, duration, query):
     score = 0
-    title_lower = title.lower()
-    query_lower = query.lower()
+    # Clean titles and queries to remove years, brackets, and non-alphanumeric separators for scoring
+    clean_title = re.sub(r'[\(\[\{\)\]\}]|\b\d{4}\b', '', title).lower().strip()
+    clean_title = re.sub(r'\s+', ' ', clean_title)
+    
+    clean_query = re.sub(r'[\(\[\{\)\]\}]|\b\d{4}\b', '', query).lower().strip()
+    clean_query = re.sub(r'\s+', ' ', clean_query)
     
     # 1. Title match score
-    match_ratio = SequenceMatcher(None, query_lower, title_lower).ratio()
+    match_ratio = SequenceMatcher(None, clean_query, clean_title).ratio()
     score += int(match_ratio * 50)
     
     # Keyword bonus
-    query_words = query_lower.split()
-    matched_words = sum(1 for w in query_words if w in title_lower)
+    query_words = clean_query.split()
+    matched_words = sum(1 for w in query_words if w in clean_title)
     if len(query_words) > 0:
         score += int((matched_words / len(query_words)) * 25)
         
