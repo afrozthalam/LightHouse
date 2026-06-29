@@ -428,22 +428,33 @@ def search_fallback_links():
     def run_vk():
         try:
             import RareMoviesFinder
-            return RareMoviesFinder.find_rare_movie_links(rare_query)
+            res = RareMoviesFinder.find_rare_movie_links(rare_query)
+            print(f"[VK Video Search] Successful. Query: '{rare_query}'. Found: {len(res)} results.")
+            return res
         except Exception as e:
+            print(f"[VK Video Search] Exception: {e}")
             return []
 
     def run_mailru():
         try:
             import RareMoviesFinder2
-            return RareMoviesFinder2.find_rare_movie_links2(rare_query)
+            res = RareMoviesFinder2.find_rare_movie_links2(rare_query)
+            print(f"[Mail.ru Search] Successful. Query: '{rare_query}'. Found: {len(res)} results.")
+            return res
         except Exception as e:
+            print(f"[Mail.ru Search] Exception: {e}")
             return []
 
     def run_okru():
         try:
             import okrutest
-            return okrutest.find_rare_movie_links3(rare_query)
+            res = okrutest.find_rare_movie_links3(rare_query)
+            print(f"[OK.ru Search] Successful. Query: '{rare_query}'. Found: {len(res)} results.")
+            return res
         except Exception as e:
+            print(f"[OK.ru Search] Exception: {e}")
+            import traceback
+            traceback.print_exc()
             return []
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:

@@ -54,7 +54,10 @@ def score_result(title, duration, query):
 
 def find_rare_movie_links3(query_name):
     try:
-        url = f"https://ok.ru/video/search/{query_name.replace(' ', '+')}"
+        # Safe URL quote encoding for query string to support spaces, non-ASCII, and special characters
+        quoted_query = requests.utils.quote(query_name)
+        url = f"https://ok.ru/video/search/{quoted_query}"
+        
         headers = {
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -63,8 +66,11 @@ def find_rare_movie_links3(query_name):
             )
         }
         
+        print(f"[OK.ru Scraper] Fetching: {url}")
         r = requests.get(url, headers=headers, timeout=15)
         r.raise_for_status()
+        
+        print(f"[OK.ru Scraper] Response URL: {r.url} | Status: {r.status_code}")
         
         soup = BeautifulSoup(r.text, "html.parser")
         cards = soup.select(".video_search_result_video-card")
@@ -72,6 +78,7 @@ def find_rare_movie_links3(query_name):
         printed = set()
         results = []
         
+        # Primary Grid Parser
         for card in cards:
             title_tag = card.select_one("a.video_search_result_video-link")
             if not title_tag:
@@ -80,11 +87,11 @@ def find_rare_movie_links3(query_name):
             href = title_tag.get("href")
             if not href:
                 continue
-            url = urljoin("https://ok.ru", href)
+            video_url = urljoin("https://ok.ru", href)
             
-            if url in printed:
+            if video_url in printed:
                 continue
-            printed.add(url)
+            printed.add(video_url)
             
             title = title_tag.get_text(" ", strip=True)
             
@@ -109,12 +116,70 @@ def find_rare_movie_links3(query_name):
             results.append({
                 'site': 'OK.ru',
                 'title': f"{title} ({quality}p, {duration_text})",
-                'url': url,
+                'url': video_url,
                 'status': 'FOUND',
                 'score': score
             })
             
+        # Resilient Fallback: If no cards parsed via class selector, scan all matching direct links
+        if not results:
+            print("[OK.ru Scraper] Grid selector returned empty. Attempting resilient DOM scanner fallback...")
+            for tag in soup.find_all("a", href=True):
+                href = tag.get("href")
+                if re.search(r'/video/\d+', href) and not "search" in href:
+                    video_url = urljoin("https://ok.ru", href)
+                    if video_url in printed:
+                        continue
+                    printed.add(video_url)
+                    
+                    # Walk parent levels to resolve card boundary
+                    parent = tag.parent
+                    container = None
+                    for _ in range(4):
+                        if parent and parent.name in ['div', 'li'] and any(c for c in parent.get('class', []) if 'card' in c or 'item' in c or 'result' in c):
+                            container = parent
+                            break
+                        if parent:
+                            parent = parent.parent
+                            
+                    if container:
+                        title = tag.get_text(" ", strip=True)
+                        if not title:
+                            continue
+                            
+                        # Resolve duration
+                        duration_tag = container.select_one("[class*='duration']")
+                        duration_text = duration_tag.get_text(strip=True) if duration_tag else ""
+                        if not duration_text:
+                            # Search text subtree for digits matching duration
+                            match = re.search(r'\b\d{1,2}:\d{2}(?::\d{2})?\b', container.get_text(" "))
+                            if match:
+                                duration_text = match.group(0)
+                                
+                        duration = duration_to_seconds(duration_text)
+                        if duration < MIN_DURATION:
+                            continue
+                            
+                        score = score_result(title, duration, query_name)
+                        if score < 40:
+                            continue
+                            
+                        quality = "720"
+                        if "1080" in title:
+                            quality = "1080"
+                        elif "2160" in title or "4k" in title:
+                            quality = "2160"
+                            
+                        results.append({
+                            'site': 'OK.ru',
+                            'title': f"{title} ({quality}p, {duration_text})",
+                            'url': video_url,
+                            'status': 'FOUND',
+                            'score': score
+                        })
+            
         results.sort(key=lambda x: x['score'], reverse=True)
+        print(f"[OK.ru Scraper] Found {len(results)} valid movies.")
         return results[:3]
     except Exception as e:
         print(f"okrutest error: {e}")
