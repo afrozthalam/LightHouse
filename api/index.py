@@ -439,10 +439,18 @@ def search_fallback_links():
         except Exception as e:
             return []
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+    def run_okru():
+        try:
+            import okrutest
+            return okrutest.find_rare_movie_links3(rare_query)
+        except Exception as e:
+            return []
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
         futures = [
             executor.submit(run_vk),
-            executor.submit(run_mailru)
+            executor.submit(run_mailru),
+            executor.submit(run_okru)
         ]
         for future in concurrent.futures.as_completed(futures):
             rare_results.extend(future.result())

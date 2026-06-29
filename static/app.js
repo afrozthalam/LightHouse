@@ -877,8 +877,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderDiscoveredLinks(results) {
         // Split rare and general results
-        const generalResults = results ? results.filter(r => r.site !== 'VK Video' && r.site !== 'Mail.ru') : [];
-        const rareResults = results ? results.filter(r => r.site === 'VK Video' || r.site === 'Mail.ru') : [];
+        const generalResults = results ? results.filter(r => r.site !== 'VK Video' && r.site !== 'Mail.ru' && r.site !== 'OK.ru') : [];
+        const rareResults = results ? results.filter(r => r.site === 'VK Video' || r.site === 'Mail.ru' || r.site === 'OK.ru') : [];
 
         const foundGeneral = generalResults.filter(r => r.status === 'FOUND');
         linksCount.textContent = `${foundGeneral.length} found`;
@@ -919,7 +919,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Add a Scan Rare Networks button if RareMoviesFinder system has not run yet
-        const containsFallback = results ? results.some(r => r.site === 'VK Video' || r.site === 'Mail.ru') : false;
+        const containsFallback = results ? results.some(r => r.site === 'VK Video' || r.site === 'Mail.ru' || r.site === 'OK.ru') : false;
         if (!containsFallback) {
             const promptDiv = document.createElement('div');
             promptDiv.className = 'fallback-force-prompt';
