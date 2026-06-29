@@ -1773,8 +1773,8 @@ body {
     
     /* Center search hero and adjust height */
     .hero-search-section {
-        min-height: 42vh !important;
-        padding: 5vh 0 4vh !important;
+        min-height: 55vh !important; /* Centered search vertically on mobile */
+        padding: 6vh 0 4vh !important;
     }
     
     .hero-search-container {
@@ -1783,35 +1783,40 @@ body {
         padding: 0 !important;
     }
     
+    .app-container {
+        margin-top: 72px !important;
+        padding: 0 10px !important; /* Minimize layout padding margins to maximize space */
+    }
+    
     /* Make search bar beautiful, centered, bigger horizontally, but elegant */
     .search-bar-box {
-        height: 54px !important;
+        height: 60px !important; /* Taller search input on mobile */
         padding: 0 0.5rem 0 1.25rem !important;
-        border-radius: 28px !important;
+        border-radius: 30px !important;
         box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
     }
     
     .search-bar-box input {
-        font-size: 1rem !important;
-        height: 36px !important;
+        font-size: 1.05rem !important;
+        height: 38px !important;
         padding-right: 4px !important;
     }
     
     /* Sleek violet search button on mobile */
     .search-action-btn {
-        width: 40px !important;
-        height: 40px !important;
+        width: 44px !important;
+        height: 44px !important;
         box-shadow: 0 3px 10px rgba(191, 90, 242, 0.3) !important;
     }
     
     .search-action-btn svg {
-        width: 16px !important;
-        height: 16px !important;
+        width: 18px !important;
+        height: 18px !important;
     }
     
-    /* Make trending cards smaller on mobile */
+    /* Make trending cards span full screen width with 3 columns exactly */
     .movie-grid {
-        grid-template-columns: repeat(auto-fit, minmax(90px, 100px)) !important;
+        grid-template-columns: repeat(3, 1fr) !important;
         gap: 8px !important;
         justify-content: center !important;
     }
@@ -1845,4 +1850,84 @@ body {
         top: 6px !important;
         right: 6px !important;
     }
+}
+
+/* Lighthouse Search/Loading Animation */
+.lighthouse-loader-wrap {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    background: rgba(10, 10, 12, 0.6);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lighthouse-svg-container {
+    position: relative;
+    z-index: 3;
+    width: 80px;
+    height: 96px;
+}
+
+.lighthouse-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.lighthouse-glow-beam {
+    position: absolute;
+    top: calc(50% - 25px); /* Position centered at lantern room height */
+    left: 50%;
+    width: 180px;
+    height: 45px;
+    background: linear-gradient(90deg, rgba(191, 90, 242, 0.45) 0%, rgba(94, 92, 230, 0.15) 40%, rgba(0, 0, 0, 0) 100%);
+    transform-origin: left center;
+    transform: translate(0, -50%) rotate(0deg);
+    animation: sweepBeam 4s infinite linear;
+    pointer-events: none;
+    z-index: 2;
+    filter: blur(4px);
+}
+
+.lighthouse-bulb-glow {
+    animation: pulseBulb 1.5s infinite ease-in-out alternate;
+}
+
+@keyframes sweepBeam {
+    0% { transform: translate(0, -50%) rotate(0deg); }
+    100% { transform: translate(0, -50%) rotate(360deg); }
+}
+
+@keyframes pulseBulb {
+    0% { r: 3; fill: #ffd60a; filter: drop-shadow(0 0 2px #ffd60a); }
+    100% { r: 4.5; fill: #fff; filter: drop-shadow(0 0 8px #ffd60a); }
+}
+
+/* Ocean waves progress bar track & fill styles */
+.progress-track {
+    height: 14px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-radius: 50px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.progress-fill {
+    height: 100% !important;
+    background: linear-gradient(90deg, #5e5ce6 0%, #bf5af2 100%) !important;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 20" preserveAspectRatio="none"><path d="M0,10 C30,18 30,2 60,10 C90,18 90,2 120,10 L120,20 L0,20 Z" fill="rgba(255,255,255,0.18)"/></svg>') !important;
+    background-size: 60px 100% !important;
+    animation: moveOceanWaves 1.5s linear infinite !important;
+    transition: width 0.4s ease !important;
+    border-radius: 50px !important;
+}
+
+@keyframes moveOceanWaves {
+    0% { background-position-x: 0px; }
+    100% { background-position-x: 60px; }
 }

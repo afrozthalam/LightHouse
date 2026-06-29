@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBarFill = document.getElementById('progress-bar-fill');
     const progressStatusText = document.getElementById('progress-status-text');
     const progressPct = document.getElementById('progress-pct');
+    const lighthouseLoaderWrap = document.getElementById('lighthouse-loader-wrap');
     const discoveredLinksBlock = document.getElementById('discovered-links-block');
     const discoveredLinks = document.getElementById('discovered-links');
     const linksCount = document.getElementById('links-count');
@@ -708,8 +709,9 @@ document.addEventListener('DOMContentLoaded', () => {
         progressPct.textContent = '0%';
         progressStatusText.textContent = 'Locating best stream links, please wait...';
         
-        // Hide stream links list initially during crawl loading
+        // Show stream links list initially during crawl loading
         progressBox.style.display = 'block';
+        lighthouseLoaderWrap.style.display = 'flex';
         discoveredLinksBlock.style.display = 'none';
         discoveredLinks.innerHTML = '';
         linksCount.textContent = '0 found';
@@ -762,6 +764,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Wait 500ms for transition fill to finish loading smoothly, then swap
             setTimeout(() => {
                 progressBox.style.display = 'none';
+                lighthouseLoaderWrap.style.display = 'none';
                 
                 if (data.status === 'success') {
                     renderDiscoveredLinks(data.results);
@@ -785,6 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
             topProgressBar.done();
             setTimeout(() => {
                 progressBox.style.display = 'none';
+                lighthouseLoaderWrap.style.display = 'none';
                 discoveredLinks.innerHTML = `
                     <div class="links-placeholder">
                         <p style="color:var(--color-danger)">Connection interrupted. Try selecting configuration filters again.</p>
