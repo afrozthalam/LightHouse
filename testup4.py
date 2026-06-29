@@ -852,17 +852,42 @@ def run_movie_search(target_movie, filter_purpose=None, filter_language=None, ex
             
             # Use original title if available, otherwise target_movie
             rare_query = f"{original_title.strip()}{year_suffix}" if (original_title and original_title.strip()) else target_movie
-            safe_print(f"RareMoviesFinder querying: '{rare_query}'")
+            safe_print(f"Fallback engines querying: '{rare_query}'")
             
-            import RareMoviesFinder
-            rare_results = RareMoviesFinder.find_rare_movie_links(rare_query)
+            rare_results = []
+            
+            def run_vk():
+                try:
+                    import RareMoviesFinder
+                    return RareMoviesFinder.find_rare_movie_links(rare_query)
+                except Exception as e:
+                    safe_print(f"VK Video fallback failed: {e}")
+                    return []
+
+            def run_mailru():
+                try:
+                    import RareMoviesFinder2
+                    return RareMoviesFinder2.find_rare_movie_links2(rare_query)
+                except Exception as e:
+                    safe_print(f"Mail.ru fallback failed: {e}")
+                    return []
+
+            # Run VK Video and Mail.ru crawls concurrently to keep response times fast!
+            with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+                futures = [
+                    executor.submit(run_vk),
+                    executor.submit(run_mailru)
+                ]
+                for future in concurrent.futures.as_completed(futures):
+                    rare_results.extend(future.result())
+            
             if rare_results:
-                safe_print(f"RareMoviesFinder found {len(rare_results)} links!")
+                safe_print(f"Fallback engines found {len(rare_results)} links!")
                 results.extend(rare_results)
             else:
-                safe_print("RareMoviesFinder found no links.")
+                safe_print("Fallback engines found no links.")
         except Exception as e:
-            safe_print(f"Failed to run RareMoviesFinder: {e}")
+            safe_print(f"Failed to run fallbacks: {e}")
                 
     return results
 

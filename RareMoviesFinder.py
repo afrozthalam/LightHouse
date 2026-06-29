@@ -319,7 +319,7 @@ def find_rare_movie_links(query_name):
                 
             quality = highest_quality(video)
             results.append({
-                'site': 'RareMoviesFinder',
+                'site': 'VK Video',
                 'title': f"{video.get('title', '')} ({quality}p, {duration // 60} min)",
                 'url': url,
                 'status': 'FOUND',
@@ -327,7 +327,7 @@ def find_rare_movie_links(query_name):
             })
             
         results.sort(key=lambda x: x['score'], reverse=True)
-        return results
+        return results[:3]
     except Exception as e:
         print(f"RareMoviesFinder error: {e}")
         return []
