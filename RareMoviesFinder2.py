@@ -3,6 +3,14 @@ import re
 from difflib import SequenceMatcher
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import socket
+from urllib3.util import connection
+
+# Force IPv4 to prevent slow IPv6 DNS resolution/handshake timeouts to Russian networks
+def allowed_gai_family():
+    return socket.AF_INET
+
+connection.allowed_gai_family = allowed_gai_family
 
 # =====================================================
 # CHANGE THIS
@@ -33,7 +41,10 @@ def parse_views(text):
     if not m:
         return 0
 
-    num = float(m.group(1).replace(",", "."))
+    try:
+        num = float(m.group(1).replace(",", "."))
+    except ValueError:
+        return 0
 
     unit = m.group(2).upper()
 
@@ -155,19 +166,19 @@ def search(query):
         URL,
         params={"q": query},
         headers=HEADERS,
-        timeout=15,
+        timeout=30,
     )
 
     r.raise_for_status()
 
     soup = BeautifulSoup(r.text, "html.parser")
 
-    # ONLY search results (sliced to top 15 for fast response time)
+    # ONLY search results
     cards = soup.select(
         ".sp-video__search-result .sp-video__video-list__item"
-    )[:15]
+    )
 
-    print(f"\nFound {len(cards)} search results parsed.\n")
+    print(f"\nFound {len(cards)} search results.\n")
 
     printed = set()
 
@@ -255,15 +266,13 @@ def search(query):
             else ""
         )
 
-        try:
-            print("=" * 80)
-            print(title)
-            print("Duration :", duration_text)
-            print("HD       :", "Yes" if hd else "No")
-            print("Views    :", views)
-            print(url)
-        except Exception:
-            pass
+        print("=" * 80)
+        print(title)
+        print("Duration :", duration_text)
+        print("HD       :", "Yes" if hd else "No")
+        print("Uploader :", uploader)
+        print("Views    :", views)
+        print(url)
 
     print("\nDone.")
 

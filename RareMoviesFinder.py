@@ -1,6 +1,14 @@
 import requests
 import re
 from difflib import SequenceMatcher
+import socket
+from urllib3.util import connection
+
+# Force IPv4 to prevent slow IPv6 DNS resolution/handshake timeouts to Russian networks
+def allowed_gai_family():
+    return socket.AF_INET
+
+connection.allowed_gai_family = allowed_gai_family
 
 # =====================================================
 # CHANGE THIS
