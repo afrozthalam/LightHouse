@@ -15,7 +15,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Load environment variables
 load_dotenv()
 
-app = Flask(__name__, static_folder=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static'))
+STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static')
+app = Flask(__name__, static_folder=STATIC_DIR)
 
 TMDB_API_KEY = os.getenv('TMDB_API_KEY', 'd6d415fbca42bcf39105eee27b397895')
 PORT = int(os.getenv('PORT', 8000))
@@ -49,11 +50,11 @@ import testup4
 @app.route('/movie/<path:subpath>')
 @app.route('/tv/<path:subpath>')
 def index(subpath=None):
-    return send_from_directory('static', 'index.html')
+    return send_from_directory(STATIC_DIR, 'index.html')
 
 @app.route('/static/<path:path>')
 def serve_static(path):
-    return send_from_directory('static', path)
+    return send_from_directory(STATIC_DIR, path)
 
 @app.route('/api/search-movies')
 def search_movies():
