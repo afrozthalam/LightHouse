@@ -2124,7 +2124,11 @@ body {
     box-shadow: 0 4px 15px rgba(255, 94, 0, 0.2) !important;
 }
 
-/* General / Other Link Cards styling - Unique colors for each site */
+/* ==========================================================================
+   General / Other Link Cards styling - Unique colors for each site
+   ========================================================================== */
+
+/* 1. VegaMovies - Crimson Red */
 .link-card.site-vegamovies {
     --brand-color: #ff2d55;
     border-color: rgba(255, 45, 85, 0.08);
@@ -2136,6 +2140,7 @@ body {
 .link-card.site-vegamovies .btn-visit { background: rgba(255, 45, 85, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 45, 85, 0.15) !important; }
 .link-card.site-vegamovies .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 45, 85, 0.2) !important; }
 
+/* 2. Movies4U & Movies4U Finance - Deep Indigo */
 .link-card.site-movies4u-finance, .link-card.site-movies4u {
     --brand-color: #5856d6;
     border-color: rgba(88, 86, 214, 0.08);
@@ -2147,6 +2152,7 @@ body {
 .link-card.site-movies4u-finance .btn-visit, .link-card.site-movies4u .btn-visit { background: rgba(88, 86, 214, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(88, 86, 214, 0.15) !important; }
 .link-card.site-movies4u-finance .btn-visit:hover, .link-card.site-movies4u .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(88, 86, 214, 0.2) !important; }
 
+/* 3. UhdMovies - Amber Gold */
 .link-card.site-uhdmovies {
     --brand-color: #ffcc00;
     border-color: rgba(255, 204, 0, 0.08);
@@ -2158,6 +2164,7 @@ body {
 .link-card.site-uhdmovies .btn-visit { background: rgba(255, 204, 0, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 204, 0, 0.15) !important; }
 .link-card.site-uhdmovies .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2) !important; }
 
+/* 4. YoMovies - Royal Purple */
 .link-card.site-yomovies {
     --brand-color: #af52de;
     border-color: rgba(175, 82, 222, 0.08);
@@ -2169,6 +2176,7 @@ body {
 .link-card.site-yomovies .btn-visit { background: rgba(175, 82, 222, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(175, 82, 222, 0.15) !important; }
 .link-card.site-yomovies .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(175, 82, 222, 0.2) !important; }
 
+/* 5. Cineb - Apple Mint Green */
 .link-card.site-cineb {
     --brand-color: #34c759;
     border-color: rgba(52, 199, 89, 0.08);
@@ -2180,6 +2188,7 @@ body {
 .link-card.site-cineb .btn-visit { background: rgba(52, 199, 89, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(52, 199, 89, 0.15) !important; }
 .link-card.site-cineb .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(52, 199, 89, 0.2) !important; }
 
+/* 6. Cataz - Ocean Blue */
 .link-card.site-cataz {
     --brand-color: #007aff;
     border-color: rgba(0, 122, 255, 0.08);
@@ -2191,6 +2200,7 @@ body {
 .link-card.site-cataz .btn-visit { background: rgba(0, 122, 255, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(0, 122, 255, 0.15) !important; }
 .link-card.site-cataz .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(0, 122, 255, 0.2) !important; }
 
+/* 7. DopeBox - Sky Blue */
 .link-card.site-dopebox {
     --brand-color: #5ac8fa;
     border-color: rgba(90, 200, 250, 0.08);
@@ -2202,6 +2212,7 @@ body {
 .link-card.site-dopebox .btn-visit { background: rgba(90, 200, 250, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(90, 200, 250, 0.15) !important; }
 .link-card.site-dopebox .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(90, 200, 250, 0.2) !important; }
 
+/* 8. SeriesOnline - Tangerine Orange */
 .link-card.site-seriesonline {
     --brand-color: #ff9500;
     border-color: rgba(255, 149, 0, 0.08);
@@ -2213,6 +2224,7 @@ body {
 .link-card.site-seriesonline .btn-visit { background: rgba(255, 149, 0, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 149, 0, 0.15) !important; }
 .link-card.site-seriesonline .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 149, 0, 0.2) !important; }
 
+/* 9. SkyMoviesHD - Coral Orange */
 .link-card.site-skymovieshd {
     --brand-color: #ff5e00;
     border-color: rgba(255, 94, 0, 0.08);
@@ -2223,6 +2235,54 @@ body {
 .link-card.site-skymovieshd .link-tag { background: rgba(255, 94, 0, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 94, 0, 0.15) !important; }
 .link-card.site-skymovieshd .btn-visit { background: rgba(255, 94, 0, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 94, 0, 0.15) !important; }
 .link-card.site-skymovieshd .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 94, 0, 0.2) !important; }
+
+/* 10. 4KHDHub - Teal Green */
+.link-card.site-4khdhub {
+    --brand-color: #30d158;
+    border-color: rgba(48, 209, 88, 0.08);
+    background: rgba(48, 209, 88, 0.01);
+}
+.link-card.site-4khdhub:hover { border-color: rgba(48, 209, 88, 0.25); background: rgba(48, 209, 88, 0.03); }
+.link-card.site-4khdhub .link-site-name { color: var(--brand-color); }
+.link-card.site-4khdhub .link-tag { background: rgba(48, 209, 88, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(48, 209, 88, 0.15) !important; }
+.link-card.site-4khdhub .btn-visit { background: rgba(48, 209, 88, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(48, 209, 88, 0.15) !important; }
+.link-card.site-4khdhub .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(48, 209, 88, 0.2) !important; }
+
+/* 11. TheMoviesFlix - Light Pink */
+.link-card.site-themoviesflix {
+    --brand-color: #ff375f;
+    border-color: rgba(255, 55, 95, 0.08);
+    background: rgba(255, 55, 95, 0.01);
+}
+.link-card.site-themoviesflix:hover { border-color: rgba(255, 55, 95, 0.25); background: rgba(255, 55, 95, 0.03); }
+.link-card.site-themoviesflix .link-site-name { color: var(--brand-color); }
+.link-card.site-themoviesflix .link-tag { background: rgba(255, 55, 95, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 55, 95, 0.15) !important; }
+.link-card.site-themoviesflix .btn-visit { background: rgba(255, 55, 95, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 55, 95, 0.15) !important; }
+.link-card.site-themoviesflix .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 55, 95, 0.2) !important; }
+
+/* 12. CineGo - Mint Cyan */
+.link-card.site-cinego {
+    --brand-color: #64d2ff;
+    border-color: rgba(100, 210, 255, 0.08);
+    background: rgba(100, 210, 255, 0.01);
+}
+.link-card.site-cinego:hover { border-color: rgba(100, 210, 255, 0.25); background: rgba(100, 210, 255, 0.03); }
+.link-card.site-cinego .link-site-name { color: var(--brand-color); }
+.link-card.site-cinego .link-tag { background: rgba(100, 210, 255, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(100, 210, 255, 0.15) !important; }
+.link-card.site-cinego .btn-visit { background: rgba(100, 210, 255, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(100, 210, 255, 0.15) !important; }
+.link-card.site-cinego .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(100, 210, 255, 0.2) !important; }
+
+/* 13. Zoovie - Royal Blue */
+.link-card.site-zoovie {
+    --brand-color: #0a84ff;
+    border-color: rgba(10, 132, 255, 0.08);
+    background: rgba(10, 132, 255, 0.01);
+}
+.link-card.site-zoovie:hover { border-color: rgba(10, 132, 255, 0.25); background: rgba(10, 132, 255, 0.03); }
+.link-card.site-zoovie .link-site-name { color: var(--brand-color); }
+.link-card.site-zoovie .link-tag { background: rgba(10, 132, 255, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(10, 132, 255, 0.15) !important; }
+.link-card.site-zoovie .btn-visit { background: rgba(10, 132, 255, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(10, 132, 255, 0.15) !important; }
+.link-card.site-zoovie .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.2) !important; }
 
 /* General Fallback / Other site-less cards styling */
 .link-card.general-card {
