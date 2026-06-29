@@ -2124,7 +2124,107 @@ body {
     box-shadow: 0 4px 15px rgba(255, 94, 0, 0.2) !important;
 }
 
-/* General / Other Link Cards styling */
+/* General / Other Link Cards styling - Unique colors for each site */
+.link-card.site-vegamovies {
+    --brand-color: #ff2d55;
+    border-color: rgba(255, 45, 85, 0.08);
+    background: rgba(255, 45, 85, 0.01);
+}
+.link-card.site-vegamovies:hover { border-color: rgba(255, 45, 85, 0.25); background: rgba(255, 45, 85, 0.03); }
+.link-card.site-vegamovies .link-site-name { color: var(--brand-color); }
+.link-card.site-vegamovies .link-tag { background: rgba(255, 45, 85, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 45, 85, 0.15) !important; }
+.link-card.site-vegamovies .btn-visit { background: rgba(255, 45, 85, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 45, 85, 0.15) !important; }
+.link-card.site-vegamovies .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 45, 85, 0.2) !important; }
+
+.link-card.site-movies4u-finance, .link-card.site-movies4u {
+    --brand-color: #5856d6;
+    border-color: rgba(88, 86, 214, 0.08);
+    background: rgba(88, 86, 214, 0.01);
+}
+.link-card.site-movies4u-finance:hover, .link-card.site-movies4u:hover { border-color: rgba(88, 86, 214, 0.25); background: rgba(88, 86, 214, 0.03); }
+.link-card.site-movies4u-finance .link-site-name, .link-card.site-movies4u .link-site-name { color: var(--brand-color); }
+.link-card.site-movies4u-finance .link-tag, .link-card.site-movies4u .link-tag { background: rgba(88, 86, 214, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(88, 86, 214, 0.15) !important; }
+.link-card.site-movies4u-finance .btn-visit, .link-card.site-movies4u .btn-visit { background: rgba(88, 86, 214, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(88, 86, 214, 0.15) !important; }
+.link-card.site-movies4u-finance .btn-visit:hover, .link-card.site-movies4u .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(88, 86, 214, 0.2) !important; }
+
+.link-card.site-uhdmovies {
+    --brand-color: #ffcc00;
+    border-color: rgba(255, 204, 0, 0.08);
+    background: rgba(255, 204, 0, 0.01);
+}
+.link-card.site-uhdmovies:hover { border-color: rgba(255, 204, 0, 0.25); background: rgba(255, 204, 0, 0.03); }
+.link-card.site-uhdmovies .link-site-name { color: var(--brand-color); }
+.link-card.site-uhdmovies .link-tag { background: rgba(255, 204, 0, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 204, 0, 0.15) !important; }
+.link-card.site-uhdmovies .btn-visit { background: rgba(255, 204, 0, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 204, 0, 0.15) !important; }
+.link-card.site-uhdmovies .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2) !important; }
+
+.link-card.site-yomovies {
+    --brand-color: #af52de;
+    border-color: rgba(175, 82, 222, 0.08);
+    background: rgba(175, 82, 222, 0.01);
+}
+.link-card.site-yomovies:hover { border-color: rgba(175, 82, 222, 0.25); background: rgba(175, 82, 222, 0.03); }
+.link-card.site-yomovies .link-site-name { color: var(--brand-color); }
+.link-card.site-yomovies .link-tag { background: rgba(175, 82, 222, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(175, 82, 222, 0.15) !important; }
+.link-card.site-yomovies .btn-visit { background: rgba(175, 82, 222, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(175, 82, 222, 0.15) !important; }
+.link-card.site-yomovies .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(175, 82, 222, 0.2) !important; }
+
+.link-card.site-cineb {
+    --brand-color: #34c759;
+    border-color: rgba(52, 199, 89, 0.08);
+    background: rgba(52, 199, 89, 0.01);
+}
+.link-card.site-cineb:hover { border-color: rgba(52, 199, 89, 0.25); background: rgba(52, 199, 89, 0.03); }
+.link-card.site-cineb .link-site-name { color: var(--brand-color); }
+.link-card.site-cineb .link-tag { background: rgba(52, 199, 89, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(52, 199, 89, 0.15) !important; }
+.link-card.site-cineb .btn-visit { background: rgba(52, 199, 89, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(52, 199, 89, 0.15) !important; }
+.link-card.site-cineb .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(52, 199, 89, 0.2) !important; }
+
+.link-card.site-cataz {
+    --brand-color: #007aff;
+    border-color: rgba(0, 122, 255, 0.08);
+    background: rgba(0, 122, 255, 0.01);
+}
+.link-card.site-cataz:hover { border-color: rgba(0, 122, 255, 0.25); background: rgba(0, 122, 255, 0.03); }
+.link-card.site-cataz .link-site-name { color: var(--brand-color); }
+.link-card.site-cataz .link-tag { background: rgba(0, 122, 255, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(0, 122, 255, 0.15) !important; }
+.link-card.site-cataz .btn-visit { background: rgba(0, 122, 255, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(0, 122, 255, 0.15) !important; }
+.link-card.site-cataz .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(0, 122, 255, 0.2) !important; }
+
+.link-card.site-dopebox {
+    --brand-color: #5ac8fa;
+    border-color: rgba(90, 200, 250, 0.08);
+    background: rgba(90, 200, 250, 0.01);
+}
+.link-card.site-dopebox:hover { border-color: rgba(90, 200, 250, 0.25); background: rgba(90, 200, 250, 0.03); }
+.link-card.site-dopebox .link-site-name { color: var(--brand-color); }
+.link-card.site-dopebox .link-tag { background: rgba(90, 200, 250, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(90, 200, 250, 0.15) !important; }
+.link-card.site-dopebox .btn-visit { background: rgba(90, 200, 250, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(90, 200, 250, 0.15) !important; }
+.link-card.site-dopebox .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(90, 200, 250, 0.2) !important; }
+
+.link-card.site-seriesonline {
+    --brand-color: #ff9500;
+    border-color: rgba(255, 149, 0, 0.08);
+    background: rgba(255, 149, 0, 0.01);
+}
+.link-card.site-seriesonline:hover { border-color: rgba(255, 149, 0, 0.25); background: rgba(255, 149, 0, 0.03); }
+.link-card.site-seriesonline .link-site-name { color: var(--brand-color); }
+.link-card.site-seriesonline .link-tag { background: rgba(255, 149, 0, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 149, 0, 0.15) !important; }
+.link-card.site-seriesonline .btn-visit { background: rgba(255, 149, 0, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 149, 0, 0.15) !important; }
+.link-card.site-seriesonline .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 149, 0, 0.2) !important; }
+
+.link-card.site-skymovieshd {
+    --brand-color: #ff5e00;
+    border-color: rgba(255, 94, 0, 0.08);
+    background: rgba(255, 94, 0, 0.01);
+}
+.link-card.site-skymovieshd:hover { border-color: rgba(255, 94, 0, 0.25); background: rgba(255, 94, 0, 0.03); }
+.link-card.site-skymovieshd .link-site-name { color: var(--brand-color); }
+.link-card.site-skymovieshd .link-tag { background: rgba(255, 94, 0, 0.06) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 94, 0, 0.15) !important; }
+.link-card.site-skymovieshd .btn-visit { background: rgba(255, 94, 0, 0.08) !important; color: var(--brand-color) !important; border: 1px solid rgba(255, 94, 0, 0.15) !important; }
+.link-card.site-skymovieshd .btn-visit:hover { background: var(--brand-color) !important; color: #070708 !important; border-color: var(--brand-color) !important; box-shadow: 0 4px 15px rgba(255, 94, 0, 0.2) !important; }
+
+/* General Fallback / Other site-less cards styling */
 .link-card.general-card {
     border-color: rgba(100, 210, 255, 0.08);
     background: rgba(100, 210, 255, 0.01);
