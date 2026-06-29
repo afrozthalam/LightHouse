@@ -337,7 +337,7 @@ SITES = [
         "methods": [
             {
                 "type": "html",
-                "search": "https://cinego.watch/search/?q={query}",
+                "search": "https://cinego.watch/search?keyword={query}",
                 "encoder": "plus"
             }
         ]
