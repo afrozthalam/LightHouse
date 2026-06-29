@@ -53,23 +53,38 @@ def score_result(title, duration, query):
     return min(max(score, 0), 100)
 
 def find_rare_movie_links3(query_name):
+    import time
     try:
         # Safe URL quote encoding for query string to support spaces (as '+'), non-ASCII, and special characters
         quoted_query = requests.utils.quote(query_name).replace('%20', '+')
         url = f"https://ok.ru/video/search/{quoted_query}"
         
         headers = {
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/137.0.0.0 Safari/537.36"
-            )
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache"
         }
         
-        print(f"[OK.ru Scraper] Fetching: {url}")
-        r = requests.get(url, headers=headers, timeout=15)
-        r.raise_for_status()
+        r = None
+        for attempt in range(3):
+            try:
+                print(f"[OK.ru Scraper] Fetching (Attempt {attempt+1}): {url}")
+                r = requests.get(url, headers=headers, timeout=10)
+                r.raise_for_status()
+                # Sanity check: verify response contains video search markup or is not a redirect block
+                if "video" in r.text or "ok.ru" in r.url:
+                    break
+            except Exception as e:
+                print(f"[OK.ru Scraper] Attempt {attempt+1} connection error: {e}")
+                if attempt == 2:
+                    raise e
+                time.sleep(1)
         
+        if not r:
+            return []
+            
         print(f"[OK.ru Scraper] Response URL: {r.url} | Status: {r.status_code}")
         
         soup = BeautifulSoup(r.text, "html.parser")
