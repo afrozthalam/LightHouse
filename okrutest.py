@@ -54,8 +54,8 @@ def score_result(title, duration, query):
 
 def find_rare_movie_links3(query_name):
     try:
-        # Safe URL quote encoding for query string to support spaces, non-ASCII, and special characters
-        quoted_query = requests.utils.quote(query_name)
+        # Safe URL quote encoding for query string to support spaces (as '+'), non-ASCII, and special characters
+        quoted_query = requests.utils.quote(query_name).replace('%20', '+')
         url = f"https://ok.ru/video/search/{quoted_query}"
         
         headers = {
