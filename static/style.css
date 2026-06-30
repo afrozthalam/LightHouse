@@ -2348,3 +2348,40 @@ body {
     border-color: #8e8e93 !important;
     box-shadow: 0 4px 15px rgba(142, 142, 147, 0.25) !important;
 }
+
+/* Animated Header Logo styles */
+.brand-logo-anim-wrap {
+    position: relative;
+    width: 28px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.brand-logo-svg-new {
+    width: 100%;
+    height: 100%;
+    color: #fff;
+}
+
+.brand-logo-beam {
+    position: absolute;
+    top: calc(50% - 10px);
+    left: 50%;
+    width: 55px;
+    height: 16px;
+    background: linear-gradient(90deg, rgba(191, 90, 242, 0.5) 0%, rgba(94, 92, 230, 0.12) 45%, rgba(0, 0, 0, 0) 100%);
+    transform-origin: left center;
+    transform: translate(0, -50%) rotate(0deg);
+    animation: sweepBeam 4s infinite linear;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(2px);
+}
+
+.brand-logo-bulb {
+    animation: pulseBulb 1.5s infinite ease-in-out alternate;
+}
+

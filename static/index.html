@@ -15,7 +15,7 @@
         rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/style.css?v=2.7">
+    <link rel="stylesheet" href="/static/style.css?v=2.8">
     <script>
         window.onerror = function (msg, url, line, col, error) {
             var div = document.createElement('div');
@@ -46,17 +46,36 @@
     <header class="app-header">
         <div class="header-container">
             <!-- Brand Logo -->
-            <div class="brand" id="brand-logo">
-                <!-- Symmetrical inline SVG lighthouse logo matching Moctale style -->
-                <svg class="brand-logo-svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M4,20 C4,19.45 4.45,19 5,19 L19,19 C19.55,19 20,19.45 20,20 C20,20.55 19.55,21 19,21 L5,21 C4.45,21 4,20.55 4,20 Z" />
-                    <path
-                        d="M9.5,8 L14.5,8 C14.9,8 15.2,8.3 15.15,8.7 L16.8,17 C16.85,17.5 16.45,18 15.9,18 L8.1,18 C7.55,18 7.15,17.5 7.2,17 L8.85,8.7 C8.8,8.3 9.1,8 9.5,8 Z" />
-                    <path
-                        d="M7,7 C7,6.45 7.45,6 8,6 L16,6 C16.55,6 17,6.45 17,7 C17,7.55 16.55,8 16,8 L8,8 C7.45,8 7,7.55 7,7 Z" />
-                    <path d="M9.5,3 C9.5,1.9 10.4,1 11.5,1 C12.6,1 13.5,1.9 13.5,3 L13.5,5 L9.5,5 L9.5,3 Z" />
-                </svg>
+            <div class="brand" id="brand-logo" style="position: relative;">
+                <!-- Animated Mini Lighthouse Logo -->
+                <div class="brand-logo-anim-wrap">
+                    <div class="brand-logo-beam"></div>
+                    <svg class="brand-logo-svg-new" viewBox="0 0 100 120" fill="none" stroke="currentColor">
+                        <!-- Base/Rocks -->
+                        <path d="M 20 110 Q 50 100 80 110 L 80 115 L 20 115 Z" fill="#1b1b22" stroke="#252530" stroke-width="1.5" />
+                        <!-- Foundation -->
+                        <rect x="35" y="90" width="30" height="15" rx="1.5" fill="#2d2d3a" stroke="#3d3d4e" stroke-width="1.5" />
+                        <!-- Tower body -->
+                        <path d="M 38 90 L 43 35 L 57 35 L 62 90 Z" fill="url(#towerGradientHeader)" stroke="#4a4a5e" stroke-width="1.5" />
+                        <!-- Gallery deck -->
+                        <rect x="40" y="31" width="20" height="4" rx="1" fill="#1b1b22" stroke="#252530" stroke-width="1.5" />
+                        <!-- Lantern Room -->
+                        <rect x="44" y="19" width="12" height="12" rx="1" fill="rgba(191, 90, 242, 0.15)" stroke="#bf5af2" stroke-width="1.5" />
+                        <line x1="50" y1="19" x2="50" y2="31" stroke="#bf5af2" stroke-width="1.5" />
+                        <!-- Dome Roof -->
+                        <path d="M 44 19 Q 50 8 56 19 Z" fill="#1b1b22" stroke="#252530" stroke-width="1.5" />
+                        <!-- Light Glow Circle -->
+                        <circle cx="50" cy="25" r="3.5" fill="#ffd60a" class="brand-logo-bulb" />
+
+                        <defs>
+                            <linearGradient id="towerGradientHeader" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#2d2d3a" />
+                                <stop offset="50%" stop-color="#4a4a5e" />
+                                <stop offset="100%" stop-color="#1b1b22" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
                 <span class="brand-text">LightHouse</span>
             </div>
         </div>
