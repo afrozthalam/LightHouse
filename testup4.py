@@ -917,6 +917,42 @@ SITES = [
                 "encoder": "plus"
             }
         ]
+    },
+    {
+        "name": "RareToonIndia",
+        "purpose": ["download", "watch"],
+        "language": ["hindi"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://raretoonindia.in/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "ToonHub4u",
+        "purpose": ["download", "watch"],
+        "language": ["hindi"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://toonhub4u.co/?s={query}",
+                "encoder": "plus"
+            }
+        ]
+    },
+    {
+        "name": "ToonStream",
+        "purpose": ["download", "watch"],
+        "language": ["hindi"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://toonstream.vip/?s={query}",
+                "encoder": "plus"
+            }
+        ]
     }
 ]
 
