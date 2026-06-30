@@ -1246,7 +1246,82 @@ def search_site(site, search_queries, target_movie):
 # ----------------------------------------------------
 # Main Search Execution Function (Exportable)
 # ----------------------------------------------------
-def run_movie_search(target_movie, filter_purpose=None, filter_language=None, exclude_sites=None, original_title=None):
+def run_movie_search(target_movie, filter_purpose=None, filter_language=None, exclude_sites=None, original_title=None, is_anime=False):
+    import os
+    
+    def get_site_name_from_url(url):
+        from urllib.parse import urlparse
+        try:
+            parsed = urlparse(url)
+            domain = parsed.netloc
+            name_parts = domain.replace('www.', '').split('.')
+            if len(name_parts) > 1 and len(name_parts[0]) <= 3:
+                name = "".join([p.capitalize() for p in name_parts[:2]])
+            else:
+                name = name_parts[0].capitalize()
+            return name
+        except:
+            return "AnimeSite"
+            
+    def build_search_url(line, query):
+        from urllib.parse import quote, quote_plus
+        import re
+        if 'attack+on' in line.lower() or 'attck+on' in line.lower():
+            q_val = quote_plus(query)
+        else:
+            q_val = quote(query)
+        new_url = re.sub(r'attack[+\s%20]*on[+\s%20]*titan', q_val, line, flags=re.IGNORECASE)
+        new_url = re.sub(r'attck[+\s%20]*on[+\s%20]*titan', q_val, new_url, flags=re.IGNORECASE)
+        return new_url.strip()
+
+    # Parse excluded sites
+    excluded = set()
+    if exclude_sites:
+        if isinstance(exclude_sites, str):
+            excluded = {name.strip().lower() for name in exclude_sites.split(",") if name.strip()}
+        else:
+            excluded = {name.strip().lower() for name in exclude_sites}
+
+    # Anime watch list shortcut (Option A)
+    is_watch = filter_purpose and filter_purpose.lower() == 'watch'
+    is_eng = filter_language and filter_language.lower() == 'english'
+    is_hindi = filter_language and filter_language.lower() == 'hindi'
+    
+    if is_anime and is_watch and (is_eng or is_hindi):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        file_to_load = os.path.join(base_dir, "watch english anime.txt") if is_eng else os.path.join(base_dir, "hindi watch anime.txt")
+        
+        results = []
+        if os.path.exists(file_to_load):
+            with open(file_to_load, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+                
+            query_clean = re.sub(r"\s*\(\d{4}\)\s*", "", target_movie).strip()
+            
+            for line in lines:
+                line_str = line.strip()
+                if not line_str or line_str.startswith('#'):
+                    continue
+                
+                site_name = get_site_name_from_url(line_str)
+                if site_name.lower() in excluded:
+                    continue
+                    
+                search_url = build_search_url(line_str, query_clean)
+                
+                results.append({
+                    "site": site_name,
+                    "status": "FOUND",
+                    "title": f"Search '{query_clean}' on {site_name}",
+                    "url": search_url,
+                    "score": 100.0
+                })
+                safe_print(f"[SITE_COMPLETE] {site_name} | FOUND")
+        else:
+            safe_print(f"Anime file not found: {file_to_load}")
+            
+        return results
+
     # Build search query list
     search_queries = [target_movie]
     year_match = re.search(r"\((\d{4})\)", target_movie)

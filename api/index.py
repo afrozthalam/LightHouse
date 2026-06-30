@@ -308,6 +308,7 @@ def stream_search_links():
     language = request.args.get('language')
     exclude_sites = request.args.get('exclude_sites', '')
     original_title = request.args.get('original_title', '')
+    is_anime = request.args.get('is_anime', 'false').lower() == 'true'
     
     if not title:
         return jsonify({'error': 'Missing title parameter'}), 400
@@ -324,7 +325,7 @@ def stream_search_links():
     
     def run_search_thread():
         try:
-            results = testup4.run_movie_search(title, purpose, language, exclude_sites, original_title)
+            results = testup4.run_movie_search(title, purpose, language, exclude_sites, original_title, is_anime)
             results_container['results'] = results
             results_container['status'] = 'success'
         except Exception as e:

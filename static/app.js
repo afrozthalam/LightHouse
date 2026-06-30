@@ -552,6 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const r = await fetch(`/api/movie-details/${movie.id}?type=${mediaType}`);
             const details = await r.json();
+            selectedMovie = { ...selectedMovie, ...details };
             
             if (details.original_title && details.original_title.toLowerCase().trim() !== details.title.toLowerCase().trim()) {
                 modalOriginalTitle.textContent = `Original Title: ${details.original_title}`;
@@ -729,7 +730,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // SSE connection
         const disabledListStr = localStorage.getItem('lighthouse_disabled_sites') || '';
         const originalTitleStr = selectedMovie.original_title || '';
-        const sseUrl = `/api/search-links/stream?title=${encodeURIComponent(movieTitleAndYear)}&purpose=${activeFilters.purpose}&language=${activeFilters.language}&exclude_sites=${encodeURIComponent(disabledListStr)}&original_title=${encodeURIComponent(originalTitleStr)}`;
+        const isAnime = selectedMovie.genres && 
+                        selectedMovie.genres.some(g => g.name && (g.name.toLowerCase().includes('animation') || g.name.toLowerCase().includes('animated'))) && 
+                        selectedMovie.original_language === 'ja';
+        const isAnimeStr = isAnime ? 'true' : 'false';
+        const sseUrl = `/api/search-links/stream?title=${encodeURIComponent(movieTitleAndYear)}&purpose=${activeFilters.purpose}&language=${activeFilters.language}&exclude_sites=${encodeURIComponent(disabledListStr)}&original_title=${encodeURIComponent(originalTitleStr)}&is_anime=${isAnimeStr}`;
         eventSource = new EventSource(sseUrl);
 
         let totalSites = 15;
