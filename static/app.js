@@ -193,9 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 movieGrid.innerHTML = `
                     <div class="grid-placeholder" style="grid-column: 1 / -1; width: 100%;">
                         <p style="font-size: 1.1rem; margin-bottom: 12px; color: var(--text-secondary);">No matches found in TMDB database.</p>
-                        <div class="force-search-prompt" style="max-width: 500px; margin: 20px auto 0; padding: 24px; border: 1.5px dashed rgba(255,255,255,0.08); border-radius: 12px; background: rgba(255,255,255,0.01); text-align: center;">
-                            <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.92rem; line-height: 1.5;">Can't find your movie/series? Try Force Search to crawl direct indexers directly using your query keyword.</p>
-                            <button class="btn-force-search" id="btn-force-search-empty" style="border: none; background: var(--color-purple); color: #fff; padding: 10px 24px; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s ease;">
+                        <div class="force-search-prompt">
+                            <p>Can't find your movie/series? Try Force Search to crawl direct indexers directly using your query keyword.</p>
+                            <button class="btn-force-search" id="btn-force-search-empty">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
                             </button>
                         </div>
@@ -212,9 +212,9 @@ document.addEventListener('DOMContentLoaded', () => {
             movieGrid.innerHTML = `
                 <div class="grid-placeholder" style="grid-column: 1 / -1; width: 100%;">
                     <p class="error" style="font-size: 1.1rem; margin-bottom: 12px; color: var(--color-danger);">Search failed: ${e.message}</p>
-                    <div class="force-search-prompt" style="max-width: 500px; margin: 20px auto 0; padding: 24px; border: 1.5px dashed rgba(255,255,255,0.08); border-radius: 12px; background: rgba(255,255,255,0.01); text-align: center;">
-                        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.92rem; line-height: 1.5;">Can't find your movie/series? Try Force Search to crawl direct indexers directly using your query keyword.</p>
-                        <button class="btn-force-search" id="btn-force-search-fail" style="border: none; background: var(--color-purple); color: #fff; padding: 10px 24px; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s ease;">
+                    <div class="force-search-prompt">
+                        <p>Can't find your movie/series? Try Force Search to crawl direct indexers directly using your query keyword.</p>
+                        <button class="btn-force-search" id="btn-force-search-fail">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
                         </button>
                     </div>
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchSuggestions.innerHTML = `
                     <div style="padding:12px 16px; color:var(--text-muted); font-size:0.9rem;">
                         <div>No matches found in TMDB.</div>
-                        <button class="btn-force-search-suggest" id="btn-force-search-suggest-btn" style="margin-top:8px; width:100%; border:none; background:var(--color-purple); color:#fff; padding:8px 12px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.85rem; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <button class="btn-force-search-suggest" id="btn-force-search-suggest-btn">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
                         </button>
                     </div>
@@ -454,16 +454,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const bottomPrompt = document.createElement('div');
             bottomPrompt.className = 'force-search-bottom-prompt';
             bottomPrompt.style.gridColumn = '1 / -1';
-            bottomPrompt.style.width = '100%';
-            bottomPrompt.style.marginTop = '24px';
-            bottomPrompt.style.padding = '20px';
-            bottomPrompt.style.border = '1px dashed rgba(255,255,255,0.08)';
-            bottomPrompt.style.borderRadius = '12px';
-            bottomPrompt.style.background = 'rgba(255,255,255,0.01)';
-            bottomPrompt.style.textAlign = 'center';
             bottomPrompt.innerHTML = `
-                <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 0.9rem;">Can't find the exact movie or series version you want? Try Force Search to bypass listings and search indices directly.</p>
-                <button class="btn-force-search" id="btn-force-search-results-bottom" style="border: none; background: var(--color-purple); color: #fff; padding: 8px 20px; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s ease;">
+                <p>Can't find the exact movie or series version you want? Try Force Search to bypass listings and search indices directly.</p>
+                <button class="btn-force-search" id="btn-force-search-results-bottom">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
                 </button>
             `;
@@ -1060,13 +1053,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!containsFallback) {
             const promptDiv = document.createElement('div');
             promptDiv.className = 'fallback-force-prompt';
-            promptDiv.style.marginTop = '24px';
-            promptDiv.style.textAlign = 'center';
-            promptDiv.style.borderTop = '1px solid rgba(255,255,255,0.06)';
-            promptDiv.style.paddingTop = '16px';
             promptDiv.innerHTML = `
-                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">Still looking? Try searching our rare video indexers.</p>
-                <button class="btn-deep-search" id="btn-trigger-deep-search" style="border:1px solid var(--color-purple); background:rgba(191,90,242,0.08); color:var(--color-purple); padding:8px 18px; border-radius:30px; font-weight:600; cursor:pointer; font-size:0.85rem; transition:all 0.2s ease; display:inline-flex; align-items:center; gap:6px;">
+                <p>Still looking? Try searching our rare video indexers.</p>
+                <button class="btn-deep-search" id="btn-trigger-deep-search">
                     <i class="fa-solid fa-magnifying-glass"></i> Scan Rare Networks
                 </button>
             `;
