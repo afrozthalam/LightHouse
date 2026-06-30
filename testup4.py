@@ -905,6 +905,18 @@ SITES = [
                 "encoder": "percent"
             }
         ]
+    },
+    {
+        "name": "RareAnimes",
+        "purpose": ["download", "watch"],
+        "language": ["hindi"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://www.rareanimes.mov/?s={query}",
+                "encoder": "plus"
+            }
+        ]
     }
 ]
 
@@ -1177,7 +1189,8 @@ def search_site(site, search_queries, target_movie):
                     best_match = query_best_match
 
                 # good match found -> stop trying more queries
-                if query_best_score >= 85:
+                threshold = 70 if site_name.lower() == "rareanimes" else 85
+                if query_best_score >= threshold:
                     safe_print(f"[{site_name} - {method_type}] ↳ Good match found, stopping")
                     break
 
@@ -1205,7 +1218,8 @@ def search_site(site, search_queries, target_movie):
                 safe_print(f"[{site_name}] {method_type} method failed. Checking fallbacks...")
                 continue
                 
-            if best_match and best_score >= 85:
+            threshold = 70 if site_name.lower() == "rareanimes" else 85
+            if best_match and best_score >= threshold:
                 safe_print(f"\n✅ [{site_name}] FOUND using {method_type}")
                 safe_print(f"[{site_name}] Score : {round(best_score, 2)}")
                 safe_print(f"[{site_name}] Title : {best_match['title']}")
@@ -1242,6 +1256,154 @@ def search_site(site, search_queries, target_movie):
             "site": site_name,
             "status": "NOT_FOUND"
         }
+
+def deep_scrape_rareanimes(movie_url, purpose="watch"):
+    import requests
+    from bs4 import BeautifulSoup
+    import re
+    
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/137.0 Safari/537.36"
+        )
+    }
+    
+    extra_results = []
+    try:
+        r = requests.get(movie_url, headers=headers, timeout=15)
+        if r.status_code == 200:
+            soup = BeautifulSoup(r.text, "html.parser")
+            post_content = soup.find(class_=re.compile("entry-content|herald-entry-content|post-content"))
+            if not post_content:
+                post_content = soup
+                
+            current_section = "General"
+            for child in post_content.find_all(["p", "h1", "h2", "h3", "h4"]):
+                text = child.get_text(strip=True)
+                if not text:
+                    continue
+                
+                text_low = text.lower()
+                is_header = False
+                for lang in ["hindi", "tamil", "telugu", "english", "multi"]:
+                    if lang in text_low and len(text) < 50:
+                        if not child.find("a"):
+                            is_header = True
+                            break
+                            
+                if is_header:
+                    current_section = text
+                
+                # Check if Hindi section
+                if "hindi" in current_section.lower() and "tamil" not in current_section.lower() and "telugu" not in current_section.lower():
+                    links = child.find_all("a", href=True)
+                    for a in links:
+                        a_txt = a.get_text(strip=True)
+                        href = a["href"]
+                        
+                        if a_txt == "WatchMultiQuality":
+                            extra_results.append({
+                                "site": "RareAnimes - Watch (MultiQuality)",
+                                "status": "FOUND",
+                                "title": f"Direct Watch Stream ({a_txt})",
+                                "url": href,
+                                "score": 100.0
+                            })
+                        elif a_txt == "StreamBeta":
+                            extra_results.append({
+                                "site": "RareAnimes - Stream (Beta)",
+                                "status": "FOUND",
+                                "title": f"Direct Watch Stream ({a_txt})",
+                                "url": href,
+                                "score": 100.0
+                            })
+                        elif a_txt == "DLBeta" and purpose == "download":
+                            extra_results.append({
+                                "site": "RareAnimes - Download (Fast)",
+                                "status": "FOUND",
+                                "title": f"Direct Fast Download ({a_txt})",
+                                "url": href,
+                                "score": 100.0
+                            })
+                        elif a_txt == "Mega" and purpose == "download":
+                            extra_results.append({
+                                "site": "RareAnimes - Download (Mega)",
+                                "status": "FOUND",
+                                "title": f"Direct Mega Download ({a_txt})",
+                                "url": href,
+                                "score": 100.0
+                            })
+    except Exception as e:
+        safe_print(f"RareAnimes deep scraping exception: {e}")
+        
+    return extra_results
+
+def scrape_rareanimes_anime(target_movie, excluded):
+    import requests
+    from bs4 import BeautifulSoup
+    from urllib.parse import quote_plus, urljoin
+    import re
+    
+    query_clean = re.sub(r"\s*\(\d{4}\)\s*", "", target_movie).strip()
+    search_url = f"https://www.rareanimes.mov/?s={quote_plus(query_clean)}"
+    
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/137.0 Safari/537.36"
+        )
+    }
+    
+    fallback_result = {
+        "site": "RareAnimes",
+        "status": "FOUND",
+        "title": f"Search '{query_clean}' on RareAnimes",
+        "url": search_url,
+        "score": 100.0
+    }
+    
+    if "rareanimes" in excluded:
+        return []
+        
+    try:
+        r = requests.get(search_url, headers=headers, timeout=12)
+        if r.status_code == 200:
+            soup = BeautifulSoup(r.text, "html.parser")
+            
+            links = []
+            for a in soup.find_all("a", href=True):
+                href = urljoin("https://www.rareanimes.mov", a["href"])
+                if href.startswith("https://www.rareanimes.mov/") and not any(x in href for x in ["/category/", "/tag/", "/author/", "/page/", "/feed/", "/wp-", "#", "?reply", "?p="]):
+                    txt = a.get_text(strip=True)
+                    if txt and len(txt) > 3:
+                        links.append((txt, href))
+                        
+            best_match = None
+            best_score = 0
+            for txt, href in links:
+                score = calculate_token_set_ratio(query_clean, txt)
+                if score > best_score:
+                    best_score = score
+                    best_match = (txt, href)
+                    
+            if best_match and best_score >= 80:
+                post_title, post_url = best_match
+                main_link = {
+                    "site": "RareAnimes",
+                    "status": "FOUND",
+                    "title": post_title,
+                    "url": post_url,
+                    "score": round(best_score, 2)
+                }
+                extra = deep_scrape_rareanimes(post_url, "watch")
+                return [main_link] + extra
+    except Exception as e:
+        safe_print(f"RareAnimes anime search scraper exception: {e}")
+        
+    return [fallback_result]
 
 # ----------------------------------------------------
 # Main Search Execution Function (Exportable)
@@ -1307,16 +1469,20 @@ def run_movie_search(target_movie, filter_purpose=None, filter_language=None, ex
                 if site_name.lower() in excluded:
                     continue
                     
-                search_url = build_search_url(line_str, query_clean)
-                
-                results.append({
-                    "site": site_name,
-                    "status": "FOUND",
-                    "title": f"Search '{query_clean}' on {site_name}",
-                    "url": search_url,
-                    "score": 100.0
-                })
-                safe_print(f"[SITE_COMPLETE] {site_name} | FOUND")
+                if site_name.lower() == "rareanimes":
+                    anime_results = scrape_rareanimes_anime(target_movie, excluded)
+                    results.extend(anime_results)
+                    safe_print(f"[SITE_COMPLETE] {site_name} | FOUND")
+                else:
+                    search_url = build_search_url(line_str, query_clean)
+                    results.append({
+                        "site": site_name,
+                        "status": "FOUND",
+                        "title": f"Search '{query_clean}' on {site_name}",
+                        "url": search_url,
+                        "score": 100.0
+                    })
+                    safe_print(f"[SITE_COMPLETE] {site_name} | FOUND")
         else:
             safe_print(f"Anime file not found: {file_to_load}")
             
@@ -1384,6 +1550,16 @@ def run_movie_search(target_movie, filter_purpose=None, filter_language=None, ex
                     "error": str(e)
                 })
                 
+    # Deep scrape RareAnimes if found in search results
+    rareanimes_found = next((res for res in results if res.get("site") == "RareAnimes" and res.get("status") == "FOUND"), None)
+    if rareanimes_found:
+        movie_url = rareanimes_found["url"]
+        safe_print(f"\n[RareAnimes] Deep scraping links from: {movie_url}")
+        extra_links = deep_scrape_rareanimes(movie_url, filter_purpose)
+        if extra_links:
+            safe_print(f"[RareAnimes] Extracted {len(extra_links)} direct download/stream links successfully.")
+            results.extend(extra_links)
+            
     # RareMoviesFinder Fallback Search
     found_any = any(res.get("status") == "FOUND" for res in results)
     if not found_any:
