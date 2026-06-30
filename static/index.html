@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LightHouse</title>
     <!-- Vector SVG favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M4,20 C4,19.45 4.45,19 5,19 L19,19 C19.55,19 20,19.45 20,20 C20,20.55 19.55,21 19,21 L5,21 C4.45,21 4,20.55 4,20 Z'/%3E%3Cpath d='M9.5,8 L14.5,8 C14.9,8 15.2,8.3 15.15,8.7 L16.8,17 C16.85,17.5 16.45,18 15.9,18 L8.1,18 C7.55,18 7.15,17.5 7.2,17 L8.85,8.7 C8.8,8.3 9.1,8 9.5,8 Z'/%3E%3Cpath d='M7,7 C7,6.45 7.45,6 8,6 L16,6 C16.55,6 17,6.45 17,7 C17,7.55 16.55,8 16,8 L8,8 C7.45,8 7,7.55 7,7 Z'/%3E%3Cpath d='M9.5,3 C9.5,1.9 10.4,1 11.5,1 C12.6,1 13.5,1.9 13.5,3 L13.5,5 L9.5,5 L9.5,3 Z'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M4,20 C4,19.45 4.45,19 5,19 L19,19 C19.55,19 20,19.45 20,20 C20,20.55 19.55,21 19,21 L5,21 C4.45,21 4,20.55 4,20 Z'/%3E%3Cpath d='M9.5,8 L14.5,8 C14.9,8 15.2,8.3 15.15,8.7 L16.8,17 C16.85,17.5 16.45,18 15.9,18 L8.1,18 C7.55,18 7.15,17.5 7.2,17 L8.85,8.7 C8.8,8.3 9.1,8 9.5,8 Z'/%3E%3Cpath d='M7,7 C7,6.45 7.45,6 8,6 L16,6 C16.55,6 17,6.45 17,7 C17,7.55 16.55,8 16,8 L8,8 C7.45,8 7,7.55 7,7 Z'/%3E%3Cpath d='M9.5,3 C9.5,1.9 10.4,1 11.5,1 C12.6,1 13.5,1.9 13.5,3 L13.5,5 L9.5,5 L9.5,3 Z'/%3E%3C/svg%3E">
     <!-- Google Font: Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css?v=2.7">
     <script>
-    window.onerror = function(msg, url, line, col, error) {
-        var div = document.createElement('div');
-        div.style.position = 'fixed';
-        div.style.top = '0';
-        div.style.left = '0';
-        div.style.width = '100%';
-        div.style.background = '#ff453a';
-        div.style.color = '#fff';
-        div.style.padding = '20px';
-        div.style.zIndex = '99999';
-        div.style.fontFamily = 'monospace';
-        div.style.whiteSpace = 'pre-wrap';
-        div.style.fontSize = '14px';
-        div.style.lineHeight = '1.4';
-        div.innerHTML = '<strong>JS ERROR:</strong> ' + msg + '<br><em>at ' + url + ':' + line + ':' + col + '</em>';
-        document.body.appendChild(div);
-        return false;
-    };
+        window.onerror = function (msg, url, line, col, error) {
+            var div = document.createElement('div');
+            div.style.position = 'fixed';
+            div.style.top = '0';
+            div.style.left = '0';
+            div.style.width = '100%';
+            div.style.background = '#ff453a';
+            div.style.color = '#fff';
+            div.style.padding = '20px';
+            div.style.zIndex = '99999';
+            div.style.fontFamily = 'monospace';
+            div.style.whiteSpace = 'pre-wrap';
+            div.style.fontSize = '14px';
+            div.style.lineHeight = '1.4';
+            div.innerHTML = '<strong>JS ERROR:</strong> ' + msg + '<br><em>at ' + url + ':' + line + ':' + col + '</em>';
+            document.body.appendChild(div);
+            return false;
+        };
     </script>
 </head>
+
 <body>
     <div id="top-progress-bar"></div>
     <div class="glow-bg"></div>
-    
+
     <!-- Minimal Apple-Style Header -->
     <header class="app-header">
         <div class="header-container">
@@ -45,9 +49,12 @@
             <div class="brand" id="brand-logo">
                 <!-- Symmetrical inline SVG lighthouse logo matching Moctale style -->
                 <svg class="brand-logo-svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M4,20 C4,19.45 4.45,19 5,19 L19,19 C19.55,19 20,19.45 20,20 C20,20.55 19.55,21 19,21 L5,21 C4.45,21 4,20.55 4,20 Z" />
-                    <path d="M9.5,8 L14.5,8 C14.9,8 15.2,8.3 15.15,8.7 L16.8,17 C16.85,17.5 16.45,18 15.9,18 L8.1,18 C7.55,18 7.15,17.5 7.2,17 L8.85,8.7 C8.8,8.3 9.1,8 9.5,8 Z" />
-                    <path d="M7,7 C7,6.45 7.45,6 8,6 L16,6 C16.55,6 17,6.45 17,7 C17,7.55 16.55,8 16,8 L8,8 C7.45,8 7,7.55 7,7 Z" />
+                    <path
+                        d="M4,20 C4,19.45 4.45,19 5,19 L19,19 C19.55,19 20,19.45 20,20 C20,20.55 19.55,21 19,21 L5,21 C4.45,21 4,20.55 4,20 Z" />
+                    <path
+                        d="M9.5,8 L14.5,8 C14.9,8 15.2,8.3 15.15,8.7 L16.8,17 C16.85,17.5 16.45,18 15.9,18 L8.1,18 C7.55,18 7.15,17.5 7.2,17 L8.85,8.7 C8.8,8.3 9.1,8 9.5,8 Z" />
+                    <path
+                        d="M7,7 C7,6.45 7.45,6 8,6 L16,6 C16.55,6 17,6.45 17,7 C17,7.55 16.55,8 16,8 L8,8 C7.45,8 7,7.55 7,7 Z" />
                     <path d="M9.5,3 C9.5,1.9 10.4,1 11.5,1 C12.6,1 13.5,1.9 13.5,3 L13.5,5 L9.5,5 L9.5,3 Z" />
                 </svg>
                 <span class="brand-text">LightHouse</span>
@@ -62,18 +69,21 @@
             <div class="homepage-doodle-container">
                 <img src="/static/doodle.png" alt="Cinema Doodle" class="homepage-doodle-img">
             </div>
-            <p class="hero-subtext">Find direct download and streaming links for your favorite movies and series instantly.</p>
-            
+            <p class="hero-subtext">Find direct download and streaming links for any movies and series.</p>
+
             <div class="hero-search-container">
                 <div class="search-bar-box">
-                    <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    <input type="text" id="search-input" placeholder="Search movies, series, directors..." autocomplete="off">
+                    <input type="text" id="search-input" placeholder="Search movies, series, or anime..."
+                        autocomplete="off">
                     <!-- Symmetrical Search Action Button -->
                     <button class="search-action-btn" id="search-action-btn" title="Search">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
@@ -90,7 +100,8 @@
         <div class="split-layout">
             <div class="main-feed-column">
                 <div class="section-header">
-                    <svg class="section-icon megaphone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg class="section-icon megaphone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="23 7 16 12 23 17 23 7"></polygon>
                         <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
                     </svg>
@@ -111,14 +122,16 @@
     <div class="movie-details-page" id="movie-details-page" style="display: none;">
         <!-- Back Arrow Button overlaying the banner -->
         <button class="back-to-home-btn" id="back-to-home-btn" title="Back to Explore">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" style="width: 20px; height: 20px;">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
         </button>
         <!-- Symmetrical Search button in top right corner -->
         <button class="details-search-btn" id="details-search-btn" title="Search Release">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" style="width: 20px; height: 20px;">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
@@ -137,14 +150,14 @@
                 </div>
                 <div class="modal-title-metadata-wrap">
                     <div class="modal-meta-row" id="modal-top-meta">
-                        <span id="modal-runtime">Movie</span> • 
-                        <span id="modal-year">N/A</span> • 
+                        <span id="modal-runtime">Movie</span> •
+                        <span id="modal-year">N/A</span> •
                         <span id="modal-rating">N/A</span>
                     </div>
                     <h1 id="modal-title">Movie Title</h1>
                     <p id="modal-original-title" class="modal-original-title" style="display: none;"></p>
                     <p id="modal-tagline" class="modal-tagline"></p>
-                    
+
                     <!-- Mockup Style Two-Column Specs Grid -->
                     <div class="modal-spec-grid">
                         <div class="spec-col">
@@ -200,21 +213,26 @@
                         <div class="lighthouse-svg-container">
                             <svg class="lighthouse-svg" viewBox="0 0 100 120" fill="none" stroke="currentColor">
                                 <!-- Base/Rocks -->
-                                <path d="M 20 110 Q 50 100 80 110 L 80 115 L 20 115 Z" fill="#1b1b22" stroke="#252530" stroke-width="1.5"/>
+                                <path d="M 20 110 Q 50 100 80 110 L 80 115 L 20 115 Z" fill="#1b1b22" stroke="#252530"
+                                    stroke-width="1.5" />
                                 <!-- Foundation -->
-                                <rect x="35" y="90" width="30" height="15" rx="1.5" fill="#2d2d3a" stroke="#3d3d4e" stroke-width="1.5"/>
+                                <rect x="35" y="90" width="30" height="15" rx="1.5" fill="#2d2d3a" stroke="#3d3d4e"
+                                    stroke-width="1.5" />
                                 <!-- Tower body -->
-                                <path d="M 38 90 L 43 35 L 57 35 L 62 90 Z" fill="url(#towerGradient)" stroke="#4a4a5e" stroke-width="1.5"/>
+                                <path d="M 38 90 L 43 35 L 57 35 L 62 90 Z" fill="url(#towerGradient)" stroke="#4a4a5e"
+                                    stroke-width="1.5" />
                                 <!-- Gallery deck -->
-                                <rect x="40" y="31" width="20" height="4" rx="1" fill="#1b1b22" stroke="#252530" stroke-width="1.5"/>
+                                <rect x="40" y="31" width="20" height="4" rx="1" fill="#1b1b22" stroke="#252530"
+                                    stroke-width="1.5" />
                                 <!-- Lantern Room -->
-                                <rect x="44" y="19" width="12" height="12" rx="1" fill="rgba(191, 90, 242, 0.15)" stroke="#bf5af2" stroke-width="1.5"/>
-                                <line x1="50" y1="19" x2="50" y2="31" stroke="#bf5af2" stroke-width="1.5"/>
+                                <rect x="44" y="19" width="12" height="12" rx="1" fill="rgba(191, 90, 242, 0.15)"
+                                    stroke="#bf5af2" stroke-width="1.5" />
+                                <line x1="50" y1="19" x2="50" y2="31" stroke="#bf5af2" stroke-width="1.5" />
                                 <!-- Dome Roof -->
-                                <path d="M 44 19 Q 50 8 56 19 Z" fill="#1b1b22" stroke="#252530" stroke-width="1.5"/>
+                                <path d="M 44 19 Q 50 8 56 19 Z" fill="#1b1b22" stroke="#252530" stroke-width="1.5" />
                                 <!-- Light Glow Circle -->
-                                <circle cx="50" cy="25" r="3.5" fill="#ffd60a" class="lighthouse-bulb-glow"/>
-                                
+                                <circle cx="50" cy="25" r="3.5" fill="#ffd60a" class="lighthouse-bulb-glow" />
+
                                 <defs>
                                     <linearGradient id="towerGradient" x1="0" y1="0" x2="1" y2="0">
                                         <stop offset="0%" stop-color="#2d2d3a" />
@@ -227,7 +245,7 @@
                     </div>
 
                     <div class="progress-meta">
-                        <span id="progress-status-text">Locating direct streams, please wait...</span>
+                        <span id="progress-status-text">Finding direct streams, please wait...</span>
                         <span id="progress-pct">0%</span>
                     </div>
                     <div class="progress-track">
@@ -238,7 +256,7 @@
                 <!-- Resolved Direct Links List (Hidden during progress load) -->
                 <div class="discovered-links-block" id="discovered-links-block" style="display: none;">
                     <div class="links-block-header">
-                        <span>Discovered Direct Streams</span>
+                        <span>Discovered Direct Links</span>
                         <span id="links-count" class="links-count-badge">0 found</span>
                     </div>
                     <div id="discovered-links" class="discovered-links-list">
@@ -247,10 +265,13 @@
                 </div>
 
                 <!-- Resolved Rare Networks Streams List (Rendered separately) -->
-                <div class="discovered-links-block rare-links-block" id="rare-links-block" style="display: none; margin-top: 1.5rem; border-color: rgba(191,90,242,0.25);">
+                <div class="discovered-links-block rare-links-block" id="rare-links-block"
+                    style="display: none; margin-top: 1.5rem; border-color: rgba(191,90,242,0.25);">
                     <div class="links-block-header" style="border-bottom-color: rgba(191,90,242,0.15);">
-                        <span style="color: var(--color-purple);"><i class="fa-solid fa-wand-magic-sparkles"></i> Rare Networks Stream Links</span>
-                        <span id="rare-links-count" class="links-count-badge" style="background: rgba(191,90,242,0.2); color: var(--color-purple);">0 found</span>
+                        <span style="color: var(--color-purple);"><i class="fa-solid fa-wand-magic-sparkles"></i> Rare
+                            Networks Stream Links</span>
+                        <span id="rare-links-count" class="links-count-badge"
+                            style="background: rgba(191,90,242,0.2); color: var(--color-purple);">0 found</span>
                     </div>
                     <div id="rare-discovered-links" class="discovered-links-list">
                         <!-- Rare stream cards filled dynamically -->
@@ -309,13 +330,14 @@
             <div class="dash-hero-header">
                 <div>
                     <h1 class="dash-title">Scraper Node Status</h1>
-                    <p class="dash-subtext">Manage active scrape targets, view language/purpose attributes, and track network ping statistics.</p>
+                    <p class="dash-subtext">Manage active scrape targets, view language/purpose attributes, and track
+                        network ping statistics.</p>
                 </div>
                 <button class="btn-ping-all" id="btn-ping-all">
                     <i class="fa-solid fa-network-wired"></i> Ping All Sites
                 </button>
             </div>
-            
+
             <div class="dash-stats-bar">
                 <div class="stat-card">
                     <span class="stat-label">Total Indexers</span>
@@ -330,7 +352,7 @@
                     <span class="stat-value offline-val" id="stat-offline-sites">0</span>
                 </div>
             </div>
-            
+
             <div class="sites-dash-grid" id="sites-dash-grid">
                 <!-- Dynamically loaded site cards -->
             </div>
@@ -339,11 +361,14 @@
 
     <footer class="app-footer">
         <div class="footer-content">
-            <p class="footer-creator">Created by <span class="creator-name">HttpPirate</span></p>
-            <p class="footer-contact">For project inquiries, technical feedback, or to report an error, contact me at my email: <a href="mailto:httppirate@proton.me" class="footer-email-link">httppirate@proton.me</a></p>
+            <p class="footer-creator">Created by <span class="creator-name">Afroz Alam</span></p>
+            <p class="footer-contact">For project inquiries, technical feedback, or to report an error, contact me at my
+                email: <a href="mailto:httppirate@protonmail.com"
+                    class="footer-email-link">httppirate@protonmail.com</a></p>
         </div>
     </footer>
 
     <script src="/static/app.js?v=3.4"></script>
 </body>
+
 </html>
