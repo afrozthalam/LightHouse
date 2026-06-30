@@ -1997,7 +1997,7 @@ body {
 
 /* Ocean waves progress bar track & fill styles */
 .progress-track {
-    height: 22px !important; /* Increased height for greater visual impact */
+    height: 26px !important;
     background: rgba(191, 90, 242, 0.03) !important;
     border-radius: 50px !important;
     overflow: hidden !important;
@@ -2006,25 +2006,56 @@ body {
 }
 
 .progress-fill {
+    position: relative;
     height: 100% !important;
-    background: linear-gradient(90deg, #5e5ce6 0%, #bf5af2 50%, #5e5ce6 100%) !important;
-    background-size: 200px 100% !important;
-    /* Three-layered wave SVG with different offsets and sizes to create parallax ocean wave movement */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 28" preserveAspectRatio="none"><path d="M0,12 C30,19 35,6 60,12 C95,19 90,6 120,12 L120,28 L0,28 Z" fill="rgba(255,255,255,0.12)"/><path d="M0,16 C45,23 35,9 80,16 C105,19 100,9 120,16 L120,28 L0,28 Z" fill="rgba(255,255,255,0.18)"/><path d="M0,20 C35,26 45,13 75,20 C95,23 105,13 120,20 L120,28 L0,28 Z" fill="rgba(255,255,255,0.25)"/></svg>') !important;
-    animation: moveOceanWaves 1.2s linear infinite, fillGlow 2.5s infinite ease-in-out alternate !important;
+    background: #0e0f14 !important; /* Deep ocean background depth */
     transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
     border-radius: 50px !important;
-    box-shadow: 0 0 15px rgba(191, 90, 242, 0.6), inset 0 1px 2px rgba(255,255,255,0.2);
+    overflow: hidden !important;
+    box-shadow: 0 0 15px rgba(191, 90, 242, 0.5);
 }
 
-@keyframes moveOceanWaves {
-    0% { background-position-x: 0px; }
-    100% { background-position-x: 200px; }
+/* Pseudo-elements for layered sloshing parallax water waves */
+.progress-fill::before,
+.progress-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    background-repeat: repeat-x;
+    background-size: 50% 100%;
+    pointer-events: none;
+}
+
+/* Back Wave Layer (Fast, translucent violet) */
+.progress-fill::before {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 28" preserveAspectRatio="none"><path d="M0,12 Q30,22 60,12 T120,12 L120,28 L0,28 Z" fill="rgba(191, 90, 242, 0.5)"/></svg>') !important;
+    animation: moveWaveBack 1.6s infinite linear !important;
+    z-index: 1;
+}
+
+/* Front Wave Layer (Slower, opaque bright blue-purple) */
+.progress-fill::after {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 28" preserveAspectRatio="none"><path d="M0,15 Q30,7 60,15 T120,15 L120,28 L0,28 Z" fill="rgba(94, 92, 230, 0.95)"/></svg>') !important;
+    animation: moveWaveFront 2.4s infinite linear, fillGlow 2.5s infinite ease-in-out alternate !important;
+    z-index: 2;
+}
+
+@keyframes moveWaveBack {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+@keyframes moveWaveFront {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
 }
 
 @keyframes fillGlow {
-    0% { filter: brightness(0.95) drop-shadow(0 0 4px rgba(191, 90, 242, 0.5)); }
-    100% { filter: brightness(1.15) drop-shadow(0 0 12px rgba(191, 90, 242, 0.8)); }
+    0% { filter: brightness(0.95) drop-shadow(0 0 4px rgba(191, 90, 242, 0.4)); }
+    100% { filter: brightness(1.15) drop-shadow(0 0 12px rgba(191, 90, 242, 0.7)); }
 }
 
 /* ==========================================================================
