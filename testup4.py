@@ -95,7 +95,7 @@ SITES = [
     },
     {
         "name": "Movies4U (Finance)",
-        "purpose": ["download", "watch"],
+        "purpose": ["download"],
         "language": ["hindi", "english"],
         "methods": [
             {
@@ -199,7 +199,7 @@ SITES = [
     },
     {
         "name": "TheMoviesFlix",
-        "purpose": ["download", "watch"],
+        "purpose": ["download"],
         "language": ["hindi", "english"],
         "methods": [
             {
