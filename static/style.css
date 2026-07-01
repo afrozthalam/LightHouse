@@ -227,27 +227,23 @@ body {
 /* Symmetrical Search Action Button - Beautiful Solid Gradient Pill */
 .search-action-btn {
     position: relative;
-    background: rgba(191, 90, 242, 0.12) !important;
-    border: 1.5px solid rgba(191, 90, 242, 0.45) !important;
-    border-radius: 26px; /* Half of 52px height for perfect capsule shape */
-    padding: 0 28px;
-    height: 52px; /* Set height to leave 10px spacing inside 72px parent */
+    background: radial-gradient(circle at 30% 30%, #bf5af2 0%, #5e5ce6 70%, #3a30ba 100%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 50% !important;
+    width: 52px !important;
+    height: 52px !important;
+    padding: 0 !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    color: #dfd7fc;
-    font-family: var(--font-main);
-    font-weight: 800;
-    font-size: 1.02rem;
-    letter-spacing: -0.2px;
+    color: #fff !important;
     cursor: pointer;
     margin-left: 10px;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     outline: none;
     flex-shrink: 0;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(191, 90, 242, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 15px rgba(94, 92, 230, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.4);
 }
 
 .search-action-btn::before {
@@ -257,7 +253,7 @@ body {
     left: -150%;
     width: 50%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
     transform: skewX(-20deg);
     transition: 0.75s;
 }
@@ -267,15 +263,13 @@ body {
 }
 
 .search-action-btn:hover {
-    background: linear-gradient(135deg, #5e5ce6 0%, #bf5af2 100%) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    color: #fff !important;
-    transform: translateY(-2px) scale(1.025);
-    box-shadow: 0 10px 25px rgba(191, 90, 242, 0.55), 0 0 12px rgba(191, 90, 242, 0.25);
+    transform: translateY(-2.5px) scale(1.08);
+    box-shadow: 0 12px 30px rgba(191, 90, 242, 0.65), 0 0 20px rgba(94, 92, 230, 0.45), inset 0 1.5px 3px rgba(255, 255, 255, 0.55) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
 }
 
 .search-action-btn:active {
-    transform: translateY(0.5px) scale(0.98);
+    transform: translateY(0.5px) scale(0.95);
 }
 
 .search-btn-svg {
@@ -1875,7 +1869,7 @@ body {
 }
 
 .homepage-doodle-img {
-    max-width: 440px; /* Reduced from 580px for a clean, non-overwhelming size on desktop */
+    max-width: 300px; /* Reduced further to 300px for a perfectly proportioned size on desktop */
     width: 100%;
     height: auto;
     transition: transform 0.3s ease;
@@ -1934,11 +1928,10 @@ body {
     
     /* Sleek violet search button on mobile */
     .search-action-btn {
-        height: 52px !important; /* High-end pill action button height matched to box container */
-        border-radius: 26px !important;
-        padding: 0 20px !important;
-        font-size: 0.95rem !important;
-        gap: 8px !important;
+        width: 52px !important;
+        height: 52px !important;
+        border-radius: 50% !important;
+        padding: 0 !important;
         box-shadow: 0 3px 10px rgba(191, 90, 242, 0.3) !important;
     }
     

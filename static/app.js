@@ -167,6 +167,15 @@ document.addEventListener('DOMContentLoaded', () => {
         searchSuggestions.classList.remove('active');
         searchSuggestions.innerHTML = '';
         
+        // Hide other homepage sections when search is active
+        const academySec = document.getElementById('academy-winners-section');
+        const emmySec = document.getElementById('emmy-winners-section');
+        const animeSec = document.getElementById('top-anime-section');
+        
+        if (academySec) academySec.style.display = 'none';
+        if (emmySec) emmySec.style.display = 'none';
+        if (animeSec) animeSec.style.display = 'none';
+        
         if (!query) {
             loadPopularReleases();
             return;
@@ -384,38 +393,67 @@ document.addEventListener('DOMContentLoaded', () => {
         searchSuggestions.classList.add('active');
     }
 
-    function renderSkeletons() {
-        movieGrid.innerHTML = '';
+    function renderSkeletons(target = movieGrid) {
+        if (!target) return;
+        target.innerHTML = '';
         for (let i = 0; i < 4; i++) {
             const card = document.createElement('div');
             card.className = 'skeleton-card';
-            movieGrid.appendChild(card);
+            target.appendChild(card);
         }
     }
 
     async function loadPopularReleases() {
         gridTitle.textContent = "Trending";
-        renderSkeletons();
+        
+        // Show sections
+        const academySec = document.getElementById('academy-winners-section');
+        const emmySec = document.getElementById('emmy-winners-section');
+        const animeSec = document.getElementById('top-anime-section');
+        
+        if (academySec) academySec.style.display = 'block';
+        if (emmySec) emmySec.style.display = 'block';
+        if (animeSec) animeSec.style.display = 'block';
+        
+        // Render skeletons in all four grids
+        renderSkeletons(movieGrid);
+        if (academySec) renderSkeletons(document.getElementById('academy-grid'));
+        if (emmySec) renderSkeletons(document.getElementById('emmy-grid'));
+        if (animeSec) renderSkeletons(document.getElementById('anime-grid'));
         
         topProgressBar.start();
         try {
-            const r = await fetch('/api/trending-movies');
-            const data = await r.json();
-            const results = data.results || [];
+            // Load trending in parallel with the other lists!
+            const [rTrending, rAcademy, rEmmy, rAnime] = await Promise.all([
+                fetch('/api/trending-movies'),
+                fetch('/api/academy-winner-movies'),
+                fetch('/api/emmy-winner-series'),
+                fetch('/api/top-anime')
+            ]);
             
-            // Grid gets top 8 trending items
-            renderMovieGrid(results.slice(0, 8));
+            const [dataTrending, dataAcademy, dataEmmy, dataAnime] = await Promise.all([
+                rTrending.json(),
+                rAcademy.json(),
+                rEmmy.json(),
+                rAnime.json()
+            ]);
+            
+            renderMovieGrid(dataTrending.results || [], movieGrid);
+            if (academySec) renderMovieGrid((dataAcademy.results || []).slice(0, 8), document.getElementById('academy-grid'));
+            if (emmySec) renderMovieGrid((dataEmmy.results || []).slice(0, 8), document.getElementById('emmy-grid'));
+            if (animeSec) renderMovieGrid((dataAnime.results || []).slice(0, 8), document.getElementById('anime-grid'));
         } catch (e) {
+            console.error("Failed to load feed:", e);
             movieGrid.innerHTML = `<div class="grid-placeholder"><p class="error">Failed to load releases: ${e.message}</p></div>`;
         } finally {
             topProgressBar.done();
         }
     }
 
-    function renderMovieGrid(movies) {
-        movieGrid.innerHTML = '';
+    function renderMovieGrid(movies, targetGrid = movieGrid) {
+        targetGrid.innerHTML = '';
         if (movies.length === 0) {
-            movieGrid.innerHTML = '<div class="grid-placeholder"><p>No movies trending</p></div>';
+            targetGrid.innerHTML = '<div class="grid-placeholder"><p>No releases found</p></div>';
             return;
         }
 
@@ -444,28 +482,30 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             card.addEventListener('click', () => openMovieDetails(movie));
-            movieGrid.appendChild(card);
+            targetGrid.appendChild(card);
         });
 
         // Always show the force search trigger bar at the bottom of search result pages
-        const query = searchInput.value.trim();
-        const isTrending = gridTitle.textContent.includes('Trending');
-        if (query && !isTrending) {
-            const bottomPrompt = document.createElement('div');
-            bottomPrompt.className = 'force-search-bottom-prompt';
-            bottomPrompt.style.gridColumn = '1 / -1';
-            bottomPrompt.innerHTML = `
-                <p>Can't find the exact movie or series version you want? Try Force Search to bypass listings and search indices directly.</p>
-                <button class="btn-force-search" id="btn-force-search-results-bottom">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
-                </button>
-            `;
-            movieGrid.appendChild(bottomPrompt);
-            const btn = document.getElementById('btn-force-search-results-bottom');
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    triggerForceSearch(query);
-                });
+        if (targetGrid === movieGrid) {
+            const query = searchInput.value.trim();
+            const isTrending = gridTitle.textContent.includes('Trending');
+            if (query && !isTrending) {
+                const bottomPrompt = document.createElement('div');
+                bottomPrompt.className = 'force-search-bottom-prompt';
+                bottomPrompt.style.gridColumn = '1 / -1';
+                bottomPrompt.innerHTML = `
+                    <p>Can't find the exact movie or series version you want? Try Force Search to bypass listings and search indices directly.</p>
+                    <button class="btn-force-search" id="btn-force-search-results-bottom">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Force Search "${query}"
+                    </button>
+                `;
+                movieGrid.appendChild(bottomPrompt);
+                const btn = document.getElementById('btn-force-search-results-bottom');
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        triggerForceSearch(query);
+                    });
+                }
             }
         }
     }

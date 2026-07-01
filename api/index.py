@@ -108,6 +108,60 @@ def trending_movies():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+@app.route('/api/academy-winner-movies')
+def academy_winner_movies():
+    url = f"https://api.tmdb.org/3/discover/movie?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=8000"
+    try:
+        r = requests.get(url, timeout=5)
+        r.raise_for_status()
+        data = r.json()
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/emmy-winner-series')
+def emmy_winner_series():
+    # TV shows, high rating, non-Japanese to avoid anime overlap
+    url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=1000"
+    try:
+        r = requests.get(url, timeout=5)
+        r.raise_for_status()
+        data = r.json()
+        
+        filtered_results = []
+        for item in data.get('results', []):
+            if item.get('original_language') != 'ja':
+                item['title'] = item.get('name')
+                item['original_title'] = item.get('original_name')
+                item['release_date'] = item.get('first_air_date')
+                item['media_type'] = 'tv'
+                filtered_results.append(item)
+        data['results'] = filtered_results
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/top-anime')
+def top_anime():
+    url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200"
+    try:
+        r = requests.get(url, timeout=5)
+        r.raise_for_status()
+        data = r.json()
+        
+        filtered_results = []
+        for item in data.get('results', []):
+            item['title'] = item.get('name')
+            item['original_title'] = item.get('original_name')
+            item['release_date'] = item.get('first_air_date')
+            item['media_type'] = 'tv'
+            filtered_results.append(item)
+        data['results'] = filtered_results
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/movie-details/<int:movie_id>')
 def movie_details(movie_id):
     media_type = request.args.get('type', 'movie')

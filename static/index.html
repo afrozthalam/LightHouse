@@ -15,7 +15,7 @@
         rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/style.css?v=3.0">
+    <link rel="stylesheet" href="/static/style.css?v=3.1">
     <script>
         window.onerror = function (msg, url, line, col, error) {
             var div = document.createElement('div');
@@ -106,7 +106,6 @@
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
-                        <span>Search</span>
                     </button>
                 </div>
                 <!-- Live Suggestions Dropdown floating below search input -->
@@ -119,6 +118,7 @@
         <!-- Symmetrical Full-Width Feed Grid -->
         <div class="split-layout">
             <div class="main-feed-column">
+                <!-- Section 1: Trending / Search Results -->
                 <div class="section-header">
                     <svg class="section-icon megaphone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -133,6 +133,67 @@
                     <div class="skeleton-card"></div>
                     <div class="skeleton-card"></div>
                     <div class="skeleton-card"></div>
+                </div>
+
+                <!-- Section 2: Top Academy Winner Movies -->
+                <div class="homepage-feed-section" id="academy-winners-section" style="margin-top: 48px;">
+                    <div class="section-header">
+                        <svg class="section-icon oscar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ffb86c;">
+                            <circle cx="12" cy="8" r="7"></circle>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                        <h2 class="feed-title">Top Academy Winner Movies</h2>
+                    </div>
+                    <div id="academy-grid" class="movie-grid">
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Top Emmy Winner Series -->
+                <div class="homepage-feed-section" id="emmy-winners-section" style="margin-top: 48px;">
+                    <div class="section-header">
+                        <svg class="section-icon emmy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #bf5af2;">
+                            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                            <line x1="7" y1="2" x2="7" y2="22"></line>
+                            <line x1="17" y1="2" x2="17" y2="22"></line>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <line x1="2" y1="7" x2="7" y2="7"></line>
+                            <line x1="2" y1="17" x2="7" y2="17"></line>
+                            <line x1="17" y1="17" x2="22" y2="17"></line>
+                            <line x1="17" y1="7" x2="22" y2="7"></line>
+                        </svg>
+                        <h2 class="feed-title">Top Emmy Winner Series</h2>
+                    </div>
+                    <div id="emmy-grid" class="movie-grid">
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Top Anime -->
+                <div class="homepage-feed-section" id="top-anime-section" style="margin-top: 48px;">
+                    <div class="section-header">
+                        <svg class="section-icon anime-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ff2d55;">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        <h2 class="feed-title">Top Anime</h2>
+                    </div>
+                    <div id="anime-grid" class="movie-grid">
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -388,7 +449,7 @@
         </div>
     </footer>
 
-    <script src="/static/app.js?v=3.5"></script>
+    <script src="/static/app.js?v=3.6"></script>
 </body>
 
 </html>
