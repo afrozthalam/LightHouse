@@ -85,78 +85,97 @@ def search_movies():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-def fetch_tmdb_paginated(base_url, client_page):
+def fetch_and_filter_tmdb(base_url, client_page, filter_fn=None):
+    collected = []
+    tmdb_page = 1
+    target_count = 14 if client_page is None else client_page * 21
+    
+    total_results_estimate = 500
+    
+    while len(collected) < target_count:
+        connector = "&" if "?" in base_url else "?"
+        url = f"{base_url}{connector}page={tmdb_page}"
+        try:
+            r = requests.get(url, timeout=5)
+            r.raise_for_status()
+            data = r.json()
+        except Exception as e:
+            break
+            
+        results = data.get('results', [])
+        if not results:
+            break
+            
+        total_results_estimate = data.get('total_results', 500)
+            
+        for item in results:
+            if filter_fn:
+                keep, normalized_item = filter_fn(item)
+                if keep:
+                    collected.append(normalized_item)
+            else:
+                collected.append(item)
+                
+        tmdb_page += 1
+        if tmdb_page > 25: # safety break
+            break
+            
     if client_page is None:
-        # Default homepage load: fetch page 1 only
-        r = requests.get(f"{base_url}&page=1", timeout=5)
-        r.raise_for_status()
-        return r.json()
-    
-    # Section explorer load: fetch exactly 21 items across TMDB pages
-    start_idx = (client_page - 1) * 21
-    end_idx = client_page * 21
-    
-    tmdb_p1 = (start_idx // 20) + 1
-    tmdb_p2 = ((end_idx - 1) // 20) + 1
-    
-    # Fetch both TMDB pages
-    try:
-        r1 = requests.get(f"{base_url}&page={tmdb_p1}", timeout=5)
-        r1.raise_for_status()
-        d1 = r1.json()
-    except Exception as e:
-        d1 = {'results': []}
+        return {
+            'results': collected[:14]
+        }
+    else:
+        start_idx = (client_page - 1) * 21
+        end_idx = client_page * 21
+        sliced = collected[start_idx:end_idx]
         
-    try:
-        r2 = requests.get(f"{base_url}&page={tmdb_p2}", timeout=5)
-        r2.raise_for_status()
-        d2 = r2.json()
-    except Exception as e:
-        d2 = {'results': []}
+        # Calculate total pages relative to filtered results
+        # If we have a filter, reduce the total estimate accordingly
+        filtered_ratio = len(collected) / ((tmdb_page - 1) * 20) if (tmdb_page > 1) else 1.0
+        filtered_total = total_results_estimate * filtered_ratio
         
-    results1 = d1.get('results', [])
-    results2 = d2.get('results', [])
-    
-    joined = results1 + results2
-    
-    offset = (tmdb_p1 - 1) * 20
-    slice_start = start_idx - offset
-    slice_end = end_idx - offset
-    
-    sliced_results = joined[slice_start:slice_end]
-    
-    # Calculate total pages for 21-item counts
-    total_results = d1.get('total_results', 0)
-    import math
-    total_pages = math.ceil(total_results / 21) if total_results else 20
-    
-    # Construct combined data dictionary
-    combined_data = {
-        'results': sliced_results,
-        'total_pages': total_pages,
-        'page': client_page,
-        'total_results': total_results
-    }
-    return combined_data
+        import math
+        total_pages = math.ceil(filtered_total / 21) if filtered_total else 20
+        total_pages = min(max(total_pages, 1), 50) # sensible cap
+        
+        return {
+            'results': sliced,
+            'total_pages': total_pages,
+            'page': client_page
+        }
+
+def trending_filter(item):
+    media_type = item.get('media_type')
+    if media_type in ['movie', 'tv']:
+        if media_type == 'tv':
+            item['title'] = item.get('name')
+            item['original_title'] = item.get('original_name')
+            item['release_date'] = item.get('first_air_date')
+        return True, item
+    return False, None
+
+def emmy_filter(item):
+    if item.get('original_language') != 'ja':
+        item['title'] = item.get('name')
+        item['original_title'] = item.get('original_name')
+        item['release_date'] = item.get('first_air_date')
+        item['media_type'] = 'tv'
+        return True, item
+    return False, None
+
+def anime_filter(item):
+    item['title'] = item.get('name')
+    item['original_title'] = item.get('original_name')
+    item['release_date'] = item.get('first_air_date')
+    item['media_type'] = 'tv'
+    return True, item
 
 @app.route('/api/trending-movies')
 def trending_movies():
     client_page = request.args.get('page', type=int)
     base_url = f"https://api.tmdb.org/3/trending/all/week?api_key={TMDB_API_KEY}"
     try:
-        data = fetch_tmdb_paginated(base_url, client_page)
-        
-        # Normalize and filter
-        filtered_results = []
-        for item in data.get('results', []):
-            media_type = item.get('media_type')
-            if media_type in ['movie', 'tv']:
-                if media_type == 'tv':
-                    item['title'] = item.get('name')
-                    item['original_title'] = item.get('original_name')
-                    item['release_date'] = item.get('first_air_date')
-                filtered_results.append(item)
-        data['results'] = filtered_results
+        data = fetch_and_filter_tmdb(base_url, client_page, trending_filter)
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -166,7 +185,7 @@ def academy_winner_movies():
     client_page = request.args.get('page', type=int)
     base_url = f"https://api.tmdb.org/3/discover/movie?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=8000"
     try:
-        data = fetch_tmdb_paginated(base_url, client_page)
+        data = fetch_and_filter_tmdb(base_url, client_page, None)
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -174,20 +193,9 @@ def academy_winner_movies():
 @app.route('/api/emmy-winner-series')
 def emmy_winner_series():
     client_page = request.args.get('page', type=int)
-    # TV shows, high rating, non-Japanese to avoid anime overlap
     base_url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=1000"
     try:
-        data = fetch_tmdb_paginated(base_url, client_page)
-        
-        filtered_results = []
-        for item in data.get('results', []):
-            if item.get('original_language') != 'ja':
-                item['title'] = item.get('name')
-                item['original_title'] = item.get('original_name')
-                item['release_date'] = item.get('first_air_date')
-                item['media_type'] = 'tv'
-                filtered_results.append(item)
-        data['results'] = filtered_results
+        data = fetch_and_filter_tmdb(base_url, client_page, emmy_filter)
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -197,16 +205,7 @@ def top_anime():
     client_page = request.args.get('page', type=int)
     base_url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200"
     try:
-        data = fetch_tmdb_paginated(base_url, client_page)
-        
-        filtered_results = []
-        for item in data.get('results', []):
-            item['title'] = item.get('name')
-            item['original_title'] = item.get('original_name')
-            item['release_date'] = item.get('first_air_date')
-            item['media_type'] = 'tv'
-            filtered_results.append(item)
-        data['results'] = filtered_results
+        data = fetch_and_filter_tmdb(base_url, client_page, anime_filter)
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
