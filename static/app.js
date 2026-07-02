@@ -453,10 +453,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 rAnime.json()
             ]);
             
-            renderMovieGrid((dataTrending.results || []).slice(0, 14), movieGrid);
-            if (academySec) renderMovieGrid((dataAcademy.results || []).slice(0, 14), document.getElementById('academy-grid'));
-            if (emmySec) renderMovieGrid((dataEmmy.results || []).slice(0, 14), document.getElementById('emmy-grid'));
-            if (animeSec) renderMovieGrid((dataAnime.results || []).slice(0, 14), document.getElementById('anime-grid'));
+            const isMobile = window.innerWidth <= 768;
+            const homeLimit = isMobile ? 15 : 14;
+            
+            renderMovieGrid((dataTrending.results || []).slice(0, homeLimit), movieGrid);
+            if (academySec) renderMovieGrid((dataAcademy.results || []).slice(0, homeLimit), document.getElementById('academy-grid'));
+            if (emmySec) renderMovieGrid((dataEmmy.results || []).slice(0, homeLimit), document.getElementById('emmy-grid'));
+            if (animeSec) renderMovieGrid((dataAnime.results || []).slice(0, homeLimit), document.getElementById('anime-grid'));
         } catch (e) {
             console.error("Failed to load feed:", e);
             movieGrid.innerHTML = `<div class="grid-placeholder"><p class="error">Failed to load releases: ${e.message}</p></div>`;

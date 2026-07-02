@@ -88,7 +88,7 @@ def search_movies():
 def fetch_and_filter_tmdb(base_url, client_page, filter_fn=None):
     collected = []
     tmdb_page = 1
-    target_count = 14 if client_page is None else client_page * 21
+    target_count = 15 if client_page is None else client_page * 21
     
     total_results_estimate = 500
     
@@ -122,7 +122,7 @@ def fetch_and_filter_tmdb(base_url, client_page, filter_fn=None):
             
     if client_page is None:
         return {
-            'results': collected[:14]
+            'results': collected[:15]
         }
     else:
         start_idx = (client_page - 1) * 21
