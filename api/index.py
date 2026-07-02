@@ -18,7 +18,21 @@ load_dotenv()
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static')
 app = Flask(__name__, static_folder=STATIC_DIR)
 
-TMDB_API_KEY = os.getenv('TMDB_API_KEY', 'd6d415fbca42bcf39105eee27b397895')
+import random
+
+TMDB_API_KEYS = [
+    os.getenv('TMDB_API_KEY', 'd6d415fbca42bcf39105eee27b397895'),
+    os.getenv('TMDB_API_KEY_2', os.getenv('TMDB_API_KEY', 'd6d415fbca42bcf39105eee27b397895')),
+    os.getenv('TMDB_API_KEY_3', os.getenv('TMDB_API_KEY', 'd6d415fbca42bcf39105eee27b397895'))
+]
+
+class RotatingKey:
+    def __str__(self):
+        return random.choice(TMDB_API_KEYS)
+    def __format__(self, spec):
+        return random.choice(TMDB_API_KEYS)
+
+TMDB_API_KEY = RotatingKey()
 PORT = int(os.getenv('PORT', 8000))
 OMDB_API_KEY = os.getenv('OMDB_API_KEY', '22bfde2c')
 
@@ -176,7 +190,9 @@ def trending_movies():
     base_url = f"https://api.tmdb.org/3/trending/all/week?api_key={TMDB_API_KEY}"
     try:
         data = fetch_and_filter_tmdb(base_url, client_page, trending_filter)
-        return jsonify(data)
+        res = jsonify(data)
+        res.headers['Cache-Control'] = 'public, max-age=600, s-maxage=3600'
+        return res
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -186,7 +202,9 @@ def academy_winner_movies():
     base_url = f"https://api.tmdb.org/3/discover/movie?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=8000"
     try:
         data = fetch_and_filter_tmdb(base_url, client_page, None)
-        return jsonify(data)
+        res = jsonify(data)
+        res.headers['Cache-Control'] = 'public, max-age=600, s-maxage=3600'
+        return res
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -196,7 +214,9 @@ def emmy_winner_series():
     base_url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=1000"
     try:
         data = fetch_and_filter_tmdb(base_url, client_page, emmy_filter)
-        return jsonify(data)
+        res = jsonify(data)
+        res.headers['Cache-Control'] = 'public, max-age=600, s-maxage=3600'
+        return res
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -206,7 +226,9 @@ def top_anime():
     base_url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200"
     try:
         data = fetch_and_filter_tmdb(base_url, client_page, anime_filter)
-        return jsonify(data)
+        res = jsonify(data)
+        res.headers['Cache-Control'] = 'public, max-age=600, s-maxage=3600'
+        return res
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -356,7 +378,9 @@ def movie_details(movie_id):
         if 'languages' in details and 'spoken_languages' not in details:
             details['spoken_languages'] = [{'english_name': l.upper(), 'name': l.upper()} for l in details['languages']]
             
-        return jsonify(details)
+        res = jsonify(details)
+        res.headers['Cache-Control'] = 'public, max-age=1800, s-maxage=86400'
+        return res
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
