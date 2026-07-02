@@ -49,6 +49,7 @@ import testup4
 @app.route('/')
 @app.route('/movie/<path:subpath>')
 @app.route('/tv/<path:subpath>')
+@app.route('/category/<path:subpath>')
 def index(subpath=None):
     return send_from_directory(STATIC_DIR, 'index.html')
 

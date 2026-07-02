@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         searchSuggestions.classList.remove('active');
         history.pushState({ type: 'home' }, '', '/');
         closeMovieDetails();
+        closeCategoryExplorer(false);
         loadPopularReleases();
     });
 
@@ -253,10 +254,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (e) => {
         if (e.state && (e.state.type === 'movie' || e.state.type === 'tv') && e.state.movieId) {
             openMovieDetails({ id: e.state.movieId, media_type: e.state.type }, false);
+        } else if (e.state && e.state.type === 'category' && e.state.category) {
+            openCategoryExplorer(e.state.category, e.state.page || 1, false);
         } else if (e.state && e.state.type === 'dash') {
             openDashboard(false);
         } else {
             closeMovieDetails();
+            closeCategoryExplorer(false);
         }
     });
 
@@ -283,6 +287,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkInitialRoute = async () => {
         if (window.location.pathname === '/dash') {
             openDashboard(false);
+            return;
+        }
+        const catMatch = window.location.pathname.match(/\/category\/([a-zA-Z0-9_-]+)/);
+        if (catMatch && catMatch[1]) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const p = parseInt(urlParams.get('page')) || 1;
+            openCategoryExplorer(catMatch[1], p, false);
             return;
         }
         const pathMatch = window.location.pathname.match(/\/(movie|tv)\/(\d+)/);
@@ -1433,9 +1444,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalCategoryPages = 20; // Allow navigating up to 20 pages
 
     // Navigate to a specific paginated category
-    async function openCategoryExplorer(category, page = 1) {
+    async function openCategoryExplorer(category, page = 1, shouldPushState = true) {
         currentCategory = category;
         currentCategoryPage = page;
+        
+        if (shouldPushState) {
+            history.pushState({ type: 'category', category: category, page: page }, '', `/category/${category}?page=${page}`);
+        }
         
         // Hide standard home container and show category container
         homePageContainer.style.display = 'none';
@@ -1503,11 +1518,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageInfo) pageInfo.textContent = `Page ${currentCategoryPage} of ${totalCategoryPages}`;
     }
 
-    function closeCategoryExplorer() {
+    function closeCategoryExplorer(shouldPushState = true) {
         const categoryContainer = document.getElementById('category-page-container');
         if (categoryContainer) {
             categoryContainer.style.display = 'none';
             categoryContainer.setAttribute('data-active', 'false');
+        }
+        if (shouldPushState) {
+            history.pushState({ type: 'home' }, '', '/');
         }
         homePageContainer.style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
