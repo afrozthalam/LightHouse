@@ -255,8 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.state && (e.state.type === 'movie' || e.state.type === 'tv') && e.state.movieId) {
             openMovieDetails({ id: e.state.movieId, media_type: e.state.type }, false);
         } else if (e.state && e.state.type === 'category' && e.state.category) {
-            currentMediaType = e.state.mediaType || 'movie';
-            updateActiveTabUI();
             openCategoryExplorer(e.state.category, e.state.page || 1, false);
         } else if (e.state && e.state.type === 'dash') {
             openDashboard(false);
@@ -295,8 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (catMatch && catMatch[1]) {
             const urlParams = new URLSearchParams(window.location.search);
             const p = parseInt(urlParams.get('page')) || 1;
-            currentMediaType = urlParams.get('type') || 'movie';
-            updateActiveTabUI();
             openCategoryExplorer(catMatch[1], p, false);
             return;
         }
@@ -1449,37 +1445,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentCategory = 'trending';
     let currentCategoryPage = 1;
     let totalCategoryPages = 20; // Allow navigating up to 20 pages
-    let currentMediaType = 'movie'; // Default media type toggle
-    
-    const customCategoryIds = ['teen-horror', 'raw-teen-terror', 'apocalypse', 'slasher-suspense', 'sibling-bonds', 'pure-cinema', 'erotic-raw', 'hidden-gems'];
-
-    function updateActiveTabUI() {
-        const movieTab = document.getElementById('tab-media-movie');
-        const tvTab = document.getElementById('tab-media-tv');
-        if (movieTab && tvTab) {
-            if (currentMediaType === 'movie') {
-                movieTab.classList.add('active');
-                tvTab.classList.remove('active');
-            } else {
-                tvTab.classList.add('active');
-                movieTab.classList.remove('active');
-            }
-        }
-    }
 
     // Navigate to a specific paginated category
     async function openCategoryExplorer(category, page = 1, shouldPushState = true) {
         currentCategory = category;
         currentCategoryPage = page;
         
-        const isCustom = customCategoryIds.includes(category);
-        
         if (shouldPushState) {
-            history.pushState(
-                { type: 'category', category: category, page: page, mediaType: currentMediaType }, 
-                '', 
-                `/category/${category}?page=${page}` + (isCustom ? `&type=${currentMediaType}` : '')
-            );
+            history.pushState({ type: 'category', category: category, page: page }, '', `/category/${category}?page=${page}`);
         }
         
         // Hide standard home container and show category container
@@ -1490,10 +1463,13 @@ document.addEventListener('DOMContentLoaded', () => {
             categoryContainer.setAttribute('data-active', 'true');
         }
         
-        // Toggle Category Sub-tabs visibility
-        const tabsWrap = document.getElementById('category-tabs-wrap');
-        if (tabsWrap) {
-            tabsWrap.style.display = isCustom ? 'flex' : 'none';
+        // Set category title
+        const pageTitleElement = document.getElementById('category-page-title');
+        if (pageTitleElement) {
+            if (category === 'trending') pageTitleElement.textContent = 'Trending Releases';
+            else if (category === 'academy') pageTitleElement.textContent = 'Top Academy Winner Movies';
+            else if (category === 'emmy') pageTitleElement.textContent = 'Top Emmy Winner Series';
+            else if (category === 'anime') pageTitleElement.textContent = 'Top Anime';
         }
         
         // Reset scroll position to top
@@ -1509,31 +1485,14 @@ document.addEventListener('DOMContentLoaded', () => {
         topProgressBar.start();
         try {
             let fetchUrl = '';
-            if (isCustom) {
-                fetchUrl = `/api/custom-category/${category}?type=${currentMediaType}&page=${page}`;
-            } else {
-                if (category === 'trending') fetchUrl = `/api/trending-movies?page=${page}`;
-                else if (category === 'academy') fetchUrl = `/api/academy-winner-movies?page=${page}`;
-                else if (category === 'emmy') fetchUrl = `/api/emmy-winner-series?page=${page}`;
-                else if (category === 'anime') fetchUrl = `/api/top-anime?page=${page}`;
-            }
+            if (category === 'trending') fetchUrl = `/api/trending-movies?page=${page}`;
+            else if (category === 'academy') fetchUrl = `/api/academy-winner-movies?page=${page}`;
+            else if (category === 'emmy') fetchUrl = `/api/emmy-winner-series?page=${page}`;
+            else if (category === 'anime') fetchUrl = `/api/top-anime?page=${page}`;
             
             const r = await fetch(fetchUrl);
             const data = await r.json();
             const results = data.results || [];
-            
-            // Set category title
-            const pageTitleElement = document.getElementById('category-page-title');
-            if (pageTitleElement) {
-                if (data.name) {
-                    pageTitleElement.textContent = data.name;
-                } else {
-                    if (category === 'trending') pageTitleElement.textContent = 'Trending Releases';
-                    else if (category === 'academy') pageTitleElement.textContent = 'Top Academy Winner Movies';
-                    else if (category === 'emmy') pageTitleElement.textContent = 'Top Emmy Winner Series';
-                    else if (category === 'anime') pageTitleElement.textContent = 'Top Anime';
-                }
-            }
             
             // Set dynamic total pages count if returned by TMDB API
             if (data.total_pages) {
@@ -1580,38 +1539,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const seeAllBtn = e.target.closest('.btn-see-all');
         if (seeAllBtn) {
             const category = seeAllBtn.getAttribute('data-category');
-            currentMediaType = 'movie'; // Reset default media type
-            updateActiveTabUI();
             openCategoryExplorer(category, 1);
-            return;
-        }
-
-        const nicheCard = e.target.closest('.niche-card');
-        if (nicheCard) {
-            const category = nicheCard.getAttribute('data-category-id');
-            currentMediaType = 'movie'; // Default to movies
-            updateActiveTabUI();
-            openCategoryExplorer(category, 1);
-            return;
-        }
-
-        const tabBtn = e.target.closest('.btn-category-tab');
-        if (tabBtn) {
-            const mediaType = tabBtn.getAttribute('data-media-type');
-            if (mediaType !== currentMediaType) {
-                currentMediaType = mediaType;
-                updateActiveTabUI();
-                openCategoryExplorer(currentCategory, 1);
-            }
-            return;
         }
     });
 
     const categoryBackBtn = document.getElementById('btn-category-back');
     if (categoryBackBtn) {
-        categoryBackBtn.addEventListener('click', () => {
-            closeCategoryExplorer(true);
-        });
+        categoryBackBtn.addEventListener('click', closeCategoryExplorer);
     }
 
     const prevPageBtn = document.getElementById('btn-page-prev');

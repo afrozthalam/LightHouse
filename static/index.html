@@ -15,7 +15,7 @@
         rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/style.css?v=3.5">
+    <link rel="stylesheet" href="/static/style.css?v=3.4">
     <script>
         window.onerror = function (msg, url, line, col, error) {
             var div = document.createElement('div');
@@ -207,81 +207,6 @@
                         <div class="skeleton-card"></div>
                     </div>
                 </div>
-
-                <!-- Section 5: Explore Curated Niches -->
-                <div class="homepage-feed-section" id="curated-niches-section" style="margin-top: 56px;">
-                    <div class="section-header">
-                        <div class="section-header-left">
-                            <svg class="section-icon niches-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #34c759;">
-                                <rect x="3" y="3" width="7" height="9"></rect>
-                                <rect x="14" y="3" width="7" height="5"></rect>
-                                <rect x="14" y="12" width="7" height="9"></rect>
-                                <rect x="3" y="16" width="7" height="5"></rect>
-                            </svg>
-                            <h2 class="feed-title">Explore Niche Categories</h2>
-                        </div>
-                    </div>
-                    
-                    <div class="niches-grid">
-                        <div class="niche-card" data-category-id="teen-horror" style="--card-grad: linear-gradient(135deg, #ff2d55 0%, #ff9500 100%);">
-                            <div class="niche-card-content">
-                                <i class="fa-ghost fa-solid"></i>
-                                <h3>Teen Horror</h3>
-                                <p>Teenage horror vibes & sibling nightmares</p>
-                            </div>
-                        </div>
-                        <div class="niche-card" data-category-id="raw-teen-terror" style="--card-grad: linear-gradient(135deg, #bf5af2 0%, #ff2d55 100%);">
-                            <div class="niche-card-content">
-                                <i class="fa-skull-crossbones fa-solid"></i>
-                                <h3>Raw Teen Terror (18+)</h3>
-                                <p>Unrated slashers, gore, & extreme teen scares</p>
-                            </div>
-                        </div>
-                        <div class="niche-card" data-category-id="apocalypse" style="--card-grad: linear-gradient(135deg, #ff9500 0%, #30b0c7 100%);">
-                            <div class="niche-card-content">
-                                <i class="fa-radiation fa-solid"></i>
-                                <h3>Apocalypse & Survival</h3>
-                                <p>End of the world survival & doomsday disasters</p>
-                            </div>
-                        </div>
-                        <div class="niche-card" data-category-id="slasher-suspense" style="--card-grad: linear-gradient(135deg, #ff3b30 0%, #5856d6 100%);">
-                            <div class="niche-card-content">
-                                <i class="fa-solid fa-skull"></i>
-                                <h3>Slasher Suspense</h3>
-                                <p>High-tension serial killers & knife-edge thrillers</p>
-                            </div>
-                        </div>
-                        <div class="niche-card" data-category-id="sibling-bonds" style="--card-grad: linear-gradient(135deg, #30b0c7 0%, #34c759 100%);">
-                            <div class="niche-card-content">
-                                <i class="fa-solid fa-people-arrows"></i>
-                                <h3>Sibling Bonds</h3>
-                                <p>Brother & sister stories, twins, and sibling tales</p>
-                            </div>
-                        </div>
-                        <div class="niche-card" data-category-id="pure-cinema" style="--card-grad: linear-gradient(135deg, #ffb86c 0%, #ff5555 100%);">
-                            <div class="niche-card-content">
-                                <i class="fa-clapperboard fa-solid"></i>
-                                <h3>Pure Cinema</h3>
-                                <p>High-rating critically acclaimed film masterpieces</p>
-                            </div>
-                        </div>
-                        <div class="niche-card" data-category-id="erotic-raw" style="--card-grad: linear-gradient(135deg, #af52de 0%, #ff2d55 100%);">
-                            <div class="niche-card-content">
-                                <i class="fa-solid fa-heart"></i>
-                                <h3>Erotic & Raw</h3>
-                                <p>Bold cinematic intimacy & erotic elements</p>
-                            </div>
-                        </div>
-                        <div class="niche-card" data-category-id="hidden-gems" style="--card-grad: linear-gradient(135deg, #5e5ce6 0%, #30b0c7 100%);">
-                            <div class="niche-card-content">
-                                <i class="fa-gem fa-solid"></i>
-                                <h3>Hidden Gems</h3>
-                                <p>Flopped or underrated dark mystery thrillers</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </main>
@@ -294,16 +219,6 @@
             </button>
             <h2 id="category-page-title" class="feed-title">Category Name</h2>
             <div class="header-spacer-right"></div>
-        </div>
-
-        <!-- Movies / Series Sub-tabs Toggle -->
-        <div class="category-tabs-wrap" id="category-tabs-wrap" style="display: none;">
-            <button class="btn-category-tab active" id="tab-media-movie" data-media-type="movie">
-                <i class="fa-solid fa-film"></i> Movies
-            </button>
-            <button class="btn-category-tab" id="tab-media-tv" data-media-type="tv">
-                <i class="fa-solid fa-tv"></i> TV Series
-            </button>
         </div>
 
         <div id="category-movie-grid" class="movie-grid">
@@ -572,7 +487,7 @@
         </div>
     </footer>
 
-    <script src="/static/app.js?v=3.10"></script>
+    <script src="/static/app.js?v=3.9"></script>
 </body>
 
 </html>
