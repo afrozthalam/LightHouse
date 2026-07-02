@@ -1509,13 +1509,13 @@ def run_movie_search(target_movie, filter_purpose=None, filter_language=None, ex
             
         return results
 
-    # Build search query list - optimized to exactly 1 query to reduce compute overhead by 66%
+    # Build search query list - optimized to exactly 1 query (clean title) to maximize matches while maintaining 66% speedup
     search_queries = [target_movie]
     year_match = re.search(r"\((\d{4})\)", target_movie)
     if year_match:
         year = year_match.group(1)
         title_only = re.sub(r"\s*\(\d{4}\)\s*", "", target_movie).strip()
-        search_queries = [f"{title_only} {year}"]
+        search_queries = [title_only]
 
     # Parse excluded sites
     excluded = set()
