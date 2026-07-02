@@ -15,6 +15,8 @@ except Exception:
 from bs4 import BeautifulSoup
 from urllib.parse import quote_plus, quote
 
+import difflib
+
 # Pure-Python Token Set Ratio replacement to avoid external binary dependencies
 def calculate_token_set_ratio(s1, s2):
     w1 = set(re.findall(r'\w+', s1.lower()))
@@ -23,6 +25,9 @@ def calculate_token_set_ratio(s1, s2):
         return 0
     
     intersection = w1.intersection(w2)
+    if not intersection:
+        return 0
+        
     diff1to2 = w1.difference(w2)
     diff2to1 = w2.difference(w1)
     
@@ -36,36 +41,13 @@ def calculate_token_set_ratio(s1, s2):
     str1 = " ".join(t1).strip()
     str2 = " ".join(t2).strip()
     
-    # Simple Levenshtein ratio function
+    # Fast SequenceMatcher ratio function
     def lev_ratio(a, b):
         if a == b:
             return 100.0
         if not a or not b:
             return 0.0
-        
-        # Standard DP Levenshtein distance
-        rows = len(a) + 1
-        cols = len(b) + 1
-        dp = [[0]*cols for _ in range(rows)]
-        for i in range(rows):
-            dp[i][0] = i
-        for j in range(cols):
-            dp[0][j] = j
-            
-        for i in range(1, rows):
-            for j in range(1, cols):
-                if a[i-1] == b[j-1]:
-                    dp[i][j] = dp[i-1][j-1]
-                else:
-                    dp[i][j] = min(
-                        dp[i-1][j] + 1,    # deletion
-                        dp[i][j-1] + 1,    # insertion
-                        dp[i-1][j-1] + 1   # substitution
-                    )
-        
-        distance = dp[rows-1][cols-1]
-        max_len = max(len(a), len(b))
-        return (1.0 - (distance / max_len)) * 100.0
+        return difflib.SequenceMatcher(None, a, b).ratio() * 100.0
 
     # Calculate Token Set Ratio
     r0 = lev_ratio(str0, str1)
@@ -1021,25 +1003,7 @@ def fetch_url(url, is_json=False):
         return r.json() if is_json else r.text
     except Exception as e:
         safe_print(f"   ↳ requests failed: {e}")
-        # If requests failed with a connection error or timeout, do NOT try cloudscraper!
-        # It's a network issue and cloudscraper will also time out. Raise it immediately.
-        if isinstance(e, (requests.exceptions.ConnectionError, requests.exceptions.Timeout)):
-            raise e
-
-        # Fallback to standard requests if it is blocked
-        safe_print("   ↳ trying requests backup")
-        r_backup = requests.get(
-            url,
-            headers=HEADERS,
-            timeout=1.5
-        )
-        r_backup.raise_for_status()
-        return r_backup.json() if is_json else r_backup.text
-    except Exception as e:
-        safe_print(f"   ↳ requests backup failed: {e}")
-        raise Exception(
-            f"Both requests attempts failed: {e}"
-        )
+        raise e
 
 def encode_query(query, encoder="plus"):
     if encoder == "percent":
@@ -1184,10 +1148,19 @@ def search_site(site, search_queries, target_movie):
                 if method.get("type") == "json":
                     candidates = extract_candidates_from_json(response_data, method)
                 else:
+                    EXCLUDED_LINK_TEXTS = {
+                        'home', 'privacy policy', 'contact', 'contact us', 'dmca', 'disclaimer', 
+                        'about', 'about us', 'terms', 'terms of service', 'policy', 'request', 
+                        'telegram', 'join telegram', 'facebook', 'twitter', 'instagram', 'youtube',
+                        'next', 'prev', 'previous', 'next page', 'previous page', 'login', 'register',
+                        'rss', 'sitemap', 'wp-login', 'wp-admin', 'how to download', 'bookmarks', 'bookmark',
+                        'wp-content', 'comments', 'comment', 'share', 'support', 'help'
+                    }
                     soup = BeautifulSoup(response_data, "html.parser")
                     for a in soup.find_all("a", href=True):
                         title = a.get_text(" ", strip=True)
-                        if len(title) < 5:
+                        title_clean = title.strip().lower()
+                        if len(title_clean) < 5 or title_clean in EXCLUDED_LINK_TEXTS:
                             continue
                         
                         raw_url = a["href"].strip()
@@ -1536,19 +1509,13 @@ def run_movie_search(target_movie, filter_purpose=None, filter_language=None, ex
             
         return results
 
-    # Build search query list
+    # Build search query list - optimized to exactly 1 query to reduce compute overhead by 66%
     search_queries = [target_movie]
     year_match = re.search(r"\((\d{4})\)", target_movie)
     if year_match:
         year = year_match.group(1)
         title_only = re.sub(r"\s*\(\d{4}\)\s*", "", target_movie).strip()
-        # 1. Clean "Title Year" first (most compatible, specific)
-        # 2. "Title" (only if it is long enough, e.g. >= 5 chars, to avoid slow database scans on short common words like "FROM" or "Dark")
-        # 3. Fallback "Title (Year)" (with parenthesis)
         search_queries = [f"{title_only} {year}"]
-        if len(title_only) >= 5:
-            search_queries.append(title_only)
-        search_queries.append(target_movie)
 
     # Parse excluded sites
     excluded = set()
