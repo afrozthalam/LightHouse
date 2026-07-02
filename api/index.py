@@ -86,8 +86,9 @@ def search_movies():
 
 @app.route('/api/trending-movies')
 def trending_movies():
+    page = request.args.get('page', 1, type=int)
     # Use trending multi to show both trending movies and TV series!
-    url = f"https://api.tmdb.org/3/trending/all/week?api_key={TMDB_API_KEY}"
+    url = f"https://api.tmdb.org/3/trending/all/week?api_key={TMDB_API_KEY}&page={page}"
     try:
         r = requests.get(url, timeout=5)
         r.raise_for_status()
@@ -111,7 +112,8 @@ def trending_movies():
 
 @app.route('/api/academy-winner-movies')
 def academy_winner_movies():
-    url = f"https://api.tmdb.org/3/discover/movie?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=8000"
+    page = request.args.get('page', 1, type=int)
+    url = f"https://api.tmdb.org/3/discover/movie?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=8000&page={page}"
     try:
         r = requests.get(url, timeout=5)
         r.raise_for_status()
@@ -122,8 +124,9 @@ def academy_winner_movies():
 
 @app.route('/api/emmy-winner-series')
 def emmy_winner_series():
+    page = request.args.get('page', 1, type=int)
     # TV shows, high rating, non-Japanese to avoid anime overlap
-    url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=1000"
+    url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=1000&page={page}"
     try:
         r = requests.get(url, timeout=5)
         r.raise_for_status()
@@ -144,7 +147,8 @@ def emmy_winner_series():
 
 @app.route('/api/top-anime')
 def top_anime():
-    url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200"
+    page = request.args.get('page', 1, type=int)
+    url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200&page={page}"
     try:
         r = requests.get(url, timeout=5)
         r.raise_for_status()

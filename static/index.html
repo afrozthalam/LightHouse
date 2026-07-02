@@ -15,7 +15,7 @@
         rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/style.css?v=3.1">
+    <link rel="stylesheet" href="/static/style.css?v=3.2">
     <script>
         window.onerror = function (msg, url, line, col, error) {
             var div = document.createElement('div');
@@ -120,12 +120,15 @@
             <div class="main-feed-column">
                 <!-- Section 1: Trending / Search Results -->
                 <div class="section-header">
-                    <svg class="section-icon megaphone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                    </svg>
-                    <h2 id="grid-title" class="feed-title">Trending</h2>
+                    <div class="section-header-left">
+                        <svg class="section-icon megaphone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                        </svg>
+                        <h2 id="grid-title" class="feed-title">Trending</h2>
+                    </div>
+                    <button class="btn-see-all" id="btn-see-all-trending" data-category="trending">See All <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
                 <div id="movie-grid" class="movie-grid">
                     <!-- Skeletons render initially -->
@@ -138,12 +141,15 @@
                 <!-- Section 2: Top Academy Winner Movies -->
                 <div class="homepage-feed-section" id="academy-winners-section" style="margin-top: 48px;">
                     <div class="section-header">
-                        <svg class="section-icon oscar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ffb86c;">
-                            <circle cx="12" cy="8" r="7"></circle>
-                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                        </svg>
-                        <h2 class="feed-title">Top Academy Winner Movies</h2>
+                        <div class="section-header-left">
+                            <svg class="section-icon oscar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ffb86c;">
+                                <circle cx="12" cy="8" r="7"></circle>
+                                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                            </svg>
+                            <h2 class="feed-title">Top Academy Winner Movies</h2>
+                        </div>
+                        <button class="btn-see-all" data-category="academy">See All <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                     <div id="academy-grid" class="movie-grid">
                         <div class="skeleton-card"></div>
@@ -156,18 +162,21 @@
                 <!-- Section 3: Top Emmy Winner Series -->
                 <div class="homepage-feed-section" id="emmy-winners-section" style="margin-top: 48px;">
                     <div class="section-header">
-                        <svg class="section-icon emmy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #bf5af2;">
-                            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
-                            <line x1="7" y1="2" x2="7" y2="22"></line>
-                            <line x1="17" y1="2" x2="17" y2="22"></line>
-                            <line x1="2" y1="12" x2="22" y2="12"></line>
-                            <line x1="2" y1="7" x2="7" y2="7"></line>
-                            <line x1="2" y1="17" x2="7" y2="17"></line>
-                            <line x1="17" y1="17" x2="22" y2="17"></line>
-                            <line x1="17" y1="7" x2="22" y2="7"></line>
-                        </svg>
-                        <h2 class="feed-title">Top Emmy Winner Series</h2>
+                        <div class="section-header-left">
+                            <svg class="section-icon emmy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #bf5af2;">
+                                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                                <line x1="7" y1="2" x2="7" y2="22"></line>
+                                <line x1="17" y1="2" x2="17" y2="22"></line>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <line x1="2" y1="7" x2="7" y2="7"></line>
+                                <line x1="2" y1="17" x2="7" y2="17"></line>
+                                <line x1="17" y1="17" x2="22" y2="17"></line>
+                                <line x1="17" y1="7" x2="22" y2="7"></line>
+                            </svg>
+                            <h2 class="feed-title">Top Emmy Winner Series</h2>
+                        </div>
+                        <button class="btn-see-all" data-category="emmy">See All <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                     <div id="emmy-grid" class="movie-grid">
                         <div class="skeleton-card"></div>
@@ -180,13 +189,16 @@
                 <!-- Section 4: Top Anime -->
                 <div class="homepage-feed-section" id="top-anime-section" style="margin-top: 48px;">
                     <div class="section-header">
-                        <svg class="section-icon anime-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ff2d55;">
-                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                            <path d="M2 17l10 5 10-5"></path>
-                            <path d="M2 12l10 5 10-5"></path>
-                        </svg>
-                        <h2 class="feed-title">Top Anime</h2>
+                        <div class="section-header-left">
+                            <svg class="section-icon anime-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ff2d55;">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                <path d="M2 17l10 5 10-5"></path>
+                                <path d="M2 12l10 5 10-5"></path>
+                            </svg>
+                            <h2 class="feed-title">Top Anime</h2>
+                        </div>
+                        <button class="btn-see-all" data-category="anime">See All <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                     <div id="anime-grid" class="movie-grid">
                         <div class="skeleton-card"></div>
@@ -196,6 +208,32 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </main>
+
+    <!-- Category Paginated Explorer View (Swapped via router) -->
+    <main class="app-container" id="category-page-container" style="display: none; min-height: 80vh;">
+        <div class="category-header-wrap">
+            <button class="btn-category-back" id="btn-category-back">
+                <i class="fa-solid fa-arrow-left"></i> Back to Explore
+            </button>
+            <h2 id="category-page-title" class="feed-title">Category Name</h2>
+            <div class="header-spacer-right"></div>
+        </div>
+
+        <div id="category-movie-grid" class="movie-grid">
+            <!-- Grid items -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-wrap">
+            <button class="btn-pagination" id="btn-page-prev">
+                <i class="fa-solid fa-chevron-left"></i> Previous
+            </button>
+            <span id="txt-page-info">Page 1 of 10</span>
+            <button class="btn-pagination" id="btn-page-next">
+                Next <i class="fa-solid fa-chevron-right"></i>
+            </button>
         </div>
     </main>
 
@@ -449,7 +487,7 @@
         </div>
     </footer>
 
-    <script src="/static/app.js?v=3.6"></script>
+    <script src="/static/app.js?v=3.7"></script>
 </body>
 
 </html>

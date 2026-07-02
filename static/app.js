@@ -171,10 +171,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const academySec = document.getElementById('academy-winners-section');
         const emmySec = document.getElementById('emmy-winners-section');
         const animeSec = document.getElementById('top-anime-section');
+        const seeAllTrending = document.getElementById('btn-see-all-trending');
         
         if (academySec) academySec.style.display = 'none';
         if (emmySec) emmySec.style.display = 'none';
         if (animeSec) animeSec.style.display = 'none';
+        if (seeAllTrending) seeAllTrending.style.display = 'none';
         
         if (!query) {
             loadPopularReleases();
@@ -410,10 +412,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const academySec = document.getElementById('academy-winners-section');
         const emmySec = document.getElementById('emmy-winners-section');
         const animeSec = document.getElementById('top-anime-section');
+        const seeAllTrending = document.getElementById('btn-see-all-trending');
         
         if (academySec) academySec.style.display = 'block';
         if (emmySec) emmySec.style.display = 'block';
         if (animeSec) animeSec.style.display = 'block';
+        if (seeAllTrending) seeAllTrending.style.display = 'inline-flex';
         
         // Render skeletons in all four grids
         renderSkeletons(movieGrid);
@@ -438,10 +442,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 rAnime.json()
             ]);
             
-            renderMovieGrid(dataTrending.results || [], movieGrid);
-            if (academySec) renderMovieGrid((dataAcademy.results || []).slice(0, 8), document.getElementById('academy-grid'));
-            if (emmySec) renderMovieGrid((dataEmmy.results || []).slice(0, 8), document.getElementById('emmy-grid'));
-            if (animeSec) renderMovieGrid((dataAnime.results || []).slice(0, 8), document.getElementById('anime-grid'));
+            renderMovieGrid((dataTrending.results || []).slice(0, 16), movieGrid);
+            if (academySec) renderMovieGrid((dataAcademy.results || []).slice(0, 16), document.getElementById('academy-grid'));
+            if (emmySec) renderMovieGrid((dataEmmy.results || []).slice(0, 16), document.getElementById('emmy-grid'));
+            if (animeSec) renderMovieGrid((dataAnime.results || []).slice(0, 16), document.getElementById('anime-grid'));
         } catch (e) {
             console.error("Failed to load feed:", e);
             movieGrid.innerHTML = `<div class="grid-placeholder"><p class="error">Failed to load releases: ${e.message}</p></div>`;
@@ -567,6 +571,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Swap view to separate details screen
         homePageContainer.style.display = 'none';
+        const categoryContainer = document.getElementById('category-page-container');
+        if (categoryContainer) categoryContainer.style.display = 'none';
         movieDetailsPage.style.display = 'block';
         window.scrollTo(0, 0);
         
@@ -694,7 +700,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof dashboardPageContainer !== 'undefined' && dashboardPageContainer) {
             dashboardPageContainer.style.display = 'none';
         }
-        homePageContainer.style.display = 'block';
+        
+        // Return to home page or category explorer, depending on where we came from
+        const categoryContainer = document.getElementById('category-page-container');
+        if (categoryContainer && categoryContainer.getAttribute('data-active') === 'true') {
+            categoryContainer.style.display = 'block';
+        } else {
+            homePageContainer.style.display = 'block';
+        }
         window.scrollTo(0, 0);
     }
 
@@ -1412,6 +1425,125 @@ document.addEventListener('DOMContentLoaded', () => {
         topProgressBar.done();
         btnPingAll.classList.remove('loading');
         btnPingAll.innerHTML = `<i class="fa-solid fa-network-wired"></i> Ping All Sites`;
+    }
+
+    // Category Paginated Explorer Router State
+    let currentCategory = 'trending';
+    let currentCategoryPage = 1;
+    let totalCategoryPages = 20; // Allow navigating up to 20 pages
+
+    // Navigate to a specific paginated category
+    async function openCategoryExplorer(category, page = 1) {
+        currentCategory = category;
+        currentCategoryPage = page;
+        
+        // Hide standard home container and show category container
+        homePageContainer.style.display = 'none';
+        const categoryContainer = document.getElementById('category-page-container');
+        if (categoryContainer) {
+            categoryContainer.style.display = 'block';
+            categoryContainer.setAttribute('data-active', 'true');
+        }
+        
+        // Set category title
+        const pageTitleElement = document.getElementById('category-page-title');
+        if (pageTitleElement) {
+            if (category === 'trending') pageTitleElement.textContent = 'Trending Releases';
+            else if (category === 'academy') pageTitleElement.textContent = 'Top Academy Winner Movies';
+            else if (category === 'emmy') pageTitleElement.textContent = 'Top Emmy Winner Series';
+            else if (category === 'anime') pageTitleElement.textContent = 'Top Anime';
+        }
+        
+        // Reset scroll position to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Render skeletons in category grid
+        const categoryGrid = document.getElementById('category-movie-grid');
+        renderSkeletons(categoryGrid);
+        
+        // Update pagination page display and toggle buttons
+        updateCategoryPaginationUI();
+        
+        topProgressBar.start();
+        try {
+            let fetchUrl = '';
+            if (category === 'trending') fetchUrl = `/api/trending-movies?page=${page}`;
+            else if (category === 'academy') fetchUrl = `/api/academy-winner-movies?page=${page}`;
+            else if (category === 'emmy') fetchUrl = `/api/emmy-winner-series?page=${page}`;
+            else if (category === 'anime') fetchUrl = `/api/top-anime?page=${page}`;
+            
+            const r = await fetch(fetchUrl);
+            const data = await r.json();
+            const results = data.results || [];
+            
+            // Set dynamic total pages count if returned by TMDB API
+            if (data.total_pages) {
+                totalCategoryPages = Math.min(data.total_pages, 500); // cap to 500 pages max to be safe
+            }
+            
+            renderMovieGrid(results, categoryGrid);
+            updateCategoryPaginationUI();
+        } catch (e) {
+            console.error("Failed to load category:", e);
+            if (categoryGrid) {
+                categoryGrid.innerHTML = `<div class="grid-placeholder"><p class="error">Failed to load: ${e.message}</p></div>`;
+            }
+        } finally {
+            topProgressBar.done();
+        }
+    }
+
+    function updateCategoryPaginationUI() {
+        const prevBtn = document.getElementById('btn-page-prev');
+        const nextBtn = document.getElementById('btn-page-next');
+        const pageInfo = document.getElementById('txt-page-info');
+        
+        if (prevBtn) prevBtn.disabled = (currentCategoryPage <= 1);
+        if (nextBtn) nextBtn.disabled = (currentCategoryPage >= totalCategoryPages);
+        if (pageInfo) pageInfo.textContent = `Page ${currentCategoryPage} of ${totalCategoryPages}`;
+    }
+
+    function closeCategoryExplorer() {
+        const categoryContainer = document.getElementById('category-page-container');
+        if (categoryContainer) {
+            categoryContainer.style.display = 'none';
+            categoryContainer.setAttribute('data-active', 'false');
+        }
+        homePageContainer.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Bind Category Event Listeners
+    document.addEventListener('click', (e) => {
+        const seeAllBtn = e.target.closest('.btn-see-all');
+        if (seeAllBtn) {
+            const category = seeAllBtn.getAttribute('data-category');
+            openCategoryExplorer(category, 1);
+        }
+    });
+
+    const categoryBackBtn = document.getElementById('btn-category-back');
+    if (categoryBackBtn) {
+        categoryBackBtn.addEventListener('click', closeCategoryExplorer);
+    }
+
+    const prevPageBtn = document.getElementById('btn-page-prev');
+    const nextPageBtn = document.getElementById('btn-page-next');
+    
+    if (prevPageBtn) {
+        prevPageBtn.addEventListener('click', () => {
+            if (currentCategoryPage > 1) {
+                openCategoryExplorer(currentCategory, currentCategoryPage - 1);
+            }
+        });
+    }
+    
+    if (nextPageBtn) {
+        nextPageBtn.addEventListener('click', () => {
+            if (currentCategoryPage < totalCategoryPages) {
+                openCategoryExplorer(currentCategory, currentCategoryPage + 1);
+            }
+        });
     }
 
     if (btnPingAll) {
