@@ -77,6 +77,18 @@ TARGET_MOVIE = "harry potter and the chamber of secrets (2002)"
 
 SITES = [
     {
+        "name": "GGFlix",
+        "purpose": ["watch"],
+        "language": ["english"],
+        "methods": [
+            {
+                "type": "html",
+                "search": "https://ggflix.pro/search?q={query}",
+                "encoder": "percent"
+            }
+        ]
+    },
+    {
         "name": "VegaMovies",
         "purpose": ["download"],
         "language": ["hindi", "english"],
