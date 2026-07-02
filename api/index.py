@@ -85,15 +85,66 @@ def search_movies():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+def fetch_tmdb_paginated(base_url, client_page):
+    if client_page is None:
+        # Default homepage load: fetch page 1 only
+        r = requests.get(f"{base_url}&page=1", timeout=5)
+        r.raise_for_status()
+        return r.json()
+    
+    # Section explorer load: fetch exactly 21 items across TMDB pages
+    start_idx = (client_page - 1) * 21
+    end_idx = client_page * 21
+    
+    tmdb_p1 = (start_idx // 20) + 1
+    tmdb_p2 = ((end_idx - 1) // 20) + 1
+    
+    # Fetch both TMDB pages
+    try:
+        r1 = requests.get(f"{base_url}&page={tmdb_p1}", timeout=5)
+        r1.raise_for_status()
+        d1 = r1.json()
+    except Exception as e:
+        d1 = {'results': []}
+        
+    try:
+        r2 = requests.get(f"{base_url}&page={tmdb_p2}", timeout=5)
+        r2.raise_for_status()
+        d2 = r2.json()
+    except Exception as e:
+        d2 = {'results': []}
+        
+    results1 = d1.get('results', [])
+    results2 = d2.get('results', [])
+    
+    joined = results1 + results2
+    
+    offset = (tmdb_p1 - 1) * 20
+    slice_start = start_idx - offset
+    slice_end = end_idx - offset
+    
+    sliced_results = joined[slice_start:slice_end]
+    
+    # Calculate total pages for 21-item counts
+    total_results = d1.get('total_results', 0)
+    import math
+    total_pages = math.ceil(total_results / 21) if total_results else 20
+    
+    # Construct combined data dictionary
+    combined_data = {
+        'results': sliced_results,
+        'total_pages': total_pages,
+        'page': client_page,
+        'total_results': total_results
+    }
+    return combined_data
+
 @app.route('/api/trending-movies')
 def trending_movies():
-    page = request.args.get('page', 1, type=int)
-    # Use trending multi to show both trending movies and TV series!
-    url = f"https://api.tmdb.org/3/trending/all/week?api_key={TMDB_API_KEY}&page={page}"
+    client_page = request.args.get('page', type=int)
+    base_url = f"https://api.tmdb.org/3/trending/all/week?api_key={TMDB_API_KEY}"
     try:
-        r = requests.get(url, timeout=5)
-        r.raise_for_status()
-        data = r.json()
+        data = fetch_tmdb_paginated(base_url, client_page)
         
         # Normalize and filter
         filtered_results = []
@@ -110,28 +161,23 @@ def trending_movies():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
 @app.route('/api/academy-winner-movies')
 def academy_winner_movies():
-    page = request.args.get('page', 1, type=int)
-    url = f"https://api.tmdb.org/3/discover/movie?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=8000&page={page}"
+    client_page = request.args.get('page', type=int)
+    base_url = f"https://api.tmdb.org/3/discover/movie?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=8000"
     try:
-        r = requests.get(url, timeout=5)
-        r.raise_for_status()
-        data = r.json()
+        data = fetch_tmdb_paginated(base_url, client_page)
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/emmy-winner-series')
 def emmy_winner_series():
-    page = request.args.get('page', 1, type=int)
+    client_page = request.args.get('page', type=int)
     # TV shows, high rating, non-Japanese to avoid anime overlap
-    url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=1000&page={page}"
+    base_url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&sort_by=vote_average.desc&vote_count.gte=1000"
     try:
-        r = requests.get(url, timeout=5)
-        r.raise_for_status()
-        data = r.json()
+        data = fetch_tmdb_paginated(base_url, client_page)
         
         filtered_results = []
         for item in data.get('results', []):
@@ -148,12 +194,10 @@ def emmy_winner_series():
 
 @app.route('/api/top-anime')
 def top_anime():
-    page = request.args.get('page', 1, type=int)
-    url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200&page={page}"
+    client_page = request.args.get('page', type=int)
+    base_url = f"https://api.tmdb.org/3/discover/tv?api_key={TMDB_API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200"
     try:
-        r = requests.get(url, timeout=5)
-        r.raise_for_status()
-        data = r.json()
+        data = fetch_tmdb_paginated(base_url, client_page)
         
         filtered_results = []
         for item in data.get('results', []):
