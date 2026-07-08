@@ -1,0 +1,83 @@
+=========================================
+LIGHTHOUSE - MOVIE & SHOW EXPLORER
+=========================================
+
+-----------------------------------------
+1. WHAT IS THIS PROJECT?
+-----------------------------------------
+Lighthouse is a beautiful, modern website designed for movie and show lovers. It helps you discover movies, TV series, and anime, and acts as a search engine to find watch and download links for them. 
+
+Instead of searching through dozens of websites one by one to find where to stream or download a movie, Lighthouse does all the hard work for you. You search for a movie, and it checks over 70 popular websites in the background all at once to give you direct links to watch or download it.
+
+-----------------------------------------
+2. WHAT EXACTLY DOES IT DO?
+-----------------------------------------
+* Curious Homepage: When you open the site, it shows lists of trending movies, Oscar (Academy) winners, Emmy-winning TV shows, and top-rated anime.
+* Responsive Design: The site looks gorgeous on both desktop computers and mobile phones.
+* View More Pages: You can click "See All" on any section to open a dedicated page where you can browse through all movies in that category page by page.
+* Detailed Movie Info: Clicking on any movie card opens a window showing:
+  - The movie synopsis (story description)
+  - Ratings (from TMDB and IMDb)
+  - Awards won (Oscar, Emmy, Golden Globe, BAFTA)
+  - Recommendations (similar movies you might like)
+* Parallel Search (Watch Links): This is the core feature. When you click "Find direct download and watch link," it searches across 70+ streaming/download sites and lists every working link it finds, categorized by site name.
+
+-----------------------------------------
+3. HOW IT WORKS (IN SIMPLE TERMS)
+-----------------------------------------
+* The Frontend (The Interface):
+  Written using simple HTML, CSS, and JavaScript. When you visit the site, your browser downloads these files to draw the buttons, grids, movie cards, and search bar. 
+
+* The Backend (The Brain):
+  Runs on Python using a framework called Flask. It sits between the user interface and external networks (like the movie databases and streaming websites).
+
+* Fetching Movie Data:
+  Lighthouse gets movie titles, descriptions, and posters from a massive free database called TMDB (The Movie Database). To keep the site loading super fast and prevent TMDB from blocking us:
+  1. Memory Saving (Caching): When a user loads a page, the server saves a copy of the results. If another user visits the same page, the server loads it instantly from memory instead of requesting it from TMDB again.
+  2. Key Rotation: The server securely switches between different API keys so the database never gets overloaded by requests.
+
+* Finding Links:
+  When you search for links:
+  1. The backend launches multiple search processes at the exact same time (using multi-threading) to check dozens of movie sites.
+  2. For each site, it loads the search results page.
+  3. It cleans up the page by removing useless links like "Privacy Policy", "Contact Us", or ads.
+  4. It uses a smart word-matching system to check if the link's title matches the movie you want.
+  5. It returns a clean, clickable list of links directly to your screen.
+
+-----------------------------------------
+4. TECHNOLOGIES USED
+-----------------------------------------
+* HTML5: Used to build the structure of the website.
+* Vanilla CSS3: Used for custom styles, layouts, hover effects, dark-theme colors, and responsive designs for phones.
+* JavaScript (ES6): Handles clicking buttons, opening modals, fetching search results, and updating the homepage.
+* Python: The backend language that performs calculations and web scraping.
+* Flask: A lightweight Python library used to host the API endpoints (the server).
+* BeautifulSoup4: A Python tool used to read and extract links from HTML web pages.
+* Requests: A Python tool used to fetch pages from the internet.
+* Git: Used to track code versions.
+
+-----------------------------------------
+5. HOW TO RUN THE PROJECT LOCALLY
+-----------------------------------------
+Follow these simple steps to run Lighthouse on your computer:
+
+Step 1: Install Python
+Make sure Python is installed on your computer. You can download it from python.org.
+
+Step 2: Open Terminal / Command Prompt
+Open your terminal (macOS/Linux) or Command Prompt (Windows) and navigate to the project folder.
+
+Step 3: Install Required Libraries
+Run the following command to install the necessary tools:
+pip install -r requirements.txt
+
+Step 4: Start the Server
+Run the startup command:
+python api/index.py
+
+Step 5: Open in Your Browser
+Once the server starts running, open your web browser and go to:
+http://localhost:8000
+
+That's it! The website will load and run locally on your machine.
+=========================================
