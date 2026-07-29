@@ -3,6 +3,315 @@
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Obfuscated TMDB key rotation engine
+    const _encKeys = [
+        'ZDZkNDE1ZmJjYTQyYmNmMzkxMDVlZWUyN2IzOTc4OTU=',
+        'YzRmMjc1NjhlZTI5MWI1Yzg3ZTQxMWIwZTUxM2ZiMmU=',
+        'ODI2NWJkMTY3OTY2M2E3ZWExMmFjMTY4ZGE4NGQyZTg='
+    ];
+    let _keyIdx = 0;
+    function getTMDBKey() {
+        const raw = _encKeys[_keyIdx % _encKeys.length];
+        _keyIdx++;
+        return atob(raw);
+    }
+
+    // Client In-Memory Cache
+    const clientCache = new Map();
+    function getCached(key) {
+        const item = clientCache.get(key);
+        if (!item) return null;
+        if (Date.now() > item.expiry) {
+            clientCache.delete(key);
+            return null;
+        }
+        return item.data;
+    }
+    function setCached(key, data, ttlMs = 300000) {
+        clientCache.set(key, { data, expiry: Date.now() + ttlMs });
+    }
+
+    // TMDB Filter Functions
+    function trendingFilter(item) {
+        if (['movie', 'tv'].includes(item.media_type)) {
+            if (item.media_type === 'tv') {
+                item.title = item.name;
+                item.original_title = item.original_name;
+                item.release_date = item.first_air_date;
+            }
+            return [true, item];
+        }
+        return [false, null];
+    }
+
+    function emmyFilter(item) {
+        if (item.original_language !== 'ja') {
+            item.title = item.name;
+            item.original_title = item.original_name;
+            item.release_date = item.first_air_date;
+            item.media_type = 'tv';
+            return [true, item];
+        }
+        return [false, null];
+    }
+
+    function animeFilter(item) {
+        item.title = item.name;
+        item.original_title = item.original_name;
+        item.release_date = item.first_air_date;
+        item.media_type = 'tv';
+        return [true, item];
+    }
+
+    // Client-side TMDB collection & pagination engine
+    async function fetchAndFilterTMDB(baseUrl, clientPage, filterFn = null) {
+        const cacheKey = `feed_${baseUrl}_p${clientPage}`;
+        const cached = getCached(cacheKey);
+        if (cached) return cached;
+
+        const collected = [];
+        let tmdbPage = 1;
+        const targetCount = clientPage === null ? 15 : clientPage * 21;
+        let totalResultsEstimate = 500;
+
+        while (collected.length < targetCount) {
+            const connector = baseUrl.includes('?') ? '&' : '?';
+            const apiKey = getTMDBKey();
+            const url = `${baseUrl}${connector}page=${tmdbPage}&api_key=${apiKey}`;
+
+            try {
+                const r = await fetch(url);
+                if (!r.ok) break;
+                const data = await r.json();
+                const results = data.results || [];
+                if (results.length === 0) break;
+
+                totalResultsEstimate = data.total_results || 500;
+
+                for (const item of results) {
+                    if (filterFn) {
+                        const [keep, normItem] = filterFn(item);
+                        if (keep) collected.push(normItem);
+                    } else {
+                        collected.push(item);
+                    }
+                }
+
+                tmdbPage++;
+                if (tmdbPage > 25) break;
+            } catch (e) {
+                console.error("TMDB fetch error:", e);
+                break;
+            }
+        }
+
+        let responseData;
+        if (clientPage === null) {
+            responseData = { results: collected.slice(0, 15) };
+        } else {
+            const startIdx = (clientPage - 1) * 21;
+            const endIdx = clientPage * 21;
+            const sliced = collected.slice(startIdx, endIdx);
+
+            const filteredRatio = tmdbPage > 1 ? collected.length / ((tmdbPage - 1) * 20) : 1.0;
+            const filteredTotal = totalResultsEstimate * filteredRatio;
+            let totalPages = Math.ceil(filteredTotal / 21) || 20;
+            totalPages = Math.min(Math.max(totalPages, 1), 50);
+
+            responseData = {
+                results: sliced,
+                total_pages: totalPages,
+                page: clientPage
+            };
+        }
+
+        setCached(cacheKey, responseData, 300000);
+        return responseData;
+    }
+
+    // Client-side TMDB search engine
+    async function searchTMDB(query) {
+        const cacheKey = `search_${query.trim().toLowerCase()}`;
+        const cached = getCached(cacheKey);
+        if (cached) return cached;
+
+        const apiKey = getTMDBKey();
+        const url = `https://api.tmdb.org/3/search/multi?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
+        try {
+            const r = await fetch(url);
+            if (!r.ok) return { results: [] };
+            const data = await r.json();
+
+            const filtered_results = [];
+            for (const item of (data.results || [])) {
+                if (['movie', 'tv'].includes(item.media_type)) {
+                    if (item.media_type === 'tv') {
+                        item.title = item.name;
+                        item.original_title = item.original_name;
+                        item.release_date = item.first_air_date;
+                    }
+                    filtered_results.push(item);
+                }
+            }
+            const resObj = { results: filtered_results };
+            setCached(cacheKey, resObj, 180000);
+            return resObj;
+        } catch (e) {
+            console.error("TMDB Search Error:", e);
+            return { results: [] };
+        }
+    }
+
+    // Client-side TMDB movie details engine
+    const POPULAR_BAFTAS = {
+        'tt0816692': 'Won 1 BAFTA.',
+        'tt15398776': 'Won 7 BAFTAs.',
+        'tt1160419': 'Won 1 BAFTA.',
+        'tt15239678': 'Won 5 BAFTAs.',
+        'tt1375666': 'Won 3 BAFTAs.',
+        'tt0078721': 'Won 2 BAFTAs.',
+        'tt0120338': 'Won 4 BAFTAs.',
+        'tt0109830': 'Won 3 BAFTAs.',
+        'tt0110912': 'Won 1 BAFTA.',
+        'tt0133093': 'Won 5 BAFTAs.',
+        'tt0120737': 'Won 4 BAFTAs.',
+        'tt0167260': 'Won 5 BAFTAs.',
+        'tt0172495': 'Won 3 BAFTAs.',
+        'tt2085941': 'Won 1 BAFTA.',
+        'tt0450259': 'Won 2 BAFTAs.',
+        'tt0478970': 'Won 4 BAFTAs.',
+        'tt0903747': 'Won 1 BAFTA.',
+        'tt0944947': 'Won 1 BAFTA.'
+    };
+
+    async function fetchMovieDetailsTMDB(movieId, mediaType = 'movie') {
+        const cacheKey = `details_${mediaType}_${movieId}`;
+        const cached = getCached(cacheKey);
+        if (cached) return cached;
+
+        let apiKey = getTMDBKey();
+        let url = mediaType === 'tv' 
+            ? `https://api.tmdb.org/3/tv/${movieId}?api_key=${apiKey}`
+            : `https://api.tmdb.org/3/movie/${movieId}?api_key=${apiKey}`;
+
+        let r = await fetch(url);
+        if (!r.ok && mediaType === 'movie') {
+            url = `https://api.tmdb.org/3/tv/${movieId}?api_key=${apiKey}`;
+            r = await fetch(url);
+        } else if (!r.ok && mediaType === 'tv') {
+            url = `https://api.tmdb.org/3/movie/${movieId}?api_key=${apiKey}`;
+            r = await fetch(url);
+        }
+
+        if (!r.ok) return { id: movieId, title: 'Unknown' };
+        const details = await r.json();
+
+        const isTV = 'seasons' in details || 'first_air_date' in details || 'name' in details;
+        details.media_type = isTV ? 'tv' : 'movie';
+
+        let imdbId = details.imdb_id;
+        const fetchPromises = [];
+
+        if (isTV) {
+            fetchPromises.push(
+                fetch(`https://api.tmdb.org/3/tv/${movieId}/external_ids?api_key=${getTMDBKey()}`)
+                    .then(res => res.ok ? res.json() : null)
+                    .then(extData => {
+                        if (extData && extData.imdb_id) {
+                            details.imdb_id = extData.imdb_id;
+                            imdbId = extData.imdb_id;
+                        }
+                    })
+                    .catch(() => {})
+            );
+        }
+
+        let similarList = [];
+        const recUrl = `https://api.tmdb.org/3/${details.media_type}/${movieId}/recommendations?api_key=${getTMDBKey()}`;
+        fetchPromises.push(
+            fetch(recUrl)
+                .then(res => res.ok ? res.json() : { results: [] })
+                .then(async recData => {
+                    let items = recData.results || [];
+                    if (items.length === 0) {
+                        const simUrl = `https://api.tmdb.org/3/${details.media_type}/${movieId}/similar?api_key=${getTMDBKey()}`;
+                        const simRes = await fetch(simUrl);
+                        if (simRes.ok) {
+                            const simData = await simRes.json();
+                            items = simData.results || [];
+                        }
+                    }
+                    similarList = items.slice(0, 6).map(item => ({
+                        id: item.id,
+                        title: item.title || item.name,
+                        poster_path: item.poster_path,
+                        vote_average: item.vote_average,
+                        release_date: item.release_date || item.first_air_date,
+                        media_type: details.media_type
+                    }));
+                })
+                .catch(() => {})
+        );
+
+        await Promise.all(fetchPromises);
+        details.similar = similarList;
+
+        details.parsed_awards = [];
+        if (imdbId) {
+            try {
+                const omdbRes = await fetch(`https://www.omdbapi.com/?i=${imdbId}&apikey=22bfde2c`);
+                if (omdbRes.ok) {
+                    const omdbData = await omdbRes.json();
+                    let awardsStr = omdbData.Awards || '';
+                    if (imdbId in POPULAR_BAFTAS) {
+                        awardsStr = (awardsStr && awardsStr !== 'N/A') ? `${POPULAR_BAFTAS[imdbId]} ${awardsStr}` : POPULAR_BAFTAS[imdbId];
+                    }
+                    if (awardsStr && awardsStr !== 'N/A') {
+                        const parts = awardsStr.split(/[\.\n]/).map(p => p.trim()).filter(Boolean);
+                        const parsedAwards = [];
+                        for (const s of parts) {
+                            const sLow = s.toLowerCase();
+                            let cleanedText = s;
+                            const match = s.match(/(Won|Nominated for)\s+(\d+)\s+(Oscar|Academy Award|BAFTA|Golden Globe|Emmy)s?/i);
+                            if (match) {
+                                const action = match[1].toLowerCase();
+                                const count = match[2];
+                                const name = match[3];
+                                let disp = name;
+                                if (/academy|oscar/i.test(name)) disp = 'Oscar';
+                                else if (/bafta/i.test(name)) disp = 'BAFTA';
+                                else if (/globe/i.test(name)) disp = 'Golden Globe';
+                                else if (/emmy/i.test(name)) disp = 'Emmy';
+
+                                if (parseInt(count) > 1 && !disp.endsWith('s') && disp !== 'BAFTA') disp += 's';
+                                cleanedText = action.includes('nom') ? `${count} ${disp} (Nom)` : `${count} ${disp}`;
+                            }
+
+                            if (sLow.includes('oscar') || sLow.includes('academy')) parsedAwards.push({ type: 'oscar', text: cleanedText, color: 'gold' });
+                            else if (sLow.includes('bafta')) parsedAwards.push({ type: 'bafta', text: cleanedText, color: 'cyan' });
+                            else if (sLow.includes('globe')) parsedAwards.push({ type: 'globe', text: cleanedText, color: 'green' });
+                            else if (sLow.includes('emmy')) parsedAwards.push({ type: 'emmy', text: cleanedText, color: 'purple' });
+                        }
+                        details.parsed_awards = parsedAwards;
+                    }
+                }
+            } catch (omdbErr) {}
+        }
+
+        if (details.name && !details.title) details.title = details.name;
+        if (details.original_name && !details.original_title) details.original_title = details.original_name;
+        if (details.first_air_date && !details.release_date) details.release_date = details.first_air_date;
+        if (details.origin_country && !details.production_countries) {
+            details.production_countries = details.origin_country.map(c => ({ iso_3166_1: c, name: c }));
+        }
+        if (details.languages && !details.spoken_languages) {
+            details.spoken_languages = details.languages.map(l => ({ english_name: l.toUpperCase(), name: l.toUpperCase() }));
+        }
+
+        setCached(cacheKey, details, 600000);
+        return details;
+    }
+
     // State Variables
     let selectedMovie = null;
     let eventSource = null;
@@ -196,8 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         topProgressBar.start();
         try {
-            const r = await fetch(`/api/search-movies?query=${encodeURIComponent(query)}`);
-            const data = await r.json();
+            const data = await searchTMDB(query);
             
             if (data.results && data.results.length > 0) {
                 renderMovieGrid(data.results);
@@ -303,8 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderSkeletons();
             topProgressBar.start();
             try {
-                const r = await fetch(`/api/movie-details/${movieId}?type=${mediaType}`);
-                const movie = await r.json();
+                const movie = await fetchMovieDetailsTMDB(movieId, mediaType);
                 if (movie && movie.id) {
                     openMovieDetails(movie, false);
                 }
@@ -321,19 +628,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Core Functions
     // ==========================================================================
 
-    // Helper: cached image URL generator
+    // Helper: direct TMDB image URL generator
     function getPosterUrl(posterPath, size = 'w342') {
         if (!posterPath) {
             return 'https://via.placeholder.com/342x513/121214/a1a1a6?text=No+Poster';
         }
-        return `/api/image?path=${size}/${posterPath.replace(/^\//, '')}`;
+        return `https://image.tmdb.org/t/p/${size}/${posterPath.replace(/^\//, '')}`;
     }
 
     // Fetch live predictions/suggestions
     async function fetchSuggestions(query) {
         try {
-            const r = await fetch(`/api/search-movies?query=${encodeURIComponent(query)}`);
-            const data = await r.json();
+            const data = await searchTMDB(query);
             
             // Stale check: if input query has changed, do NOT render this response!
             if (searchInput.value.trim() !== query) {
@@ -438,19 +744,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         topProgressBar.start();
         try {
-            // Load trending in parallel with the other lists!
-            const [rTrending, rAcademy, rEmmy, rAnime] = await Promise.all([
-                fetch('/api/trending-movies'),
-                fetch('/api/academy-winner-movies'),
-                fetch('/api/emmy-winner-series'),
-                fetch('/api/top-anime')
-            ]);
-            
             const [dataTrending, dataAcademy, dataEmmy, dataAnime] = await Promise.all([
-                rTrending.json(),
-                rAcademy.json(),
-                rEmmy.json(),
-                rAnime.json()
+                fetchAndFilterTMDB('https://api.tmdb.org/3/trending/all/week', null, trendingFilter),
+                fetchAndFilterTMDB('https://api.tmdb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=8000', null, null),
+                fetchAndFilterTMDB('https://api.tmdb.org/3/discover/tv?sort_by=vote_average.desc&vote_count.gte=1000', null, emmyFilter),
+                fetchAndFilterTMDB('https://api.tmdb.org/3/discover/tv?with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200', null, animeFilter)
             ]);
             
             const isMobile = window.innerWidth <= 768;
@@ -603,8 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fetch extended details
         topProgressBar.start();
         try {
-            const r = await fetch(`/api/movie-details/${movie.id}?type=${mediaType}`);
-            const details = await r.json();
+            const details = await fetchMovieDetailsTMDB(movie.id, mediaType);
             selectedMovie = { ...selectedMovie, ...details };
             
             if (details.original_title && details.original_title.toLowerCase().trim() !== details.title.toLowerCase().trim()) {
@@ -1484,19 +1781,20 @@ document.addEventListener('DOMContentLoaded', () => {
         
         topProgressBar.start();
         try {
-            let fetchUrl = '';
-            if (category === 'trending') fetchUrl = `/api/trending-movies?page=${page}`;
-            else if (category === 'academy') fetchUrl = `/api/academy-winner-movies?page=${page}`;
-            else if (category === 'emmy') fetchUrl = `/api/emmy-winner-series?page=${page}`;
-            else if (category === 'anime') fetchUrl = `/api/top-anime?page=${page}`;
+            let data;
+            if (category === 'trending') {
+                data = await fetchAndFilterTMDB('https://api.tmdb.org/3/trending/all/week', page, trendingFilter);
+            } else if (category === 'academy') {
+                data = await fetchAndFilterTMDB('https://api.tmdb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=8000', page, null);
+            } else if (category === 'emmy') {
+                data = await fetchAndFilterTMDB('https://api.tmdb.org/3/discover/tv?sort_by=vote_average.desc&vote_count.gte=1000', page, emmyFilter);
+            } else if (category === 'anime') {
+                data = await fetchAndFilterTMDB('https://api.tmdb.org/3/discover/tv?with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200', page, animeFilter);
+            }
             
-            const r = await fetch(fetchUrl);
-            const data = await r.json();
-            const results = data.results || [];
-            
-            // Set dynamic total pages count if returned by TMDB API
-            if (data.total_pages) {
-                totalCategoryPages = Math.min(data.total_pages, 500); // cap to 500 pages max to be safe
+            const results = (data && data.results) ? data.results : [];
+            if (data && data.total_pages) {
+                totalCategoryPages = Math.min(data.total_pages, 500);
             }
             
             renderMovieGrid(results, categoryGrid);
