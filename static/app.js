@@ -445,16 +445,46 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPopularReleases();
     });
 
-    // Live search suggestions listener
+    // Live search suggestions listener with instant dropdown activation & liquid searching animation
     let suggestionsTimeout = null;
     searchInput.addEventListener('input', () => {
         clearTimeout(suggestionsTimeout);
         const query = searchInput.value.trim();
         if (!query) {
             searchSuggestions.classList.remove('active');
+            searchSuggestions.innerHTML = '';
             return;
         }
-        suggestionsTimeout = setTimeout(() => fetchSuggestions(query), 300);
+
+        // Instant activation: Show search dropdown immediately with Liquid Glass searching loader!
+        searchSuggestions.classList.add('active');
+        searchSuggestions.innerHTML = `
+            <div class="search-glass-loading">
+                <div class="search-loading-spinner"></div>
+                <div class="search-loading-text">
+                    <span>Searching movies & series</span>
+                    <span class="search-loading-dots"><span>.</span><span>.</span><span>.</span></span>
+                </div>
+            </div>
+            <div class="search-skeleton-list">
+                <div class="search-skeleton-item">
+                    <div class="search-skeleton-thumb"></div>
+                    <div class="search-skeleton-lines">
+                        <div class="search-skeleton-line short"></div>
+                        <div class="search-skeleton-line tiny"></div>
+                    </div>
+                </div>
+                <div class="search-skeleton-item">
+                    <div class="search-skeleton-thumb"></div>
+                    <div class="search-skeleton-lines">
+                        <div class="search-skeleton-line medium"></div>
+                        <div class="search-skeleton-line tiny"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        suggestionsTimeout = setTimeout(() => fetchSuggestions(query), 150);
     });
 
     // Enter key press triggers main grid search
