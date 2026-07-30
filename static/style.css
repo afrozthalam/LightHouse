@@ -47,17 +47,55 @@ body {
     position: relative;
 }
 
-/* Glow Background Accent */
+/* Glow Background Accent - iOS Fluid Ambient Light */
 .glow-bg {
     position: fixed;
-    top: -20%;
-    left: -10%;
-    width: 60vw;
-    height: 60vw;
-    background: radial-gradient(circle, rgba(191, 90, 242, 0.05) 0%, rgba(94, 92, 230, 0.01) 60%, rgba(7, 7, 8, 0) 100%);
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: -1;
     pointer-events: none;
-    filter: blur(80px);
+    overflow: hidden;
+    background: #08080f;
+}
+
+.glow-bg::before {
+    content: '';
+    position: absolute;
+    top: -15%;
+    left: 15%;
+    width: 650px;
+    height: 650px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(191, 90, 242, 0.18) 0%, rgba(94, 92, 230, 0.08) 55%, transparent 75%);
+    filter: blur(90px);
+    animation: liquidOrb1 18s ease-in-out infinite alternate;
+}
+
+.glow-bg::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    right: 10%;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.14) 0%, rgba(94, 92, 230, 0.06) 55%, transparent 75%);
+    filter: blur(100px);
+    animation: liquidOrb2 22s ease-in-out infinite alternate;
+}
+
+@keyframes liquidOrb1 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-60px, 80px) scale(1.15); }
+    100% { transform: translate(70px, -50px) scale(0.95); }
+}
+
+@keyframes liquidOrb2 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(80px, -70px) scale(1.12); }
+    100% { transform: translate(-50px, 60px) scale(0.9); }
 }
 
 /* Top Progress Bar - Navigation Loading Indicator */
@@ -66,32 +104,35 @@ body {
     top: 0;
     left: 0;
     height: 3px;
-    background: var(--color-purple);
-    box-shadow: 0 0 10px var(--color-purple), 0 0 5px var(--color-purple);
+    background: linear-gradient(90deg, #bf5af2, #5e5ce6, #5ac8fa);
+    box-shadow: 0 0 12px rgba(191, 90, 242, 0.8), 0 0 6px rgba(90, 200, 250, 0.8);
     z-index: 10000;
     width: 0%;
-    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
     opacity: 0;
     pointer-events: none;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
 }
 ::-webkit-scrollbar-track {
-    background: var(--bg-deep);
+    background: rgba(8, 8, 15, 0.8);
 }
 ::-webkit-scrollbar-thumb {
-    background: #232328;
-    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #2f2f35;
+    background: rgba(255, 255, 255, 0.35);
+    background-clip: content-box;
 }
 
-/* Header Section */
+/* Header Section - Liquid Glass Bar */
 .app-header {
     position: fixed;
     top: 0;
@@ -99,10 +140,11 @@ body {
     width: 100%;
     height: 72px;
     z-index: 100;
-    background: rgba(7, 7, 8, 0.75);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(16, 15, 26, 0.6);
+    backdrop-filter: blur(30px) saturate(220%);
+    -webkit-backdrop-filter: blur(30px) saturate(220%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
 
 .header-container {
@@ -121,6 +163,11 @@ body {
     gap: 10px;
     cursor: pointer;
     user-select: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand:hover {
+    transform: scale(1.03);
 }
 
 .brand-logo-svg {
@@ -153,18 +200,18 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 52vh; /* Centered homepage Google-like viewport focus */
+    min-height: 52vh;
     padding: 8vh 0 6vh;
     position: relative;
     z-index: 10;
 }
 
 .brand-hero-title {
-    display: none; /* Removed title text as requested */
+    display: none;
 }
 
 .hero-subtext {
-    background: linear-gradient(135deg, var(--text-primary) 0%, rgba(255, 255, 255, 0.7) 100%);
+    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.75) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.25rem;
@@ -172,14 +219,14 @@ body {
     margin-bottom: 2.2rem;
     font-weight: 700;
     letter-spacing: -0.3px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
     text-align: center;
 }
 
 .hero-search-container {
     position: relative;
     width: 100%;
-    max-width: 820px; /* Wider, premium hero search width */
+    max-width: 820px;
     margin: 0 auto;
     align-self: stretch;
 }
@@ -187,21 +234,23 @@ body {
 .search-bar-box {
     display: flex;
     align-items: center;
-    background: rgba(18, 18, 22, 0.65);
-    border: 2px solid rgba(255, 255, 255, 0.08); 
-    border-radius: 36px; /* Symmetrical capsule styling */
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50px;
     padding: 0 0.6rem 0 1.8rem;
-    height: 72px; /* Bigger, bolder height for premium visual statement */
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 20px 45px rgba(0,0,0,0.65), 0 0 35px rgba(191, 90, 242, 0.04); 
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    will-change: border-color, box-shadow;
+    height: 72px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(35px) saturate(220%);
+    -webkit-backdrop-filter: blur(35px) saturate(220%);
+    will-change: border-color, box-shadow, transform;
 }
 
 .search-bar-box:focus-within {
-    border-color: rgba(191, 90, 242, 0.7);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(191, 90, 242, 0.3);
+    border-color: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.13);
+    box-shadow: 0 25px 65px rgba(0, 0, 0, 0.7), 0 0 0 4px rgba(191, 90, 242, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
 }
 
 .search-icon-svg {
@@ -218,7 +267,7 @@ body {
     outline: none;
     color: var(--text-primary);
     font-family: var(--font-main);
-    font-size: 1.25rem; /* Larger, cleaner readability text */
+    font-size: 1.25rem;
     width: 100%;
     height: 48px;
     line-height: normal;
@@ -228,7 +277,7 @@ body {
 .search-action-btn {
     position: relative;
     background: radial-gradient(circle at 30% 30%, #bf5af2 0%, #5e5ce6 70%, #3a30ba 100%) !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
     border-radius: 50% !important;
     width: 52px !important;
     height: 52px !important;
@@ -243,7 +292,7 @@ body {
     outline: none;
     flex-shrink: 0;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(94, 92, 230, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 20px rgba(94, 92, 230, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
 .search-action-btn::before {
@@ -265,7 +314,7 @@ body {
 .search-action-btn:hover {
     transform: translateY(-2.5px) scale(1.08);
     box-shadow: 0 12px 30px rgba(191, 90, 242, 0.65), 0 0 20px rgba(94, 92, 230, 0.45), inset 0 1.5px 3px rgba(255, 255, 255, 0.55) !important;
-    border-color: rgba(255, 255, 255, 0.35) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
 }
 
 .search-action-btn:active {
@@ -278,19 +327,19 @@ body {
     stroke-width: 3px;
 }
 
-/* Live Suggestions Dropdown */
+/* Live Suggestions Dropdown - iOS Liquid Glass Floating Card */
 .search-suggestions {
     position: absolute;
-    top: 78px; /* Aligned below the taller search-bar-box */
+    top: 80px;
     left: 0;
     right: 0;
-    background: rgba(18, 18, 22, 0.95);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(191, 90, 242, 0.15);
-    border-radius: var(--radius-lg);
+    background: rgba(15, 14, 25, 0.82);
+    backdrop-filter: blur(40px) saturate(220%);
+    -webkit-backdrop-filter: blur(40px) saturate(220%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 26px;
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(191, 90, 242, 0.05);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     display: none;
     flex-direction: column;
     z-index: 100;
@@ -2806,3 +2855,102 @@ html, body {
 }
 
 
+
+
+/* ==========================================================================
+   Liquid Glass Instant Searching Loader & Glass Enhancements
+   ========================================================================== */
+.search-glass-loading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.search-loading-spinner {
+    width: 22px;
+    height: 22px;
+    border: 2.5px solid rgba(255, 255, 255, 0.15);
+    border-top-color: var(--color-purple);
+    border-radius: 50%;
+    animation: glassSpin 0.75s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes glassSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.search-loading-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.search-loading-dots span {
+    animation: dotPulse 1.4s infinite ease-in-out both;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+.search-loading-dots span:nth-child(1) { animation-delay: 0s; }
+.search-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.search-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotPulse {
+    0%, 80%, 100% { opacity: 0.2; }
+    40% { opacity: 1; }
+}
+
+.search-skeleton-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px;
+}
+
+.search-skeleton-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.search-skeleton-thumb {
+    width: 38px;
+    height: 54px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.05) 100%);
+    background-size: 200% 100%;
+    animation: shimmerShine 1.5s infinite linear;
+}
+
+.search-skeleton-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.search-skeleton-line {
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.05) 100%);
+    background-size: 200% 100%;
+    animation: shimmerShine 1.5s infinite linear;
+}
+.search-skeleton-line.short { width: 55%; }
+.search-skeleton-line.medium { width: 70%; }
+.search-skeleton-line.tiny { width: 35%; height: 10px; }
+
+@keyframes shimmerShine {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
