@@ -60,6 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return [true, item];
     }
 
+    function academyFilter(item) {
+        item.media_type = 'movie';
+        return [true, item];
+    }
+
     // Client-side TMDB collection & pagination engine
     async function fetchAndFilterTMDB(baseUrl, clientPage, filterFn = null) {
         const cacheKey = `feed_${baseUrl}_p${clientPage}`;
@@ -773,7 +778,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const [dataTrending, dataAcademy, dataEmmy, dataAnime] = await Promise.all([
                 fetchAndFilterTMDB('https://api.tmdb.org/3/trending/all/week', null, trendingFilter),
-                fetchAndFilterTMDB('https://api.tmdb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=8000', null, null),
+                fetchAndFilterTMDB('https://api.tmdb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=8000', null, academyFilter),
                 fetchAndFilterTMDB('https://api.tmdb.org/3/discover/tv?sort_by=vote_average.desc&vote_count.gte=1000', null, emmyFilter),
                 fetchAndFilterTMDB('https://api.tmdb.org/3/discover/tv?with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200', null, animeFilter)
             ]);
