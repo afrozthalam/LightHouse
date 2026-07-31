@@ -45,14 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function emmyFilter(item) {
-        if (item.original_language !== 'ja') {
-            item.title = item.name;
-            item.original_title = item.original_name;
-            item.release_date = item.first_air_date;
-            item.media_type = 'tv';
-            return [true, item];
-        }
-        return [false, null];
+        item.title = item.name;
+        item.original_title = item.original_name;
+        item.release_date = item.first_air_date;
+        item.media_type = 'tv';
+        return [true, item];
     }
 
     function animeFilter(item) {
@@ -71,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const collected = [];
         let tmdbPage = 1;
-        const targetCount = clientPage === null ? 15 : clientPage * 21;
+        const targetCount = clientPage === null ? 20 : clientPage * 21;
         let totalResultsEstimate = 500;
 
         while (collected.length < targetCount) {
@@ -107,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let responseData;
         if (clientPage === null) {
-            responseData = { results: collected.slice(0, 15) };
+            responseData = { results: collected.slice(0, 20) };
         } else {
             const startIdx = (clientPage - 1) * 21;
             const endIdx = clientPage * 21;
