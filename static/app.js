@@ -45,11 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function emmyFilter(item) {
-        item.title = item.name;
-        item.original_title = item.original_name;
-        item.release_date = item.first_air_date;
-        item.media_type = 'tv';
-        return [true, item];
+        if (item.original_language !== 'ja') {
+            item.title = item.name;
+            item.original_title = item.original_name;
+            item.release_date = item.first_air_date;
+            item.media_type = 'tv';
+            return [true, item];
+        }
+        return [false, null];
     }
 
     function animeFilter(item) {
@@ -57,11 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         item.original_title = item.original_name;
         item.release_date = item.first_air_date;
         item.media_type = 'tv';
-        return [true, item];
-    }
-
-    function academyFilter(item) {
-        item.media_type = 'movie';
         return [true, item];
     }
 
@@ -73,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const collected = [];
         let tmdbPage = 1;
-        const targetCount = clientPage === null ? 20 : clientPage * 21;
+        const targetCount = clientPage === null ? 15 : clientPage * 21;
         let totalResultsEstimate = 500;
 
         while (collected.length < targetCount) {
@@ -109,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let responseData;
         if (clientPage === null) {
-            responseData = { results: collected.slice(0, 20) };
+            responseData = { results: collected.slice(0, 15) };
         } else {
             const startIdx = (clientPage - 1) * 21;
             const endIdx = clientPage * 21;
@@ -447,46 +445,16 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPopularReleases();
     });
 
-    // Live search suggestions listener with instant dropdown activation & liquid searching animation
+    // Live search suggestions listener
     let suggestionsTimeout = null;
     searchInput.addEventListener('input', () => {
         clearTimeout(suggestionsTimeout);
         const query = searchInput.value.trim();
         if (!query) {
             searchSuggestions.classList.remove('active');
-            searchSuggestions.innerHTML = '';
             return;
         }
-
-        // Instant activation: Show search dropdown immediately with Liquid Glass searching loader!
-        searchSuggestions.classList.add('active');
-        searchSuggestions.innerHTML = `
-            <div class="search-glass-loading">
-                <div class="search-loading-spinner"></div>
-                <div class="search-loading-text">
-                    <span>Searching movies & series</span>
-                    <span class="search-loading-dots"><span>.</span><span>.</span><span>.</span></span>
-                </div>
-            </div>
-            <div class="search-skeleton-list">
-                <div class="search-skeleton-item">
-                    <div class="search-skeleton-thumb"></div>
-                    <div class="search-skeleton-lines">
-                        <div class="search-skeleton-line short"></div>
-                        <div class="search-skeleton-line tiny"></div>
-                    </div>
-                </div>
-                <div class="search-skeleton-item">
-                    <div class="search-skeleton-thumb"></div>
-                    <div class="search-skeleton-lines">
-                        <div class="search-skeleton-line medium"></div>
-                        <div class="search-skeleton-line tiny"></div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        suggestionsTimeout = setTimeout(() => fetchSuggestions(query), 150);
+        suggestionsTimeout = setTimeout(() => fetchSuggestions(query), 300);
     });
 
     // Enter key press triggers main grid search
@@ -778,7 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const [dataTrending, dataAcademy, dataEmmy, dataAnime] = await Promise.all([
                 fetchAndFilterTMDB('https://api.tmdb.org/3/trending/all/week', null, trendingFilter),
-                fetchAndFilterTMDB('https://api.tmdb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=8000', null, academyFilter),
+                fetchAndFilterTMDB('https://api.tmdb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=8000', null, null),
                 fetchAndFilterTMDB('https://api.tmdb.org/3/discover/tv?sort_by=vote_average.desc&vote_count.gte=1000', null, emmyFilter),
                 fetchAndFilterTMDB('https://api.tmdb.org/3/discover/tv?with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200', null, animeFilter)
             ]);
