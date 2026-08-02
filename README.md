@@ -50,9 +50,5 @@ Follow these steps to run the project on your machine:
 
 ## 📜 Attributions & Credits
 
-* **Movie Data & Images:** This product uses the TMDB API but is not officially endorsed or certified by TMDB.
-* **Project Creator:** Developed by Afroz Thalam.
+* **Project Creator:** Developed by Afroz Alam.
 
----
-
-*Made with 💜 for movie and cinema lovers.*
