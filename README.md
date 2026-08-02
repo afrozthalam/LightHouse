@@ -51,4 +51,5 @@ Follow these steps to run the project on your machine:
 ## 📜 Attributions & Credits
 
 * **Project Creator:** Developed by Afroz Alam.
+* **Contact Email**: [codefather.inbox@gmail.com](mailto:codefather.inbox@gmail.com)
 
